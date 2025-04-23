@@ -1,0 +1,92 @@
+:root {
+    --base: #1e1e2e;
+    --mantle: #181825;
+    --text: #cdd6f4;
+    --subtext: #bac2de;
+    --overlay: #6c7086;
+    --lavender: #b4befe;
+    --mauve: #cba6f7;
+    --peach: #fab387;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+body {
+    background-color: var(--base);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+main {
+    max-width: 600px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    text-align: center;
+}
+
+.aboutlogo {
+    color: var(--lavender);
+    font-size: 5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.music-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 0.75rem 0;
+  background-color: var(--mantle);
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.music-list li:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.music-list img {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.music-list li:hover img {
+  transform: rotate(-2deg) scale(1.05);
+}
+
+.song-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.song-info a {
+  text-decoration: none;
+  color: var(--text);
+}
+
+.song-title {
+  font-weight: 600;
+  color: var(--mauve);
+}
+
+.artist {
+  font-style: italic;
+  color: var(--subtext);
+  font-size: 0.95rem;
+}
