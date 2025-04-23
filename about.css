@@ -1,0 +1,75 @@
+:root {
+    --base: #1e1e2e;
+    --mantle: #181825;
+    --text: #cdd6f4;
+    --subtext: #bac2de;
+    --overlay: #6c7086;
+    --lavender: #b4befe;
+    --mauve: #cba6f7;
+    --peach: #fab387;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+body {
+    background-color: var(--base);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.aboutlogo {
+    color: var(--lavender);
+    font-size: 5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-align: center;    
+    position: relative;
+}
+
+.blink {
+    animation: blink 1s step-end infinite;
+    color: var(--peach);
+}
+
+.fun-list {
+    list-style: none;
+    padding: 1rem;
+    margin: 1.5rem auto;
+    max-width: 500px;
+}
+
+.fun-list li {
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    background: var(--mantle);
+    border-radius: 8px;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.fun-list li:hover {
+    transform: translateX(10px);
+}
+
+.highlight {
+    color: var(--peach);
+    text-align: center;
+    margin: 1.5rem 0;
+    font-weight: 600;
+}
+
+.description {
+    color: var(--subtext);
+    line-height: 1.8;
+    text-align: center;
+    letter-spacing: 0.5px;
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
