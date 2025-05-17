@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog: 17/05/25 </title>
+    <link rel="stylesheet" href="../blog.css">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body
+    <div class="container">
+        <header>
+        <h1 class="logo">Blog: 17 May 2025</h1>
+        <main>
+            <div class="content">
+                <p class="description">My first time dealing with AIDL (and contributing to Lineage in the meantime)</p>
+                    <p>
+                    So recently I got a bit interested in wanting to learn about some more Android internals and I thought a good way of doing that would be contributing to an AOSP ROM.
+                    I specifically wanted to do something with HALs (Hardware Abstraction Layers) as those are extremely crucial for communicating with hardware in Android. My first thought
+                    was to find something that was either broken or needed an update/improvement. 
+                    </p>
+
+                    <p> 
+                    I came across the repo <a href="https://github.com/LineageOS/android_hardware_interfaces" class="about-link" </a>hardware/lineage/interfaces</a> where a lot of Open Source community built
+                    HALs lie. The first thing I noticed was that a lot of these HALs were still using the old HIDL (Hardware Interface Definition Language) implementation instead of the newly adopted
+                    AIDL (Android Interface Definition Language) implementation.
+                    </p>
+
+                    <p>
+                    I specifically got interested in the PowerShare (reverse wireless charging) implementation (because it was smaller and easier to interpret), I wanted to rewrite this HAL into AIDL but honestly during that time had
+                    no idea how I'd do that. But first I looked into the code and looked at the cpp implementation (Powershare.cpp) and tried to understand whats going on.
+                    </p>   
+                    <pre><code>Return &lt;bool&gt; PowerShare::isEnabled() {
+std::string value;
+
+if (!ReadFileToString(POWERSHARE_PATH, &value)) {
+LOG(ERROR) << "Failed to read current powershare value";
+return false;
+}
+
+value = android::base::Trim(value);
+
+return value == POWERSHARE_ENABLED;
+}
+
+Return&lt;bool&gt; PowerShare::setEnabled(bool enable) {
+const auto& value = enable ? POWERSHARE_ENABLED : POWERSHARE_DISABLED;
+WriteStringToFile(value, POWERSHARE_PATH, true);
+return isEnabled();
+}
+</code></pre>
+                    <p> This was the main implementation, it's pretty simple, I'm sure if you're reading this, you have already understood
+                    whats going on. But if you haven't, let me explain,
+                    </p>
+                    <p> 
+                    This basically writes '1' <strong>(POWERSHARE_ENABLED)</strong> or '0' <strong>(POWERSHARE_DISABLED)</strong> to a path <strong>(POWERSHARE_PATH)</strong>. This path is different for every device
+                    and needs to be explicitly defined in a makefile, for my Pixel 7, the path is /sys/class/power_supply/wireless/device/rtx.
+                    </p>
+                    <p> When '1' is written to that path, it enables the PowerShare function. Most of this is 
+                    taken care of by the kernel, this HAL is basically just a toggle for the Kernel.</p>
+                    <p>
+                    Now, the only thing I had to do was convert this HAL to AIDL. There were two other files as well, service.cpp which would register the HAL and the header Powershare.h that defined
+                    all the functions, those needed to be rewritten to a certain degree as well.
+                    </p>
+                    <p>
+                    After a bit of diging up documentations and being code reviewed, I came up with this:
+                    </p>
+                    <pre><code>ndk::ScopedAStatus PowerShare::isEnabled(bool* _aidl_return) {
+std::string value;
+if (!ReadFileToString(POWERSHARE_PATH, &value)) {
+LOG(ERROR) << "Failed to read current PowerShare state";
+
+return ndk::ScopedAStatus::fromExceptionCode(EX_UNSUPPORTED_OPERATION);
+}
+
+*_aidl_return = Trim(value) == POWERSHARE_ENABLED;
+return ndk::ScopedAStatus::ok();
+}
+
+ndk::ScopedAStatus PowerShare::setEnabled(bool enable) {
+std::string value = enable ? POWERSHARE_ENABLED : POWERSHARE_DISABLED;
+if (!WriteStringToFile(value, POWERSHARE_PATH, true)) {
+LOG(ERROR) << "Failed to write PowerShare state";
+return ndk::ScopedAStatus::fromExceptionCode(EX_SERVICE_SPECIFIC);
+}
+return ndk::ScopedAStatus::ok();
+}
+</code></pre>
+                    <p>
+                        The logic stays the same, but the syntax and format has changed. The other files had to be changed accordingly:
+                    </p>
+                    <h1> Powershare.h </h1>
+                    <pre><code>// HIDL 
+class PowerShare : public IPowerShare {
+public:
+Return&lt;bool&gt; isEnabled() override;
+Return&lt;bool&gt; setEnabled(bool enable) override;
+Return&lt;uint32_t&gt;getMinBattery() override;
+Return&lt;uint32_t&gt; setMinBattery(uint32_t minBattery) override;
+};
+</code></pre>
+                    <pre><code>// AIDL
+class PowerShare : public BnPowerShare {
+public:
+ndk::ScopedAStatus isEnabled(bool* _aidl_return) override;
+ndk::ScopedAStatus setEnabled(bool enable) override;
+
+// Unused stubs
+ndk::ScopedAStatus getMinBattery(int32_t* _aidl_return) override;
+ndk::ScopedAStatus setMinBattery(int32_t minBattery) override;
+};
+</code></pre>
+                    <p>setMinBattery() is now int32_t and getMinBattery() is now int32_t* instead of being void. isEnabled() is also a boolean now instead of being void.</p> 
+                    <h1> service.cpp </h1>
+                    <pre><code>// HIDL
+int main() {
+sp&lt;IPowerShare&gt; powerShareService = new PowerShare();
+
+configureRpcThreadpool(1, true /*callerWillJoin*/);
+
+if (powerShareService->registerAsService() != android::OK) {
+LOG(ERROR) << "Can't register PowerShare HAL service";
+return 1;
+}
+
+joinRpcThreadpool();
+
+return 0; // should never get here
+}
+</code></pre>
+                    <pre><code>// AIDL 
+int main() {
+ABinderProcess_setThreadPoolMaxThreadCount(0);
+std::shared_ptr&lt;IPowerShare&gt; powershare = ndk::SharedRefBase::make&lt;IPowerShare&gt;();
+
+const std::string instance = std::string(PowerShare::descriptor) + "/default";
+binder_status_t status =
+AServiceManager_addService(powershare->asBinder().get(), instance.c_str());
+CHECK_EQ(status, STATUS_OK);
+
+ABinderProcess_joinThreadPool();
+return EXIT_FAILURE;  // should not reach
+}</code></pre>
+                    <p> This, in my opinion, has changed the most. Before it would just register the service on its own, but now we can do it ourselves and give it a proper descriptor.</p>
+                    <p> You can take a look at how the format has changed. One benefit that AIDL has over HIDL 
+                        is that developers can control the code all they want and are not restricted in pre-defined definitions.
+                    </p>
+                    <p> This is only the 'backend' of the PowerShare service, there were a few changes needed from the Java (UI) side of things. Specifically in the PowerShareTile.java file 
+                        that defines the PowerShare tile. Then there was sepolicy. But I feel like talking about those things would be useless, since this blog was specifically aimed at the HAL.
+                    </p>
+                    <p> 
+                    But if you ARE interested in whatever changes I've done, take a look here: <a href="https://review.lineageos.org/q/topic:%22powershare-aidl%22 class="about-link" </a>powershare-aidl</a>
+                    </p>
+            </ul>
+                    <p> Well, thats it for this blog, I know its kinda boring and doesn't have much info, but I'll try going more in depth about what 
+                        I do for the next time, this is my first ever blog, and it just makes me a bit nervous. Either way, I had a lot of fun writing
+                        the AIDL service and it genuinely taught me a lot of things (as well as making this website and writing this blog)
+                    </p>
+                    <a href="../blog.html" class="about-link">go back</a>
+    </header>
+</body>
+    </html>

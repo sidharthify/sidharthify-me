@@ -1,0 +1,115 @@
+/* catppuccin mocha */
+:root {
+    --base: #1e1e2e;
+    --mantle: #181825;
+    --text: #cdd6f4;
+    --subtext: #bac2de;
+    --overlay: #6c7086;
+    --lavender: #b4befe;
+    --mauve: #cba6f7;
+    --peach: #fab387;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+body {
+    background-color: var(--base);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.logo {
+    color: var(--lavender);
+    font-size: 5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.blog-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    background-color: var(--mantle);
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.blog-list li:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.blog-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.blog-info a {
+    text-decoration: none;
+    color: var(--text);
+}
+
+.blog-title {
+    font-weight: 600;
+    color: var(--mauve);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.description {
+    color: var(--subtext);
+    text-align: center;
+    font-size: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+p {
+    font-size: 20px;
+}
+
+pre {
+    background-color: #24273a;
+    color: #cad3f5;
+    padding: 1em;
+    border-radius: 8px;
+    border: 1px solid #363a4f;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", "SF Mono", "Fira Code", Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    font-size: 0.9em;
+    line-height: 1.6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+pre > code {
+    font-family: inherit;
+    color: #cad3f5;
+    background-color: transparent;
+    padding: 0; 
+    border-radius: 0;
+    font-size: 1em;
+    display: block;
+    white-space: pre-wrap;
+}
+
