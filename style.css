@@ -181,6 +181,30 @@ body {
     background: rgba(180,190,254,0.09);
 }
 
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .navbar-logo {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .navbar-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .navbar-links a {
+        width: 100%;
+        padding: 0.5rem 1rem;
+    }
+}
+
 @keyframes wave {
     0% { transform: rotate(0deg); }
     10% { transform: rotate(14deg); }
