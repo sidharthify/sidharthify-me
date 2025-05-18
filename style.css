@@ -231,6 +231,31 @@ body {
   }
 
 @media (max-width: 768px) {
+    .footer {
+        font-size: 0.97rem;
+        margin-top: 2rem;
+        padding-top: 1.2rem;
+        padding-bottom: 0.85rem;
+      }
+    .footer-content {
+        font-size: 0.97rem;
+        padding: 0 1vw;
+      }
+    .description {
+        margin-left: 0;
+        font-size: 1.05rem;
+        max-width: 95vw;
+        text-align: center;
+        margin-right: 0;
+        margin-bottom: 2.5rem;
+      }
+
+    .logo {
+        font-size: 2.4rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+      }
+
     .navbar {
       flex-wrap: wrap;
       padding: 1rem;
