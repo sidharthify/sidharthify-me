@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;700&display=swap');
+
 :root {
     --base: #1e1e2e;
     --mantle: #181825;
@@ -37,6 +39,7 @@ main {
     font-weight: 800;
     margin-bottom: 1rem;
     position: relative;
+    font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
 }
 
 .blink {
@@ -53,6 +56,7 @@ main {
     font-size: 1.2rem;
     margin: 0 auto 2rem;
     max-width: 600px;
+    font-family: 'Google Sans', Arial, Helvetica, sans-serif !important;
 }
 .description p {
     margin: 1rem 0;
@@ -69,6 +73,7 @@ main {
     margin: 0.5rem 0;
     padding-left: 1.5rem;
     position: relative;
+    font-family: 'Google Sans', Arial, Helvetica, sans-serif !important;
 }
 .highlights li::before {
     content: '›';

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;700&display=swap');
+
 /* catppuccin mocha */
 :root {
     --base: #1e1e2e;
@@ -30,12 +32,13 @@ body {
     padding: 2rem 1.5rem;
 }
 
-.logo {
+.bloglogo {
     color: var(--lavender);
     font-size: 5rem;
     font-weight: 800;
     margin-bottom: 1rem;
     text-align: center;
+    font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
 }
 
 .blog-list li {
@@ -69,6 +72,7 @@ body {
 .blog-title {
     font-weight: 600;
     color: var(--mauve);
+    font-family: 'Google Sans', Arial, Helvetica, sans-serif !important;
 }
 
 .content {
@@ -83,6 +87,7 @@ body {
     font-size: 1.5rem;
     max-width: 600px;
     margin: 0 auto;
+    font-family: 'Google Sans', Arial, Helvetica, sans-serif !important;
 }
 
 p {

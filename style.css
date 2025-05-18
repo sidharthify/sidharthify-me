@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;700&display=swap');
+
 /* catppuccin mocha */
 :root {
     --base: #1e1e2e;
@@ -28,15 +30,36 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
+    transition: opacity 0.22s cubic-bezier(.7,0,.3,1);
 }
+
+.container.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
 
 .logo {
     color: var(--lavender);
     font-size: 5rem;
     font-weight: 800;
     margin-bottom: 1rem;
+    margin-top: 10rem;
     text-align: center;
+    font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
 }
+
+.logo::after {
+    content: "|";
+    animation: blink 1s infinite steps(1);
+    color: var(--lavender); /* or your accent color */
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
 
 .content {
     display: flex;
@@ -51,50 +74,33 @@ body {
 
 .description {
     color: var(--subtext);
-    text-align: center;
+    margin-left: 8.5rem;
     font-size: 1.5rem;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.section {
-    display: flex;
-    flex-direction: column;
-    gap: 1.0rem;
-}
-
-.section-title {
-    color: var(--mauve);
-    font-size: 2.0rem;
-    border-bottom: 2px solid var(--overlay);
-    padding-bottom: 0.5rem;
+    max-width: 500px;
+    font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
 }
 
 .links {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    gap: 2.5rem;
     justify-content: center;
+    margin-top: 2rem;
 }
 
-.link-button {
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    text-decoration: none;
+.social-icon {
     color: var(--text);
-    background-color: var(--mantle);
-    transition: all 0.2s ease;
-    border: 1px solid var(--overlay);
-    text-align: center;
-    flex: 1 1 200px;
+    font-size: 2.2rem;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
-.link-button:hover {
-    background-color: var(--lavender);
-    color: var(--base);
-    border-color: var(--lavender);
-    transform: translateY(-2px);
+.social-icon:hover {
+    color: var(--lavender);
 }
+
 
 .about-link {
     text-align: center;
@@ -157,6 +163,7 @@ body {
     letter-spacing: 2px;
     text-shadow: 0 2px 8px rgba(180,190,254,0.06);
     text-decoration: none;
+    font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
 }
 
 .navbar-links {
@@ -170,6 +177,7 @@ body {
     text-decoration: none;
     color: var(--subtext);
     font-weight: 600;
+    font-family: 'Google Sans', Arial, Helvetica, sans-serif !important;
     text-transform: lowercase;
     font-size: 1.05rem;
     padding: 0.25rem 0.65rem;
@@ -202,6 +210,25 @@ body {
     border-radius: 3px;
     transition: all 0.3s ease;
 }
+
+.footer {
+    color: var(--overlay);
+    text-align: center;
+    padding: 2rem 0 1.3rem 0;
+    font-size: 1.07rem;
+    font-family: 'Google Sans', Arial, Helvetica, sans-serif !important;
+    margin-top: 11rem;
+  }
+
+  .footer-content a {
+    color: var(--subtext);
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+
+  .footer-content a:hover {
+    color: var(--lavender);
+  }
 
 @media (max-width: 768px) {
     .navbar {
