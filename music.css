@@ -76,11 +76,14 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: flex-start;
+  flex: 1;
 }
 
 .song-info a {
   text-decoration: none;
   color: var(--text);
+  flex: 1;
 }
 
 .song-title {
@@ -93,7 +96,51 @@ main {
   font-style: italic;
   color: var(--subtext);
   font-size: 0.95rem;
+  position: relative;
+  align-items: flex-start;
   font-family: 'Google Sans', Arial, Helvetica, sans-serif !important;
+}
+
+.play-btn {
+  margin-left: 29rem;
+  background: var(--mauve);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(80, 80, 120, 0.13);
+}
+
+.play-btn::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-40%, -50%);
+  width: 0; height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 16px solid var(--mantle);
+}
+
+.play-btn.paused::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 13px;
+  width: 6px;
+  height: 18px;
+  background: var(--mantle);
+  border-radius: 1px;
+  box-shadow: 12px 0 0 0 var(--mantle);
+  border: none;
+  transform: none;
 }
 
 @media (max-width: 768px) {
