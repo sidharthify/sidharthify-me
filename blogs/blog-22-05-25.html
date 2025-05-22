@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog: 22/05/25 </title>
+    <link rel="stylesheet" href="../blog.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div>
+            <a href="../index.html" class="navbar-logo">sidharthify </a>
+             </div>
+        <button class="navbar-toggle" aria-label="Toggle navigation">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </button>
+        <ul class="navbar-links">
+          <li><a href="../index.html">home</a></li>
+          <li><a href="../about/about.html">about</a></li>
+          <li><a href="../blogs/blog.html" aria-current="page">blog</a></li>
+          <li><a href="../music/music.html">music</a></li>
+        </ul>
+      </nav>
+    <main class="container">
+        <header>
+        <h1 class="bloglogo">Blog 3</h1>
+        <main>
+            <div class="content">
+                <p class="description">How Android device trees are structured</p>
+                    <p>
+                    It's been a while since I did my last blog, so I thought I'd write something today. I'm gonna be talking about
+                    the layout and structure of AOSP device trees. I hope this won't be too confusing for newbies or someone completely
+                    new to AOSP.
+                    </p>
+
+                    <p>
+                    In AOSP, to compile a build for a specific device, we need to have a defined device tree for that phone so Android knows
+                    what to include in the build, what the system specifications are for that device, and etcetera.
+                    </p>
+
+                    <p>
+                    Android device trees have makefiles that define what needs to be built and everything else. You usually have:
+                    <br>
+                    - AndroidProducts.mk
+                    <br>
+                    - Android.bp
+                    <br>
+                    - Android.mk
+                    <br>
+                    - BoardConfig.mk
+                    <br>
+                    - device.mk
+                    <br>
+                    - aosp_codename.mk
+                    <br>
+                    And a bunch of other subdirectories and scripts.
+                    </p>
+
+                    <img src="../images/screenshot.png" width="700px">
+                    <h1> AndroidProducts.mk</h1> 
+                    <pre><code>
+PRODUCT_MAKEFILES := \
+$(LOCAL_DIR)/aosp_codename.mk
+                    </code></pre>
+                    <p>
+                    This makefile includes the makefiles for your device to be used in the lunch command to build AOSP.
+                    </p>
+                    <h1> Android.bp </h1>
+                    <p>
+                    This is an Android buildsystem file type that usually defines files in a local folder.
+                    In android device trees, this usually just contains the following:
+                    </p>
+                    <pre><code>soong_namespace {
+imports: [
+// insert repositories here
+],
+}
+</code></pre>
+                    <p>
+                    This is the new soong buildsystem used in Android which is gonna import the needed repositories which are needed for the tree to be completely built.
+                    </p>
+
+                    <h1> Android.mk </h1>
+                    <p>
+                    Usually contains the following:
+                    </p>
+                    <pre><code>LOCAL_PATH := $(call my-dir)
+ifeq ($(TARGET_DEVICE),codename)
+include $(call all-subdir-makefiles,$(LOCAL_PATH))
+endif
+</code></pre>
+
+                    <p>
+                    This will set the local path to the directory you are in and will call the device's codename and reveal it to the rest
+                    of the build system. For now I have used a placeholder codename.
+                    </p>
+
+                    <h1>BoardConfig.mk</h1>
+                    <p>
+                      It contains a set of flags that define the device's architecture, kernel configuration, sometimes drivers, etc.
+                      You can look at an example of a BoardConfig here: 
+                      <a href="https://github.com/yaap/device_google_gs201/blob/fifteen/BoardConfig-common.mk" class="about-link" </a>BoardConfig-common.mk</a>
+                      </p>
+
+                      <p> I'll drop some lines of "code" from the makefile here:</p>
+                      <pre><code># Architecture
+TARGET_ARCH := arm64
+TARGET_ARCH_VARIANT := armv8-a
+TARGET_CPU_ABI := arm64-v8a
+TARGET_CPU_ABI2 :=
+TARGET_CPU_VARIANT := generic
+TARGET_CPU_VARIANT_RUNTIME := cortex-a55
+                        
+# Bootloader
+TARGET_BOOTLOADER_BOARD_NAME := pacman
+TARGET_NO_BOOTLOADER := true
+                        
+# Display
+TARGET_SCREEN_DENSITY := 420
+
+# Kernel
+BOARD_KERNEL_BASE := 0x3fff8000
+BOARD_KERNEL_IMAGE_NAME := Image.gz
+BOARD_KERNEL_PAGESIZE := 4096
+BOARD_RAMDISK_USE_LZ4 := true
+BOARD_USES_GENERIC_KERNEL_IMAGE := true
+
+BOARD_DTB_OFFSET := 0x07c88000
+BOARD_KERNEL_OFFSET := 0x00008000
+BOARD_KERNEL_TAGS_OFFSET := 0x07c88000
+BOARD_RAMDISK_OFFSET := 0x26f08000
+                      </code></pre>
+                      
+                      <h1>
+                        device.mk
+                      </h1>
+                      <p>
+                      Usually for telling Android to include specific things in the build you're doing. It contains flags like PRODUCT_PACKAGES and PRODUCT_COPY_FILES. PRODUCT_PACKAGES tell Android to compile a service and PRODUCT_COPY_FILES copy a file from a location to another.
+                      </p>
+<pre><code># Audio
+PRODUCT_PACKAGES += \
+    android.hardware.audio.effect@7.0-impl \
+    android.hardware.audio@7.1-impl \
+    android.hardware.soundtrigger@2.3-impl \
+    android.hardware.audio.service
+
+PRODUCT_PACKAGES += \
+    audio.bluetooth.default \
+    audio.primary.default \
+    audio.r_submix.default \
+    audio_policy.stub \
+    audio.usb.default
+
+PRODUCT_PACKAGES += \
+    libaudiofoundation.vendor \
+    audioclient-types-aidl-cpp.vendor \
+    libalsautils \
+    libaudio_aidl_conversion_common_ndk.vendor \
+    android.hardware.audio.common-V1-ndk.vendor \
+    libnbaio_mono \
+    libtinycompress \
+    libxml2.vendor
+
+PRODUCT_PACKAGES += \
+    MtkInCallService
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/audio/audio_device.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_device.xml \
+    $(LOCAL_PATH)/configs/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+    $(LOCAL_PATH)/configs/audio/audio_em.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_em.xml \
+    $(LOCAL_PATH)/configs/audio/aurisys_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/aurisys_config.xml \
+    $(LOCAL_PATH)/configs/audio/aurisys_config_hifi3.xml:$(TARGET_COPY_OUT_VENDOR)/etc/aurisys_config_hifi3.xml \
+    $(LOCAL_PATH)/configs/audio/aurisys_config_rv.xml:$(TARGET_COPY_OUT_VENDOR)/etc/aurisys_config_rv.xml
+    // and so on..
+</code></pre>
+
+                    <p>
+                      You would need to know what to include in the build and what to not while bringing up a custom ROM for example.
+                    </p>
+                      <h1> aosp_codename.mk </h1>
+                      <p>
+                      This makefile usually contains the following content (this is an example):
+                      </p>
+                    <pre><code>$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+                      
+# Inherit some common AOSP stuff.
+$(call inherit-product, vendor/aosp/config/common_full_phone.mk)
+                      
+# Inherit from pacman device
+$(call inherit-product, device/nothing/pacman/device.mk)
+                      
+PRODUCT_NAME := aosp_pacman
+PRODUCT_DEVICE := pacman
+PRODUCT_MANUFACTURER := Nothing
+PRODUCT_BRAND := Nothing
+PRODUCT_MODEL := A142
+                      
+PRODUCT_SYSTEM_NAME := pacman_global
+PRODUCT_SYSTEM_DEVICE := pacman
+
+PRODUCT_BUILD_PROP_OVERRIDES += \
+BuildDesc="sys_mssi_64_ww_armv82-user 14 UP1A.231005.007 2408281906 release-keys" \
+BuildFingerprint=Nothing/PacmanIND/Pacman:13/TP1A.220624.014/2408281906:user/release-keys \
+DeviceName=$(PRODUCT_SYSTEM_DEVICE) \
+DeviceProduct=$(PRODUCT_SYSTEM_NAME)
+                      
+PRODUCT_GMS_CLIENTID_BASE := android-nothing
+</code></pre>
+                
+                    <p>
+                      It's  pretty simple, at first it inherits some common makefiles from Android and then goes on to inherit device.mk which we just defined,
+                      after that, it defines PRODUCT flags for the device we're building to give it a proper codename and/or name inside Android. At last, we define
+                      the fingerprint for the build.
+                    </p>
+
+                    <p>
+                      You do not need to understand everything here, these are just flags to tell Android what the device should be called.
+                    </p>
+
+                    <h1>
+                    proprietary-files.txt
+                    </h1>
+
+                    <p>
+                    This file is used to extract proprietary blobs from the device to include them in a seperate repository (vendor/oem/codename). This file will
+                    contain a list of blobs with their directories, like:
+                    </p>
+
+                    <pre><code># All proprietary files from this list, unless pinned and noted otherwise,
+# are from Nothing Phone 2A (Pacman_V3.0-240617).
+
+# AEE
+vendor/lib64/libaedv.so
+vendor/lib64/libladder.so
+
+# Audio
+vendor/etc/dirac/dirac_resource.dar
+vendor/etc/dirac/interface.json
+vendor/etc/init/audiocmdservice_atci.rc
+vendor/etc/AudioLog_dynamic.xml
+vendor/lib64/hw/audio.primary.mediatek.so;SYMLINK=vendor/lib64/hw/audio.primary.mt6886.so
+vendor/lib64/hw/audio.r_submix.mediatek.so;SYMLINK=vendor/lib64/hw/audio.r_submix.mt6886.so
+vendor/lib64/hw/sound_trigger.primary.default.so
+vendor/lib64/soundfx/libaudiopreprocessing_mtk.so
+vendor/lib64/libMtkSpeechEnh.so
+vendor/lib64/lib_iir.so
+vendor/lib64/libaudio_param_parser-vnd.so
+vendor/lib64/libaudiocompensationfilter_vendor.so
+vendor/lib64/libaudiocompensationfilterc.so
+vendor/lib64/libaudiocomponentengine_vendor.so
+vendor/lib64/libaudiocomponentenginec.so
+vendor/lib64/libaudiocustparam_vendor.so
+vendor/lib64/libaudiodcrflt_vendor.so
+vendor/lib64/libaudiofmtconv.so
+vendor/lib64/libaudioloudc.so
+vendor/lib64/libaudioprimarydevicehalifclient.so
+vendor/lib64/libaudiosmartpamtk.so
+// and so on</code></pre>
+
+                    <p>
+                      This file is linked to two other files, extract-files.sh and setup-makefiles.sh which actually does the logic stuff.
+                    </p>
+
+                    <h1>/configs</h1>
+                    <p>
+                      These are subdirectories containing configs, overlays needed to build the system properly, sepolicy rules and init files.
+                    </p>
+                    <p>
+                      /configs usually includes manifest(s) and FCM (framework compatibility matrix), audio configs, power configs, and thermal configs.
+                      These are built into the build through device.mk with the flag PRODUCT_COPY_FILES.
+                    </p>
+
+                    <h1>/overlays</h1>
+                    <p>
+                      This subdirectory is used to override or modify system resources without having to touch the core framework files. It's part of Android's RRO (Runtime Resource Overlay) system.
+                      </p>
+                      
+                      <p>
+                      Inside overlays/, you'll usually find folders named after packages like frameworks/base or ackages/apps/Settings. These folders contain XML files that override default values like colors, strings, dimensions, booleans, and other UI-related resources.
+                      </p>
+                      
+                      <p>
+                      These overlays get picked up during the build and packaged as part of the system image, allowing the device to have custom behavior or visuals without modifying upstream AOSP code directly.
+                      </p>
+
+                      <h1>/sepolicy</h1>
+                      <p>
+                        This directory is used for defining SELinux policies specific to the device. SELinux (Security-Enhanced Linux) is a mandatory access control system built into Android to enforce security rules on what processes can do.
+                        </p>
+                        
+                        <p>
+                        In this folder, you'll find files like file_contexts, plat_sepolicy.cil, vendor_sepolicy.cil, and sometimes custom policy files. These define what labels get assigned to files, and what types of interactions are allowed between system components.
+                        </p>
+                        
+                        <p>
+                        If your SELinux policy isn't properly defined or violates security rules, your build might bootloop or spam avc: denied messages in logcat. So writing good policies is important for getting your build to boot in enforcing mode.
+                        </p>
+
+                        <p>
+                          And that's mostly it! Thank you for reading.
+                        </p>
+                        <a href="blog.html" class="about-link">go back</a>
+    </header>
+</body>
+<script src="../js/navbar.js"></script>
+</main>
+</html>
