@@ -101,7 +101,6 @@ body {
     color: var(--lavender);
 }
 
-
 .about-link {
     text-align: center;
     color: var(--subtext);
@@ -145,6 +144,7 @@ body {
     top: 0;
     z-index: 10;
 }
+
 .navbar-logo {
     font-weight: bold;
     font-size: 1.7rem;
@@ -153,6 +153,15 @@ body {
     text-shadow: 0 2px 8px rgba(180,190,254,0.06);
     text-decoration: none;
     font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
+    transition: all 0.3s ease;
+}
+
+.navbar-logo:hover {
+color: var(--mauve);
+}
+
+.navbar-logo:hover:after {
+  transform: scaleX(1);
 }
 
 .navbar-links {
