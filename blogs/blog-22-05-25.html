@@ -71,18 +71,14 @@ $(LOCAL_DIR)/aosp_codename.mk
                     </p>
                     <h1> Android.bp </h1>
                     <p>
-                    This is an Android buildsystem file type that usually defines files in a local folder.
-                    In android device trees, this usually just contains the following:
-                    </p>
+                      This is the new soong buildsystem used in Android which is gonna import the needed repositories which are needed for the tree to be completely built.
+                      </p>
                     <pre><code>soong_namespace {
 imports: [
 // insert repositories here
 ],
 }
 </code></pre>
-                    <p>
-                    This is the new soong buildsystem used in Android which is gonna import the needed repositories which are needed for the tree to be completely built.
-                    </p>
 
                     <h1> Android.mk </h1>
                     <p>
@@ -268,9 +264,6 @@ vendor/lib64/libaudiosmartpamtk.so
 
                     <h1>/configs</h1>
                     <p>
-                      These are subdirectories containing configs, overlays needed to build the system properly, sepolicy rules and init files.
-                    </p>
-                    <p>
                       /configs usually includes manifest(s) and FCM (framework compatibility matrix), audio configs, power configs, and thermal configs.
                       These are built into the build through device.mk with the flag PRODUCT_COPY_FILES.
                     </p>
@@ -281,7 +274,7 @@ vendor/lib64/libaudiosmartpamtk.so
                       </p>
                       
                       <p>
-                      Inside overlays/, you'll usually find folders named after packages like frameworks/base or ackages/apps/Settings. These folders contain XML files that override default values like colors, strings, dimensions, booleans, and other UI-related resources.
+                      Inside overlays/, you'll usually find folders named after packages like frameworks/base or packages/apps/Settings. These folders contain XML files that override default values like colors, strings, dimensions, booleans, and other UI-related resources.
                       </p>
                       
                       <p>
