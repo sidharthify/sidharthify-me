@@ -124,3 +124,9 @@ h1 {
     color: var(--mauve);
     font-family: "JetBrains Mono", "SF Mono", "Fira Code", Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
 }
+
+@media (max-width: 768px) {
+img {
+width: 390px;
+}
+}
