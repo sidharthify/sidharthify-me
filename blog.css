@@ -91,7 +91,9 @@ body {
 }
 
 p {
-    font-size: 20px;
+    font-size: 17px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 300;
 }
 
 pre {
@@ -101,7 +103,7 @@ pre {
     border-radius: 8px;
     border: 1px solid #363a4f;
     overflow-x: auto;
-    font-family: "JetBrains Mono", "SF Mono", "Fira Code", Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    font-family: "JetBrains Mono", monospace;
     font-size: 0.9em;
     line-height: 1.6;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -118,3 +120,7 @@ pre > code {
     white-space: pre-wrap;
 }
 
+h1 {
+    color: var(--mauve);
+    font-family: "JetBrains Mono", "SF Mono", "Fira Code", Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+}
