@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog: 25/06/25 </title>
+    <link rel="stylesheet" href="../blog.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div>
+            <a href="../index.html" class="navbar-logo">sidharthify </a>
+             </div>
+        <button class="navbar-toggle" aria-label="Toggle navigation">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </button>
+        <ul class="navbar-links">
+          <li><a href="../index.html">home</a></li>
+          <li><a href="../about/about.html">about</a></li>
+          <li><a href="../blogs/blog.html" aria-current="page">blog</a></li>
+          <li><a href="../music/music.html">music</a></li>
+        </ul>
+      </nav>
+    <main class="container">
+        <header>
+        <h1 class="bloglogo">Blog 4</h1>
+        <main>
+            <div class="content">
+                <p class="description">Fixing Google's Device Trees after they abandoned them</p>
+
+                <p> With the release of Android 16, Google decided to not open source the device trees for their smartphones anymore. The reasoning for this was that Google wanted to seperate the device specific code and AOSP from each other.
+                </p>
+
+                <p> So all custom ROM developers were a bit shaked because of this, since the development for new Google devices would be a lot harder to do and an Open Source device tree would have to be made. But this would also mean the
+                    existing device trees would have to be adapted to the custom ROM community's standards, which is exactly what this blog is gonna be about!
+                </p>
+
+                <p>
+                    When all of this was happening, I saw a great opportunity to update these cluttered device trees for my phone (Pixel 7/7 Pro), which is what I started doing. LineageOS also did the same later on with their Lineage 23.0 release,
+                    but I did so a week earlier :).
+                </p>
+
+                <p>
+                    Now, this device tree (device_google_pantah) was made for not just two, but four boards. The first category is just Pixel 7 and Pixel 7 Pro (panther and cheetah, respectively) and two other boards called 'ravenclaw' and 'clourdipper'.
+                    ravenclaw and cloudripper are apparently testing boards which only Google has access to. Custom ROM developers do not need these, so obviously, we deleted the files of both of these boards.
+                </p>
+
+                <p>
+                    The second part is where I had to cleanup some makefiles which were pretty cluttered and just very poorly written. They were inconsistent, ugly and had outdated commented code.
+                </p>
+
+                <p> And that was *mostly* it! Atleast for Android 15, I will make a seperate blog of making these trees Android 16 ready, it should already be out by the time you're reading this. Thank you for reading!</p>
+                        <a href="blog.html" class="about-link">go back</a>
+    </header>
+</body>
+<script src="../js/navbar.js"></script>
+</main>
+</html>
