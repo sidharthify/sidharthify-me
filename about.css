@@ -42,6 +42,37 @@ main {
     font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
 }
 
+.about-link {
+    text-align: center;
+    color: var(--subtext);
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin: 0rem auto 0;
+    position: relative;
+    width: fit-content;
+    transition: all 0.3s ease;
+    font-family: 'Google Sans', Arial, Helvetica, sans-serif !important;
+}
+
+.about-link:hover {
+    color: var(--lavender);
+}
+
+.about-link:hover::after {
+    transform: scaleX(1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 .blink {
     animation: blink 1s step-end infinite;
     color: var(--peach);
