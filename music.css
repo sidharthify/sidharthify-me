@@ -102,7 +102,7 @@ main {
 }
 
 .play-btn {
-  margin-left: 29rem;
+  margin-left: auto;
   background: var(--mauve);
   border: none;
   cursor: pointer;
