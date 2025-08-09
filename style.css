@@ -239,6 +239,8 @@ color: var(--lavender);
         margin-top: 2rem;
         padding-top: 1.2rem;
         padding-bottom: 0.85rem;
+        animation: fadeInSlideUp 0.8s ease-out backwards;
+        animation-delay: 0.6s;
       }
     .footer-content {
         font-size: 0.97rem;
@@ -251,22 +253,27 @@ color: var(--lavender);
         text-align: center;
         margin-right: 0;
         margin-bottom: 2.5rem;
+        animation: fadeInSlideUp 0.8s ease-out backwards;
+        animation-delay: 0.3s;
       }
 
     .logo {
         font-size: 2.4rem;
         margin-top: 2.5rem;
         margin-bottom: 1.5rem;
+        animation: pulse 1.5s ease-in-out;
       }
 
     .navbar {
       flex-wrap: wrap;
       padding: 1rem;
+      animation: slideDown 0.5s ease-out;
     }
   
     .navbar-toggle {
       display: flex;
       margin-left: auto;
+      animation: bounce 0.8s ease-out;
     }
   
     .navbar-links {
@@ -274,11 +281,28 @@ color: var(--lavender);
       flex-direction: column;
       overflow: hidden;
       max-height: 0;
-      transition: max-height 0.3s ease;
+      transition: max-height 0.5s cubic-bezier(0.18, 1.3, 0.4, 1);
     }
   
     .navbar-links.show {
       max-height: 500px;
+    }
+    
+    .navbar-links.show a {
+      animation: slideInRight 0.4s forwards;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    
+    .navbar-links.show a:nth-child(1) { animation-delay: 0.05s; }
+    .navbar-links.show a:nth-child(2) { animation-delay: 0.1s; }
+    .navbar-links.show a:nth-child(3) { animation-delay: 0.15s; }
+    .navbar-links.show a:nth-child(4) { animation-delay: 0.2s; }
+    .navbar-links.show a:nth-child(5) { animation-delay: 0.25s; }
+  
+    .navbar-toggle .bar {
+      transition: transform 0.5s cubic-bezier(0.18, 1.3, 0.4, 1), 
+                 opacity 0.2s ease;
     }
   
     .navbar-toggle.active .bar:nth-child(1) {
@@ -287,10 +311,105 @@ color: var(--lavender);
   
     .navbar-toggle.active .bar:nth-child(2) {
       opacity: 0;
+      transform: scaleX(0);
     }
   
     .navbar-toggle.active .bar:nth-child(3) {
       transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    .navbar-toggle:hover .bar {
+      transform: scaleX(0.8);
+    }
+
+    .navbar-toggle:active .bar {
+      transform: scaleX(1.1);
+    }
+
+    .navbar-toggle.active:hover .bar:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg) scaleX(1.1);
+    }
+
+    .navbar-toggle.active:hover .bar:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg) scaleX(1.1);
+    }
+    
+    .social-icon {
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                 color 0.3s ease;
+    }
+    
+    .social-icon:hover {
+      transform: scale(1.15);
+    }
+    
+    .links {
+      animation: fadeInSlideUp 0.7s ease-out backwards;
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes fadeInSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes bounce {
+      0% {
+        transform: scale(0.3);
+        opacity: 0;
+      }
+      40% {
+        transform: scale(1.3);
+      }
+      60% {
+        transform: scale(0.8);
+      }
+      80% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideInRight {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes pulse {
+      0% {
+        opacity: 0.5;
+        transform: scale(0.8);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
     }
   }
   
