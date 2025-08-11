@@ -46,11 +46,29 @@ body {
 .logo {
     color: var(--lavender);
     font-size: 5rem;
+    position: relative;
+    background: none;
     font-weight: 800;
     margin-bottom: 1rem;
     margin-top: 10rem;
     text-align: center;
     font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
+    background-image: none;
+    background-clip: text;
+    -webkit-background-clip: text;
+    transition: color 0.5s, background-image 0.4s;
+    cursor: default;
+}
+
+.logo.hover-gradient {
+    background-image: radial-gradient(
+        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        var(--mauve) 0%, var(--lavender) 80%
+    );
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: background-image 0.4s;
 }
 
 .logo::after {
