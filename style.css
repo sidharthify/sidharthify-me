@@ -44,31 +44,37 @@ body {
 }
 
 .logo {
-    color: var(--lavender);
-    font-size: 5rem;
-    position: relative;
-    background: none;
-    font-weight: 800;
+    --mouse-x: 20%;
+    --mouse-y: 20%;
+    --start-color: var(--lavender);
+    --end-color: var(--lavender);
+
+    width: 100%;
+    display: block;
     margin-bottom: 1rem;
     margin-top: 10rem;
+
+    font-size: 5rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', 'Fira Mono', monospace;
     text-align: center;
-    font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
-    background-image: none;
+    color: transparent;
+
+    background-image: radial-gradient(
+        circle at calc(var(--mouse-x) + 1.5%) calc(var(--mouse-y) - 4%),
+        var(--start-color) 0%, var(--end-color) 30%
+    );
     background-clip: text;
     -webkit-background-clip: text;
-    transition: color 0.5s, background-image 0.4s;
+
+    transition: background-image 0.7s ease;
     cursor: default;
 }
 
 .logo.hover-gradient {
-    background-image: radial-gradient(
-        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-        var(--mauve) 0%, var(--lavender) 80%
-    );
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
-    transition: background-image 0.4s;
+    --start-color: var(--mauve);
+    --end-color: var(--lavender);
+    transition: background-image 0.7s ease 0.15s;
 }
 
 .logo::after {
