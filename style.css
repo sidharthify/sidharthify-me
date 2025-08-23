@@ -258,7 +258,7 @@ body {
 }
 
 .footer-content a:hover {
-    color: var(--lavender);
+    color: var(--mauve);
 }
 
 @media (max-width: 768px) {
