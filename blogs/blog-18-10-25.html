@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog: 18/10/25 </title>
+    <link rel="stylesheet" href="../blog.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div>
+            <a href="../index.html" class="navbar-logo">sidharthify </a>
+        </div>
+        <button class="navbar-toggle" aria-label="Toggle navigation">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        <ul class="navbar-links">
+            <li><a href="../index.html">home</a></li>
+            <li><a href="../about/about.html">about</a></li>
+            <li><a href="../blogs/blog.html" aria-current="page">blog</a></li>
+            <li><a href="../music/music.html">music</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <header>
+            <h1 class="bloglogo">Blog 5</h1>
+            <main>
+                <div class="content">
+                    <p class="blog-description">Writing a Nix helper in Bash/Python for fun</p>
+
+                    <p>
+                        On a random Thursday evening, I had the idea to run a bash command that’d write directly into my
+                        <code>packages.nix</code> file.
+                        That single command eventually became what I now call <strong>syd</strong>.
+                    </p>
+
+                    <p>
+                        There wasn’t a plan or a roadmap or literally anything that's linked with productivity, just
+                        that quiet moment where you fix a small annoyance,
+                        and it slowly becomes something that feels right.
+                        That’s what <strong>syd</strong> is. Something that took form over time.
+                    </p>
+
+                    <h1>What is syd?</h1>
+                    <p>
+                        <strong>syd</strong> is a lightweight command-line tool written in <strong>Python</strong>
+                        for managing your <strong>NixOS</strong> packages declaratively.
+                        It lets you install, remove, list, and search for packages by directly editing your
+                        Nix configuration files, so you don’t have to open them manually every time you want to make a
+                        change.
+                    </p>
+
+                    <p>
+                        It was originally written in <strong>Bash</strong>, then rewritten in <strong>Python</strong> a
+                        day later -
+                        mostly because it felt cleaner, and gave me more room to build on top of it.
+                    </p>
+
+                    <h1>Why the name</h1>
+                    <p>
+                        <strong>syd</strong> is named after <strong>Syd Barrett</strong>, Pink Floyd’s original frontman
+                        who left the band in 1968 due to mental illness. There’s no deep reason behind the name - I just
+                        like rock.
+                        It used to be called <strong>nixstall</strong>, but that felt too generic.
+                        <strong>syd</strong> fit better.
+                    </p>
+
+                    <h1>How does it function?</h1>
+                    <p>Alright, so we’re gonna get a lil’ nerdy here and look at some code snippets.</p>
+
+                    <p>let’s open <a href="https://github.com/sidharthify/syd/blob/main/syd.py" class="about-link"
+                            </a>syd.py</a> and
+                        look into it </p>
+
+                    <pre><code>INFO = f"{Fore.BLUE}syd:{Style.RESET_ALL}"
+SUCCESS = f"{Fore.GREEN}SUCCESS:{Style.RESET_ALL}"
+ERROR = f"{Fore.RED}ERROR:{Style.RESET_ALL}"
+
+sudo_user = os.environ.get("SUDO_USER")
+if sudo_user and sudo_user != "root":
+    real_home = Path(f"/home/{sudo_user}")
+else:
+    real_home = Path.home()
+
+config_base = os.getenv("XDG_CONFIG_HOME", real_home / ".config")
+CONFIG_DIR = Path(config_base) / "syd"
+CONFIG_FILE = CONFIG_DIR / "config"
+CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+</code></pre>
+
+                    <p>
+                        This part defines the basic “personality” of <strong>syd</strong> - how it talks back to you in
+                        the terminal.
+                        <code>INFO</code>, <code>SUCCESS</code>, and <code>ERROR</code> use <code>colorama</code> to
+                        colorize text output,
+                        making logs easier to read and distinguish at a glance.
+                    </p>
+
+                    <p>
+                        Then, it deals with configuration paths. if <strong>syd</strong> is run with <code>sudo</code>,
+                        it figures out who actually invoked it by checking
+                        the <code>SUDO_USER</code> environment variable. that’s important because running sudo changes
+                        your home directory to <code>/root</code>,
+                        and <strong>syd</strong> needs to know where <em>your</em> config really lives - not root’s.
+                    </p>
+
+                    <p>
+                        Finally, it builds out the config directory structure using Python’s <code>pathlib</code>.
+                        if <code>~/.config/syd/</code> doesn’t exist, it’s created automatically. no manual setup, no
+                        missing-folder errors.
+                    </p>
+
+                    <hr>
+
+                    <h1>help()</h1>
+
+                    <pre><code>def help():
+    print(f"{INFO} a lightweight declarative package manager for NixOS\\n")
+    print(f"{Fore.GREEN}USAGE:{Style.RESET_ALL}")
+    print("  sudo syd install &lt;package&gt; [more packages]")
+    print("  sudo syd remove  &lt;package&gt; [more packages]")
+    print("  syd search  &lt;package&gt; [more packages]")
+    print("  syd isinstalled &lt;package&gt; [more packages]")
+    print("  syd list")
+    print("  syd --reset")
+    print("  syd --help\\n")
+
+    print(f"{Fore.GREEN}COMMANDS:{Style.RESET_ALL}")
+    print("  install       Add one or more packages to your nix packages file")
+    print("  remove        Remove one or more packages from your nix packages file")
+    print("  list          Show all packages currently listed in your nix file")
+    print("  search        Search for packages in nixpkgs")
+    print("  search        Check if package is listed in your nix file")
+    print("  --reset       Reset stored packages file path and rebuild command")
+    print("  --help        Show this help message and exit\\n")
+
+    print(f"{Fore.GREEN}EXAMPLES:{Style.RESET_ALL}")
+    print("  sudo syd install vim htop curl")
+    print("  sudo syd remove neovim htop curl")
+    print("  syd search discord")
+    print("  syd search htop neovim curl\\n")
+
+    print(f"{INFO} Current config file: {CONFIG_FILE}")
+</code></pre>
+
+                    <p>
+                        This function just prints out usage info when you run <code>syd --help</code>.
+                        unlike the rest of the program, there’s no logic or state manipulation here.
+                    </p>
+
+                    <p>
+                        the use of <code>colorama</code> again makes it clean and readable:
+                        <strong>INFO</strong> shows context messages in blue, <strong>SUCCESS</strong> in green, and
+                        <strong>ERROR</strong> in red.
+                        the spacing and examples are designed to mirror what you’d see in standard nix or systemctl help
+                        pages,
+                        so even new users can get the gist quickly.
+                    </p>
+
+                    <p>
+                        the last line (<code>print(f"{INFO} Current config file: {CONFIG_FILE}")</code>) helps confirm
+                        which configuration file syd is currently reading from.
+                        this is especially useful when testing with <code>sudo</code> - since you might accidentally be
+                        writing to root’s config otherwise.
+                    </p>
+                    <hr>
+                    <p>
+                        now that we’ve seen the basics, let’s get into the actual logic that makes <strong>syd</strong>
+                        work.
+                    </p>
+
+                    <h1>check_pkg_exists()</h1>
+
+                    <pre><code>def check_pkg_exists(pkg: str) -> bool:
+    result = subprocess.run(
+        [
+            "/run/current-system/sw/bin/nix",
+            "--extra-experimental-features", "nix-command",
+            "--extra-experimental-features", "flakes",
+            "eval",
+            f"github:NixOS/nixpkgs/nixos-unstable#{pkg}.meta.name"
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+    return result.returncode == 0
+</code></pre>
+
+                    <p>
+                        This one’s simple enough. it uses nix itself to check if a package exists inside nixpkgs.
+                        it runs a command through <code>subprocess</code> and just checks the exit code (<code>0</code>
+                        means success).
+                        if nix says it found the package, <strong>syd</strong> takes that as a yes.
+                    </p>
+
+                    <hr>
+
+                    <h1>reset_config()</h1>
+
+                    <pre><code>def reset_config():
+    if CONFIG_FILE.exists():
+        CONFIG_FILE.unlink()
+        print(f"{INFO} Config reset. Next run will ask for path and rebuild command again.")
+    else:
+        print(f"{ERROR} No config file found at {CONFIG_FILE}")
+</code></pre>
+
+                    <p>
+                        This deletes the current config file if it exists, basically a reset button.
+                        it’s how you tell syd to start from zero. if there’s nothing to delete, it
+                        politely complains.
+                    </p>
+
+                    <hr>
+
+                    <h1>setup_config()</h1>
+
+                    <pre><code>def setup_config():
+    PACKAGES = None
+    REBUILD = None
+
+    if CONFIG_FILE.exists():
+        with open(CONFIG_FILE, "r") as f:
+            for line in f:
+                if line.startswith("packages_file="):
+                    PACKAGES = Path(line.split("=", 1)[1].strip())
+                elif line.startswith("rebuild_cmd="):
+                    REBUILD = line.split("=", 1)[1].strip()
+    else:
+        PACKAGES = Path(input(f"{INFO} Enter path to your nix packages file: ").strip())
+        if not PACKAGES.exists():
+            print(f"{ERROR} File not found: {PACKAGES}")
+            sys.exit(1)
+
+        REBUILD = input(f"{INFO} Enter your rebuild command (e.g. sudo nixos-rebuild switch): ").strip()
+        if not REBUILD:
+            print(f"{ERROR} No rebuild command entered.")
+            sys.exit(1)
+
+        with open(CONFIG_FILE, "w") as f:
+            f.write(f"packages_file={PACKAGES}\\n")
+            f.write(f"rebuild_cmd={REBUILD}\\n")
+
+        print(f"{SUCCESS} Saved config to {CONFIG_FILE}")
+
+    return PACKAGES, REBUILD
+</code></pre>
+
+                    <p>
+                        This is syd’s “setup wizard.”
+                        it checks whether a config file exists and reads paths from it if it does.
+                        if not, it asks the user for two things:
+                    </p>
+
+                    <ul>
+                        <p>the location of your <code>packages.nix</code></p>
+                        <p>the command you use to rebuild nixos (usually <code>sudo nixos-rebuild switch</code>)</p>
+                    </ul>
+
+                    <p>
+                        once entered, syd saves that info in <code>~/.config/syd/config</code> so you never have to
+                        enter it again.
+                    </p>
+
+                    <hr>
+
+                    <h1>rebuild_prompt()</h1>
+
+                    <pre><code>def rebuild_prompt():
+    read = input(f"{INFO} Rebuild NixOS? [y/N]: ").strip().lower()
+    if read != "y":
+        print(f"{INFO} Skipping rebuild.")
+        return
+
+    cmd = REBUILD.strip()
+    if os.geteuid() == 0 and cmd.startswith("sudo "):
+        cmd = cmd.replace("sudo ", "", 1)
+        print(f"{INFO} Running (sudo stripped): {cmd}")
+
+    env = os.environ.copy()
+    env["PATH"] = "/run/wrappers/bin:/usr/local/bin:/usr/bin:/bin:/run/current-system/sw/bin"
+
+    print(f"{INFO} Running: {cmd}")
+    result = subprocess.run(cmd, shell=True, env=env)
+
+    if result.returncode != 0:
+        print(f"{ERROR} Rebuild command failed.")
+        sys.exit(1)
+</code></pre>
+
+                    <p>
+                        This one asks if you want to rebuild nixos after making changes.
+                        it also handles edge cases - like when syd is run as root, it strips out any <code>sudo</code>
+                        from the rebuild command to avoid nesting.
+                        it fixes <code>PATH</code> issues too, since python sometimes forgets where binaries live inside
+                        nix shells.
+                    </p>
+
+                    <hr>
+
+                    <h1>install_pkgs()</h1>
+
+                    <pre><code>def install_pkgs(*pkgs):
+    for pkg in pkgs:
+        with open(PACKAGES, "r") as f:
+            lines = f.readlines()
+
+        if any(pkg in line for line in lines):
+            print(f"{INFO} {ERROR} {pkg} already listed.")
+            continue
+
+        if check_pkg_exists(pkg):
+            insert_index = len(lines)
+            for i, line in enumerate(lines):
+                if "]" in line:
+                    insert_index = i
+                    break
+
+            lines.insert(insert_index, f"  {pkg}\\n")
+
+            with open(PACKAGES, "w") as f:
+                f.writelines(lines)
+
+            print(f"{SUCCESS} Added '{pkg}' to {PACKAGES}")
+        else:
+            print(f"{ERROR} Package '{pkg}' not found in nixpkgs.")
+
+    rebuild_prompt()
+</code></pre>
+
+                    <p>
+                        This is syd’s main feature - adding packages declaratively.
+                        it checks whether a package already exists, verifies it actually exists in nixpkgs,
+                        and then inserts it into the list just before the closing <code>]</code> in
+                        <code>packages.nix</code>.
+                        finally, it calls <code>rebuild_prompt()</code> to offer a system rebuild.
+                    </p>
+
+                    <hr>
+
+                    <h1>remove_pkgs()</h1>
+
+                    <pre><code>def remove_pkgs(*pkgs):
+    for pkg in pkgs:
+        with open(PACKAGES, "r") as f:
+            lines = f.readlines()
+
+        new_lines = [line for line in lines if pkg not in line.strip()]
+
+        if len(new_lines) == len(lines):
+            print(f"{ERROR} Package '{pkg}' not found in config.")
+            continue
+
+        with open(PACKAGES, "w") as f:
+            f.writelines(new_lines)
+
+        print(f"{SUCCESS} Removed {pkg}")
+
+    rebuild_prompt()
+</code></pre>
+
+                    <p>
+                        this one’s just the inverse of <code>install_pkgs()</code>.
+                        it filters out any line that matches the package name, rewrites the file, and calls rebuild
+                        again.
+                        clean, simple, pythonic.
+                    </p>
+
+                    <hr>
+
+                    <h1>list_pkgs()</h1>
+
+                    <pre><code>def list_pkgs():
+    print(f"{INFO} Packages listed in {PACKAGES}:")
+
+    with open(PACKAGES, "r") as f:
+        lines = f.readlines()
+
+    pkgs = [
+        line.strip()
+        for line in lines
+        if line.strip()
+        and not line.strip().startswith("#")
+        and "[" not in line and "]" not in line
+    ]
+
+    if not pkgs:
+        print(f"{INFO} No packages found.")
+    else:
+        for pkg in pkgs:
+            print(f"  {pkg}")
+
+    print(f"\\n{INFO} Total packages: {len(pkgs)}")
+</code></pre>
+
+                    <p>
+                        lists everything currently in your nix config.
+                        it ignores comments, brackets, and blank lines - basically parsing only the package names.
+                        the total count at the end is just a nice little touch.
+                    </p>
+
+                    <hr>
+
+                    <h1>search_pkgs()</h1>
+
+                    <pre><code>def search_pkgs(*pkgs):
+    for pkg in pkgs:
+        if check_pkg_exists(pkg):
+            print(f"{INFO} '{pkg}' exists in nixpkgs.")
+        else:
+            print(f"{ERROR} '{pkg}' not found in nixpkgs.")
+</code></pre>
+
+                    <p>
+                        this uses <code>check_pkg_exists()</code> to quickly verify if a package exists upstream in
+                        nixpkgs.
+                        handy for double-checking before adding something.
+                    </p>
+
+                    <hr>
+
+                    <h1>is_installed()</h1>
+
+                    <pre><code>def is_installed(*pkgs):
+    with open(PACKAGES, "r") as f:
+        lines = f.readlines()
+
+    for pkg in pkgs:
+        if any(re.search(rf"\\b{pkg}\\b", line) for line in lines):
+            print(f"{SUCCESS} Yes. '{pkg}' exists in {PACKAGES}")
+        else:
+            print(f"{ERROR} Could not find '{pkg}' in {PACKAGES}")
+</code></pre>
+
+                    <p>
+                        The final utility function.
+                        checks if a given package is already listed in your local config file.
+                        unlike <code>search_pkgs()</code>, it doesn’t call nix - it just reads your own file.
+                        this helps you verify whether something is locally declared.
+                    </p>
+<hr>
+
+                    <h1>the main function</h1>
+                    <pre><code>def main():
+    if len(sys.argv) &lt; 2:
+        help()
+        sys.exit(0)
+
+    subcommand = sys.argv[1]
+    args = sys.argv[2:]
+
+    global PACKAGES, REBUILD
+    PACKAGES, REBUILD = setup_config()
+
+    # check for sudo in syd install and remove since they need elevated perms
+    if subcommand in ["install", "remove",]:
+        if os.geteuid() != 0:
+            print(f"{ERROR} Root permissions required to modify {PACKAGES}")
+            print(f"{INFO} Try: sudo syd {subcommand} &lt;package&gt;")
+            sys.exit(1)
+
+    # syd install
+    if subcommand == "install":
+        PACKAGES, REBUILD = setup_config()
+        if len(args) == 0:
+            print(f"{INFO} Usage: syd install &lt;package&gt;")
+            sys.exit(1)
+        install_pkgs(*args)
+
+    # syd remove
+    elif subcommand == "remove":
+        PACKAGES, REBUILD = setup_config()
+        if len(args) == 0:
+            print(f"{INFO} Usage: syd remove &lt;package&gt;")
+            sys.exit(1)
+        remove_pkgs(*args)
+
+    # syd search
+    elif subcommand == "search":
+        PACKAGES, REBUILD = setup_config()
+        if len(args) == 0:
+            print(f"{INFO} Usage: syd search &lt;package&gt;")
+            sys.exit(1)
+        search_pkgs(*args)
+
+    # syd isinstalled
+    elif subcommand == "isinstalled":
+        if len(args) == 0:
+            print(f"{ERROR} Usage: syd isinstalled &lt;package&gt;")
+            sys.exit(1)
+        is_installed(*args)
+
+    # syd list
+    elif subcommand == "list":
+        if len(args) != 0:
+            print(f"{INFO} Usage: syd list")
+            sys.exit(1)
+        PACKAGES, REBUILD = setup_config()
+        list_pkgs()
+
+    # syd --reset
+    elif subcommand == "--reset":
+        if len(args) != 0:
+            print(f"{INFO} Usage: syd --reset")
+            sys.exit(1)
+        reset_config()
+
+    # syd --help
+    elif subcommand in ["--help", "-h", ""]:
+        if len(args) != 0:
+            print(f"{INFO} Usage: syd --help")
+            sys.exit(1)
+        help()
+
+    else:
+        print(f"{INFO} Unknown command: {subcommand}")
+        print("Run 'syd --help' for usage.")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main() # call the main function
+</code></pre>
+
+                    <p>
+                        This is the function that ties <strong>syd</strong> together.
+                        it’s the part that listens to your commands, figures out what you meant, and then calls the
+                        right function to do it.
+                    </p>
+
+                    <h1>Argument parsing</h1>
+
+                    <p>
+                        The first two lines check if you actually passed any arguments.
+                        if not, <code>help()</code> runs and the script exits.
+                        it’s a simple, explicit approach - no fancy argument parsers or abstractions. just
+                        <code>sys.argv</code>, the old-school way.
+                    </p>
+
+                    <p>
+                        Then it splits things up: <code>subcommand</code> holds whatever command you entered (like
+                        <code>install</code> or <code>list</code>),
+                        and <code>args</code> holds everything that comes after - the package names or flags.
+                    </p>
+
+                    <h1>Loading the config</h1>
+
+                    <p>
+                        It calls <code>setup_config()</code> early on to make sure syd knows where your
+                        <code>packages.nix</code> file and rebuild command live.
+                        this ensures that every command  knows
+                        the right context to operate in.
+                    </p>
+
+                    <h1>Handling sudo</h1>
+
+                    <p>
+                        since <code>install</code> and <code>remove</code> modify system files (usually in
+                        <code>/etc/nixos</code>),
+                        syd checks if it’s running as root.
+                        if not, it prints an error and reminds you to re-run the command with <code>sudo</code>.
+                        this prevents permission errors before they happen.
+                    </p>
+
+                    <h1>Command routing</h1>
+
+                    <p>
+                        After that, it’s basically a command router - a series of <code>if</code> / <code>elif</code>
+                        blocks, each one handling a different syd command
+                    </p>
+
+                    <p>
+                        Each section includes basic argument validation - if you forget to type the package name,
+                        syd doesn’t crash; it just prints the correct usage format and exits.
+                    </p>
+
+                    <h1>Error handling &amp; exit behavior</h1>
+
+                    <p>
+                        For any unknown or invalid command, syd gives a clean error message and a pointer to
+                        <code>syd --help</code>.
+                    </p>
+
+                    <h1>The __main__ block</h1>
+
+                    <p>
+                        The final two lines are python’s way of saying “run this if it’s the main program.”
+                        this makes sure syd only executes when directly called (not when imported as a module).
+                        it’s the standard idiom:
+                    </p>
+
+                    <pre><code>if __name__ == "__main__":
+    main()
+</code></pre>
+
+<hr>
+                <h1>End</h1>
+                    <p>
+                        And that's <b>syd</b>! Other documentation can be found on it's github repooisitory: <a href="https://github.com/sidharthify/syd" class="about-link"
+                            </a>https://github.com/sidharthify/syd </a>
+                        <br>
+                        I made it out of boredom and curiosity just randomly - and it turned out to be quite useful! 
+                    </p>
+                    <a href="blog.html" class="about-link">go back</a>
+        </header>
+</body>
+<script src="../js/navbar.js"></script>
+</main>
+
+</html>
