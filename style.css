@@ -132,7 +132,7 @@ body {
     transform: scale(1.15);
 }
 
-.about-link {
+.link {
     text-align: center;
     color: var(--subtext);
     text-decoration: none;
@@ -145,11 +145,11 @@ body {
     font-family: 'Source Code Pro', monospace;
 }
 
-.about-link:hover {
+.link:hover {
     color: var(--lavender);
 }
 
-.about-link:hover::after {
+.link:hover::after {
     transform: scaleX(1);
 }
 

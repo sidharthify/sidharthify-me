@@ -94,6 +94,23 @@ body {
   letter-spacing: -0.3px;
 }
 
+.blog-link {
+    text-align: center;
+    color: var(--mauve);
+    text-decoration: none;
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin: 0rem auto 0;
+    position: relative;
+    width: fit-content;
+    transition: all 0.3s ease;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+.blog-link:hover {
+    text-decoration: underline; 
+}
+
 p {
   font-size: 21px;
   font-family: 'Inter', system-ui, sans-serif;

@@ -44,7 +44,7 @@ main {
 
 .about-link {
     text-align: center;
-    color: var(--subtext);
+    color: var(--mauve);
     text-decoration: none;
     font-size: 0.9rem;
     letter-spacing: 1px;
@@ -57,10 +57,7 @@ main {
 
 .about-link:hover {
     color: var(--lavender);
-}
-
-.about-link:hover::after {
-    transform: scaleX(1);
+    text-decoration: underline;
 }
 
 @keyframes fadeInUp {
