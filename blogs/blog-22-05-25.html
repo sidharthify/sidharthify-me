@@ -45,17 +45,17 @@
                     <p>
                     Android device trees have makefiles that define what needs to be built and everything else. You usually have:
                     <br>
-                    - AndroidProducts.mk
+                    - <code>AndroidProducts.mk</code>
                     <br>
-                    - Android.bp
+                    - <code>Android.bp</code>
                     <br>
-                    - Android.mk
+                    - <code>Android.mk</code>
                     <br>
-                    - BoardConfig.mk
+                    - <code>BoardConfig.mk</code>
                     <br>
-                    - device.mk
+                    - <code>device.mk</code>
                     <br>
-                    - aosp_codename.mk
+                    - <code>aosp_codename.mk</code>
                     <br>
                     And a bunch of other subdirectories and scripts.
                     </p>
@@ -71,7 +71,7 @@ $(LOCAL_DIR)/aosp_codename.mk
                     </p>
                     <h1> Android.bp </h1>
                     <p>
-                      This is the new soong buildsystem used in Android which is gonna import the needed repositories which are needed for the tree to be completely built.
+                      This is the new <code>soong</code> buildsystem used in Android which is gonna import the needed repositories which are needed for the tree to be completely built.
                       </p>
                     <pre><code>soong_namespace {
 imports: [
@@ -135,7 +135,7 @@ BOARD_RAMDISK_OFFSET := 0x26f08000
                         device.mk
                       </h1>
                       <p>
-                      Usually for telling Android to include specific things in the build you're doing. It contains flags like PRODUCT_PACKAGES and PRODUCT_COPY_FILES. PRODUCT_PACKAGES tell Android to compile a service and PRODUCT_COPY_FILES copy a file from a location to another.
+                      Usually for telling Android to include specific things in the build you're doing. It contains flags like <code>PRODUCT_PACKAGES</code> and <code>PRODUCT_COPY_FILES</code>. <code>PRODUCT_PACKAGES</code> tell Android to compile a service and <code>PRODUCT_COPY_FILES</code> copy a file from a location to another.
                       </p>
 <pre><code># Audio
 PRODUCT_PACKAGES += \
@@ -210,7 +210,7 @@ PRODUCT_GMS_CLIENTID_BASE := android-nothing
                 
                     <p>
                       It's  pretty simple, at first it inherits some common makefiles from Android and then goes on to inherit device.mk which we just defined,
-                      after that, it defines PRODUCT flags for the device we're building to give it a proper codename and/or name inside Android. At last, we define
+                      after that, it defines <code>PRODUCT</code> flags for the device we're building to give it a proper codename and/or name inside Android. At last, we define
                       the fingerprint for the build.
                     </p>
 
@@ -223,7 +223,7 @@ PRODUCT_GMS_CLIENTID_BASE := android-nothing
                     </h1>
 
                     <p>
-                    This file is used to extract proprietary blobs from the device to include them in a seperate repository (vendor/oem/codename). This file will
+                    This file is used to extract proprietary blobs from the device to include them in a seperate repository - <code>vendor/oem/codename</code>. This file will
                     contain a list of blobs with their directories, like:
                     </p>
 
@@ -259,13 +259,13 @@ vendor/lib64/libaudiosmartpamtk.so
 // and so on</code></pre>
 
                     <p>
-                      This file is linked to two other files, extract-files.sh and setup-makefiles.sh which actually does the logic stuff.
+                      This file is linked to two other files, <code>extract-files.sh</code> and <code>setup-makefiles.sh</code> which actually does the logic stuff.
                     </p>
 
                     <h1>/configs</h1>
                     <p>
                       /configs usually includes manifest(s) and FCM (framework compatibility matrix), audio configs, power configs, and thermal configs.
-                      These are built into the build through device.mk with the flag PRODUCT_COPY_FILES.
+                      These are built into the build through device.mk with the flag <code>PRODUCT_COPY_FILES</code>.
                     </p>
 
                     <h1>/overlays</h1>
@@ -274,7 +274,7 @@ vendor/lib64/libaudiosmartpamtk.so
                       </p>
                       
                       <p>
-                      Inside overlays/, you'll usually find folders named after packages like frameworks/base or packages/apps/Settings. These folders contain XML files that override default values like colors, strings, dimensions, booleans, and other UI-related resources.
+                      Inside overlays/, you'll usually find folders named after packages like <code>frameworks/base</code> or <code>packages/apps/Settings</code>. These folders contain XML files that override default values like colors, strings, dimensions, booleans, and other UI-related resources.
                       </p>
                       
                       <p>
@@ -287,7 +287,7 @@ vendor/lib64/libaudiosmartpamtk.so
                         </p>
                         
                         <p>
-                        In this folder, you'll find files like file_contexts, plat_sepolicy.cil, vendor_sepolicy.cil, and sometimes custom policy files. These define what labels get assigned to files, and what types of interactions are allowed between system components.
+                        In this folder, you'll find files like <code>file_contexts</code>, <code>plat_sepolicy.cil</code>, <code>vendor_sepolicy.cil</code>, and sometimes custom sepolicy files. These define what labels get assigned to files, and what types of interactions are allowed between system components.
                         </p>
                         
                         <p>
