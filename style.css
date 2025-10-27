@@ -1,16 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;700&display=swap');
 
+/* catppuccin mocha */
 :root {
-  --base: #08090d;
-  --mantle: #0c0e14;
-
-  --text: #e9ecf3;
-  --subtext: #aab3c2;
-  --overlay: #616877;
-
-  --lavender: #00d0ff;
-  --mauve:   #ff2f8a;
-  --peach:   #ffe34d;
+    --base: #1e1e2e;
+    --mantle: #181825;
+    --text: #cdd6f4;
+    --subtext: #bac2de;
+    --overlay: #6c7086;
+    --lavender: #b4befe;
+    --mauve: #cba6f7;
+    --peach: #fab387;
 }
 
 * {
@@ -33,10 +32,9 @@ body {
 }
 
 .dark-gradient {
-  background-image: linear-gradient(90deg,
+  background-image: linear-gradient(90deg, var(--mauve), var(--lavender));
     var(--mauve) 0%,
-    var(--peach) 35%,
-    var(--lavender) 70%
+    var(--lavender) 30%
   );
   background-clip: text;
   font-family: 'JetBrains Mono', 'Fira Mono', monospace;
@@ -58,16 +56,43 @@ body {
 }
 
 .logo {
+    --mouse-x: 20%;
+    --mouse-y: 20%;
+    --start-color: var(--lavender);
+    --end-color: var(--lavender);
+
     width: 100%;
     display: block;
     margin-bottom: 1rem;
     margin-top: 10rem;
-    margin-left: -1rem;
+
     font-size: 5rem;
     font-weight: 800;
     font-family: 'JetBrains Mono', 'Fira Mono', monospace;
     text-align: center;
+    color: transparent;
+
+    background-image: radial-gradient(
+        circle at calc(var(--mouse-x) + 1.5%) calc(var(--mouse-y) - 4%),
+        var(--start-color) 0%, var(--end-color) 30%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    transition: background-image 0.7s ease;
     cursor: default;
+}
+
+.logo.hover-gradient {
+    --start-color: var(--mauve);
+    --end-color: var(--lavender);
+    transition: background-image 0.7s ease 0.15s;
+}
+
+.logo::after {
+    content: "|";
+    animation: blink 1s infinite steps(1);
+    color: var(--lavender);
 }
 
 @keyframes blink {
@@ -87,7 +112,7 @@ body {
 }
 
 .description {
-    color: var(--text);
+    color: var(--subtext);
     margin-left: 4.2rem;
     margin-bottom: -3rem;
     font-size: 1.5rem;
@@ -161,10 +186,12 @@ body {
 }
 
 .navbar {
+    background: var(--mantle);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 2rem;
+    box-shadow: 0 2px 8px rgba(24, 24, 37, 0.08);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -175,7 +202,7 @@ body {
     font-size: 1.7rem;
     color: var(--mauve);
     letter-spacing: 2px;
-    text-shadow: 0 2px 8px rgba(0, 229, 255, 0.14);
+    text-shadow: 0 2px 8px rgba(180, 190, 254, 0.06);
     text-decoration: none;
     font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', 'Source Code Pro', monospace;
     transition: all 0.3s ease;
@@ -212,7 +239,7 @@ body {
 .navbar-links a:hover,
 .navbar-links a[aria-current="page"] {
     color: var(--mauve);
-    background: rgba(0, 229, 255, 0.12);
+    background: rgba(180, 190, 254, 0.09);
 }
 
 .navbar-toggle {
@@ -272,31 +299,34 @@ body {
 
     .description {
         position: relative;
-        top: 20px;
+        top: 80px;
         margin-left: 0;
-        font-size: 0.82rem;
-        max-width: 120vw;
+        font-size: 1rem;
+        max-width: 95vw;
         text-align: center;
+        animation: fadeInSlideUp 0.8s ease-out backwards;
+        animation-delay: 0.3s;
     }
 
     .description-2 {
         position: relative;
-        top: 20px;
+        top: 80px;
         margin-left: 0;
-        margin-top: 3%;
         font-size: 1rem;
         max-width: 95vw;
         text-align: center;
+        animation: fadeInSlideUp 0.8s ease-out backwards;
+        animation-delay: 0.3s;
     }
 
     .logo {
         position: relative;
-        top: 80px;
+        top: 150px;
         font-size: 2.4rem;
         margin-top: 5rem;
         margin-bottom: 5rem;
-        margin-left: -0.2rem;
         text-align: center;
+        animation: pulse 0.5s ease-in-out;
     }
 
     .navbar {
@@ -336,14 +366,14 @@ body {
         text-align: center;
         margin: 0.15rem 0;
         border-radius: 4px;
-        background: rgba(0, 229, 255, 0.03);
+        background: rgba(180, 190, 254, 0.03);
         border-left: 2px solid transparent;
         transition: all 0.2s ease;
     }
     
     .navbar-links a:hover,
     .navbar-links a[aria-current="page"] {
-        background: rgba(0, 229, 255, 0.10);
+        background: rgba(180, 190, 254, 0.08);
         border-left: 2px solid var(--mauve);
         color: var(--mauve);
     }
@@ -381,7 +411,6 @@ body {
     .links {
         animation: fadeInSlideUp 0.7s ease-out backwards;
         animation-delay: 0.4s;
-        margin-top: -5rem;
     }
     
     @keyframes fadeInSlideUp {
@@ -476,71 +505,4 @@ body {
     .link-button {
         flex: 1 1 100%;
     }
-}
-
-:root {
-  --bg-image: url("images/prism.png");
-  --bg-blur: 8px;
-  --bg-brightness: 0.70;
-  --bg-contrast:   1.12;
-  --bg-saturate:   0.95;
-
-  --scrim-top:    rgba(0,0,0,0.62);
-  --scrim-bottom: rgba(0,0,0,0.52);
-  --vignette-edge: rgba(0,0,0,0.35);
-}
-
-html, body { height: 100%; }
-
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  height: 100lvh;
-  z-index: 0;
-  pointer-events: none;
-  background-image: var(--bg-image);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center 20%;
-  filter:
-    blur(var(--bg-blur))
-    brightness(var(--bg-brightness))
-    contrast(var(--bg-contrast))
-    saturate(var(--bg-saturate));
-  transform: scale(1.04);
-  transform-origin: center;
-  will-change: filter, transform;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  height: 100lvh;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(180deg, var(--scrim-top), var(--scrim-bottom)),
-    radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 55%, var(--vignette-edge) 100%);
-  background-repeat: no-repeat;
-  background-size: cover, cover;
-}
-
-.navbar, .container, .logo, .content, .links, .footer { position: relative; z-index: 1; }
-
-@media (max-width: 768px) {
-  :root {
-    --bg-brightness: 0.66;
-    --scrim-top:    rgba(0,0,0,0.64);
-    --scrim-bottom: rgba(0,0,0,0.54);
-  }
 }
