@@ -1,65 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sidharthify</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sidharthify</title>
+  <meta name="theme-color" content="#1e1e2e" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <nav class="navbar">
-        <div>
-            <a href="index.html" class="navbar-logo">sidharthify </a>
-             </div>
-        <button class="navbar-toggle" aria-label="Toggle navigation">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </button>
-      
-        <ul class="navbar-links">
-          <li><a href="index.html" aria-current="page">home</a></li>
-          <li><a href="about/about.html">about</a></li>
-          <li><a href="blogs/blog.html">blog</a></li>
-          <li><a href="music/music.html">music</a></li>
-        </ul>
-      </nav>
-    <div class="container">
-        <header>
-            <h1 class="logo" id="typewriter-logo">sidharthify</h1>
-        </header>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-        <main>
-            <div class="content">
-                <p class="description">i like to know how things work.</p>
-                    <div class="links">
-                        <a href="https://github.com/sidharthify" class="social-icon" aria-label="GitHub">
-                            <i class="fa-brands fa-github"></i>
-                        </a>
-                        <a href="https://t.me/arteryring1" class="social-icon" aria-label="Telegram">
-                            <i class="fa-brands fa-telegram"></i>
-                        </a>
-                        <a href="https://x.com/sidharthify" class="social-icon" aria-label="Twitter">
-                            <i class="fa-brands fa-twitter"></i>
-                        </a>
-                </div>
-                </div>
+  <header class="shell">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="index.html">sidharthify</a>
+      <ul class="menu">
+        <li><a aria-current="page" href="index.html">home</a></li>
+        <li><a href="about/about.html">about</a></li>
+        <li><a href="blogs/blog.html">blog</a></li>
+        <li><a href="music/music.html">music</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="shell">
+    <section class="intro">
+      <div class="intro-text">
+        <h1>sidharthify.</h1>
+        <p class="meta">there is no dark side to the moon, really. matter of fact, it's all dark.</p>
+      </div>
+      <div class="intro-avatar" aria-hidden="true">
+          <img
+          src="images/thedarksideofthemoon.jpg"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          />
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>about</h2>
+      <p>
+        i like low level systems and embedded programming. i tinker with android (aosp) and linux. i run nixOS on my main PC.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>things i’ve worked on</h2>
+      <ul class="rows">
+        <li class="row">
+          <div class="row-left">
+            <div class="dot" aria-hidden="true">◦</div>
+            <div>
+              <div class="row-title">yaap (yet another aosp project)</div>
+              <div class="row-sub">maintainer / contributor</div>
             </div>
-        </main>
-    </div>
-    <footer class="footer">
-        <div class="footer-content">
-        © 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a>
-          • Inspired by <a href="https://cyberknight777.dev/" target="_blank" rel="noopener">cyberknight777</a>
-          <br>
-          Powered by <a href="https://www.catppuccin.com/" target="_blank" rel="noopener">Catppuccin</a>
-          • Catppuccin Mocha by <a href="https://github.com/catppuccin" target="_blank" rel="noopener">Catppuccin Team</a>
-        </div>
-      </footer>
+          </div>
+        </li>
+        <li class="row">
+          <div class="row-left">
+            <div class="dot" aria-hidden="true">◦</div>
+            <div>
+              <div class="row-title">nothing phone 2a/2a+ custom ROMs</div>
+              <div class="row-sub">maintainer and co-lead</div>
+            </div>
+          </div>
+        </li>
+        <li class="row">
+          <div class="row-left">
+            <div class="dot" aria-hidden="true">◦</div>
+            <div>
+              <div class="row-title">lineageos contributions</div>
+              <div class="row-sub">small patches here and there</div>
+            </div>
+          </div>
+        </li>
+        <li class="row">
+          <div class="row-left">
+            <div class="dot" aria-hidden="true">◦</div>
+            <div>
+              <div class="row-title">nixos + homelab</div>
+              <div class="row-sub">self‑hosted plex, radarr, sonarr, prowlarr</div>
+            </div>
+        <li class="row">
+          <div class="row-left">
+            <div class="dot" aria-hidden="true">◦</div>
+            <div>
+              <div class="row-title">syd</div>
+              <div class="row-sub">lightweight command-line tool for nixOS</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="socials" aria-label="social">
+      <a class="icon" href="https://github.com/sidharthify" aria-label="github"><i class="fa-brands fa-github"></i></a>
+      <a class="icon" href="https://t.me/arteryring1" aria-label="telegram"><i class="fa-brands fa-telegram"></i></a>
+      <a class="icon" href="https://x.com/sidharthify" aria-label="twitter"><i class="fa-brands fa-x-twitter"></i></a>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <p>
+      © 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a>
+      • powered by <a href="https://www.catppuccin.com/" target="_blank" rel="noopener">catppuccin</a>
+    </p>
+  </footer>
+
+  <script src="js/site.js"></script>
 </body>
-<script src="js/navbar.js"></script>
-<script src="js/typewriter.js"></script>
-<script src="js/mouse.js"></script>
 </html>

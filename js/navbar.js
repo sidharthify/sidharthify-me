@@ -1,27 +1,35 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const toggle = document.querySelector(".navbar-toggle");
-  const links = document.querySelector(".navbar-links");
+  const container =
+    document.querySelector("main.shell") ||
+    document.querySelector("main.container") ||
+    document.querySelector(".container") ||
+    document.querySelector("main");
 
-  toggle.addEventListener("click", () => {
-    links.classList.toggle("show");
-    toggle.classList.toggle("open");
-  });
+  function isInternal(href) {
+    try {
+      const u = new URL(href, location.href);
+      return u.host === location.host;
+    } catch {
+      return false;
+    }
+  }
 
-  document.querySelectorAll(".navbar-links a").forEach(link => {
-    link.addEventListener("click", function(e) {
-      if (this.getAttribute('aria-current') === 'page') return;
+  document.querySelectorAll(".menu a, .navbar-links a").forEach((link) => {
+    link.addEventListener("click", function (e) {
+      const href = this.getAttribute("href");
+      if (!href || this.getAttribute("aria-current") === "page") return;
+      if (!isInternal(href)) return;
 
-      if (this.href && this.href.indexOf(location.hostname) !== -1) {
-        e.preventDefault();
-        const mainContent = document.querySelector(".container") || document.querySelector("main");
-        if (mainContent) {
-          mainContent.classList.add("fade-out");
-          setTimeout(() => {
-            window.location = this.href;
-          }, 220); // match CSS transition
-        } else {
-          window.location = this.href;
-        }
+      e.preventDefault();
+
+      if (container) {
+        container.classList.add("is-fading");
+        // Match the CSS transition duration
+        setTimeout(() => {
+          window.location.href = href;
+        }, 180);
+      } else {
+        window.location.href = href;
       }
     });
   });

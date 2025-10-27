@@ -1,191 +1,149 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap');
 
-/* catppuccin mocha */
-:root {
-  --base: #1e1e2e;
-  --mantle: #181825;
-  --text: #cdd6f4;
-  --subtext: #bac2de;
-  --overlay: #6c7086;
-  --lavender: #b4befe;
-  --mauve: #cba6f7;
-  --peach: #fab387;
+/* Catppuccin Mocha */
+:root{
+  --base:#1e1e2e; --mantle:#181825;
+  --text:#cdd6f4; --subtext:#bac2de; --overlay:#6c7086;
+  --lavender:#b4befe; --mauve:#cba6f7; --peach:#fab387;
+  --border:#2b2e3b; --surface:#1a1b26;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Google Sans', system-ui, sans-serif;
-}
+body{ background:var(--base); color:var(--text); }
 
-body {
-  background-color: var(--base);
-  color: var(--text);
-  line-height: 1.6;
-  min-height: 100vh;
+
+:where(main, .container, article){
+  font: 400 16px/1.85 Inter, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  color: var(--text);
+  max-width: 820px;
+  margin-inline: auto;
+  padding: 2rem 1.25rem;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-.bloglogo {
+:where(main, .container, article) h1{
+  font: 800 clamp(1.9rem, 3.2vw, 2.4rem) 'JetBrains Mono','Fira Mono',monospace;
   color: var(--lavender);
-  font-size: 4.5rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  text-align: center;
-  font-family: 'JetBrains Mono', 'Fira Mono', 'IBM Plex Mono', monospace;
-  letter-spacing: -1px;
+  margin: 1.3rem 0 0.9rem;
+  letter-spacing: -0.2px;
 }
-
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-.blog-description {
-  color: var(--subtext);
-  text-align: center;
-  font-size: 1.4rem;
-  max-width: 600px;
-  margin: 0 auto;
-  font-family: 'Inter', system-ui, sans-serif;
-  line-height: 1.8;
-}
-
-.blog-list li {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  margin: 0.75rem 0;
-  background-color: var(--mantle);
-  border-radius: 10px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
-  list-style: none;
-}
-
-.blog-list li:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-}
-
-.blog-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.blog-info a {
-  text-decoration: none;
-  color: var(--text);
-}
-
-.blog-title {
-  font-weight: 600;
+:where(main, .container, article) h2{
+  font: 800 clamp(1.25rem, 2.5vw, 1.5rem) 'JetBrains Mono','Fira Mono',monospace;
   color: var(--mauve);
-  font-family: 'Inter', system-ui, sans-serif;
-  letter-spacing: -0.3px;
+  margin: 1.4rem 0 0.7rem;
+}
+:where(main, .container, article) h3{
+  font: 700 1.15rem 'JetBrains Mono','Fira Mono',monospace;
+  color: var(--lavender);
+  margin: 1rem 0 0.6rem;
 }
 
-.blog-link {
-    text-align: center;
-    color: var(--mauve);
-    text-decoration: none;
-    font-size: 20px;
-    letter-spacing: 1px;
-    margin: 0rem auto 0;
-    position: relative;
-    width: fit-content;
-    transition: all 0.3s ease;
-    font-family: 'Inter', system-ui, sans-serif;
+:where(main, .container, article) .post-meta{
+  color: var(--overlay);
+  font-size: 0.95rem;
+  margin-top: 0.2rem;
 }
 
-.blog-link:hover {
-    text-decoration: underline; 
+:where(main, .container, article) p{
+  margin: 0.95rem 0;
+  color: var(--subtext);
+}
+:where(main, .container, article) a{
+  color: var(--lavender);
+  text-decoration: underline;
+}
+:where(main, .container, article) a:hover{
+  text-decoration-thickness: 2px;
 }
 
-p {
-  font-size: 21px;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1.75;
-}
-
-pre {
-  background-color: #24273a;
-  color: #cad3f5;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #363a4f;
-  overflow-x: auto;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-pre>code {
-  font-family: inherit;
-  color: inherit;
-  background: none;
-  padding: 0;
-  display: block;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-code {
-  display: inline-block;
+:where(main, .container, article) :not(pre) > code{
   background: #313244;
   color: var(--mauve);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.95em;
-  padding: 0.15em 0.4em;
+  font-family: 'JetBrains Mono','Fira Code',Consolas,monospace;
+  font-size: .95em;
+  padding: .15em .35em;
   border-radius: 6px;
-  line-height: 1.3;
-  vertical-align: middle;
-  white-space: nowrap;
 }
 
-h1, h1, h3 {
-  font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
-  color: var(--mauve);
-  font-weight: 700;
+:where(main, .container, article) pre{
+  background: #24273a;
+  color: #cad3f5;
+  padding: 1rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #363a4f;
+  overflow-x: auto;
+  margin: 0.95rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+:where(main, .container, article) pre code{
+  background: transparent !important;
+  color: inherit !important;
+  font-family: 'JetBrains Mono','Fira Code',Consolas,monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  display: block;
+  white-space: pre;
+  padding: 0;
 }
 
-h1 {
-  margin-top: 2rem;
-  font-size: 1.8rem;
-  color: var(--mauve);
+:where(main, .container, article) ul,
+:where(main, .container, article) ol{
+  padding-left: 1.25rem;
+  margin: .7rem 0;
 }
+:where(main, .container, article) li{ margin: .35rem 0; }
 
-h3 {
-  font-size: 1.3rem;
-  margin-top: 1.5rem;
-  color: var(--lavender);
-}
-
-a {
-  color: var(--lavender);
-  text-decoration: none;
-}
-
-img {
+:where(main, .container, article) img{
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: 10px;
+  margin: .9rem 0;
 }
 
-@media (max-width: 768px) {
-  .bloglogo {
-    font-size: 3rem;
-  }
+:where(main, .container, article) blockquote{
+  border-left: 3px solid var(--lavender);
+  background: var(--mantle);
+  color: var(--subtext);
+  padding: .65rem .9rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+:where(main, .container, article) table{
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.95rem 0;
+  font-size: 0.98rem;
+}
+:where(main, .container, article) th,
+:where(main, .container, article) td{
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.6rem;
+  text-align: left;
+}
+:where(main, .container, article) th{
+  background: var(--mantle);
+  color: var(--text);
+}
+
+/* HR */
+:where(main, .container, article) hr{
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+:where(main, .container, article) .bloglogo{
+  all: unset;
+  display: block;
+  font: 800 clamp(1.9rem, 3.2vw, 2.4rem) 'JetBrains Mono','Fira Mono',monospace;
+  color: var(--lavender);
+  margin: 1.3rem 0 0.9rem;
+}
+
+.container > header > main, .container > main > header{ display: contents; }
+.container .content{ max-width: 820px; }
+
+@media (max-width: 900px){
+  :where(main, .container, article){ padding: 1.5rem 1rem; }
+  :where(main, .container, article) pre{ font-size: 0.93rem; }
 }

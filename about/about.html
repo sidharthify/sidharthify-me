@@ -1,48 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>about</title>
-  <link rel="stylesheet" href="../about.css">
-  <link rel="stylesheet" href="../style.css">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>about • sidharthify</title>
+  <meta name="theme-color" content="#1e1e2e" />
+  <link rel="stylesheet" href="../style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <nav class="navbar">
-    <div>
-   <a href="../index.html" class="navbar-logo">sidharthify </a>
-    </div>
-    <button class="navbar-toggle" aria-label="Toggle navigation">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </button>
-    <ul class="navbar-links">
-      <li><a href="../index.html">home</a></li>
-      <li><a href="../about/about.html" aria-current="page">about</a></li>
-      <li><a href="../blogs/blog.html">blog</a></li>
-      <li><a href="../music/music.html">music</a></li>
-    </ul>
-  </nav>
-  <main class="container">
-    <h1 class="aboutlogo">about me</h1>
-    <p class="intro">
-      Hi there! I'm <strong>Sidharth Sharma</strong>, an Indian 'developer' &amp; an open-source enthusiast. I like to play with AOSP, low level code and Linux.
-    </p>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="shell">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">sidharthify</a>
+      <ul class="menu">
+        <li><a href="../index.html">home</a></li>
+        <li><a aria-current="page" href="../about/about.html">about</a></li>
+        <li><a href="../blogs/blog.html">blog</a></li>
+        <li><a href="../music/music.html">music</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    <ul class="highlights">
-      <li>I maintain <strong><a href="https://github.com/yaap" class="about-link">YAAP</a></strong> (unofficially for the Nothing Phone 2a and 2a Plus) and <strong><a href="https://cipheros.org.in" class="about-link">CipherOS</a></strong> officially for the Pixel 7 and 7 Pro.</li>
-      <li>I've helped <strong>boot AOSP</strong> on the Nothing Phone (2A).</li>
-      <li>I have contributed to <strong><a href="https://lineageos.org/" class="about-link">LineageOS</a></strong>.</li>
-      <li>I run <strong><a href="https://nixos.org/" class="about-link">NixOS</a></strong> on my main system.</li>
-      <li>I run a self hosted Plex server with Radarr, Sonarr and Prowlarr.</li>
-    </ul>
+  <main id="main" class="shell">
+    <section class="section">
+      <h1 class="section-title" style="font:800 2rem 'JetBrains Mono','Fira Mono',monospace;color:var(--lavender);margin:2rem 0 1rem">about</h1>
+      <p>
+        i'm siddhi/sidharth/sidharthify, i occasionally ship roms, write bash scripts and live in the UNIX terminal.
+        i’m maintaining devices for roms like <a href="https://github.com/yaap">yaap</a> and <a href="https://cipheros.org.in">cipheros</a>, learning some cpp,
+        and running nixos with a small homelab.
+      </p>
+      <p style="margin-top:.75rem">
+        i like rock, as you may have already guessed. my favorite band is Pink Floyd. i also like IDM/EDM and any sort of experimental music as well as some j-pop.
+      </p>
 
-    <p class="outro">
-      Besides AOSP development, I love music and anime. Hit me up anytime. I'll try my best to help :3
-    </p>
-  </main>
+      <p style="margin-top:.75rem"> i'm a huge advocate for open-source. i believe Linux is one of the most important projects in the history of computers and that 
+        we should focus on building free software for everyone.
+      </p>
+
+      <p style="margin-top:.75rem"> i really like AOSP, i maintain ROMs and study AOSP almost every week.
+      </p>
+
+      <p style="margin-top:.75rem"> i also seem to be a lot into philosophy. i like reasoning and thinking just for the fun of it. i like thinking about morality, consciousness,
+        life, the universe and religion.
+      </p>
+
+      <p style="margin-top:.75rem"> i love computers. i had always been into them ever since i was a kid. i was fascinated by operating systems, 
+        custom ROMs, kernels and low level code.
+      </p>
+
+      <p style="margin-top:.75rem"> i believe kindness and empathy are some of the best traits a human being can have, along with self respect and dignity.</p>
+    </section>
+
+  <footer class="shell footer">
+    <p>© 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a></p>
+  </footer>
 </body>
-<script src="../js/navbar.js"></script>
 </html>

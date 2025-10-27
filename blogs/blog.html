@@ -1,71 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>blog</title>
-    <link rel="stylesheet" href="../blog.css">
-    <link rel="stylesheet" href="../style.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>blog • sidharthify</title>
+  <meta name="theme-color" content="#1e1e2e" />
+  <link rel="stylesheet" href="../style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
 </head>
-<body> 
-  <nav class="navbar">
-    <div>
-      <a href="../index.html" class="navbar-logo">sidharthify </a>
-       </div>
-    <button class="navbar-toggle" aria-label="Toggle navigation">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </button>
-    <ul class="navbar-links">
-      <li><a href="../index.html">home</a></li>
-      <li><a href="../about/about.html">about</a></li>
-      <li><a href="../blogs/blog.html" aria-current="page">blog</a></li>
-      <li><a href="../music/music.html">music</a></li>
-    </ul>
-  </nav>
-    <main class="container">
-        <header>
-        <h1 class="bloglogo">blog</h1>
-    </header>
-    <ul class="blog-list">
-      <li>
-        <div class="blog-info">
-          <a href="blog-18-10-25.html"
-            <span class="blog-title">18 October 2025 - Writing a Nix helper script</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <div class="blog-info">
-          <a href="blog-25-06-25.html"
-            <span class="blog-title">25 June 2025 - Fixing Google's cluttered device trees</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <div class="blog-info">
-          <a href="blog-22-05-25.html"
-            <span class="blog-title">22 May 2025 - How AOSP Device Trees are structured</span>
-          </a>
-        </div>
-      </li>
-        <li>
-          <div class="blog-info">
-            <a href="blog-18-05-25.html"
-              <span class="blog-title">18 May 2025 - Getting into AOSP Development</span>
-            </a>
-          </div>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="shell">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">sidharthify</a>
+      <ul class="menu">
+        <li><a href="../index.html">home</a></li>
+        <li><a href="../about/about.html">about</a></li>
+        <li><a aria-current="page" href="../blogs/blog.html">blog</a></li>
+        <li><a href="../music/music.html">music</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="shell">
+    <section class="section" style="margin-top:2rem">
+      <h1 class="section-title" style="font:800 2rem 'JetBrains Mono','Fira Mono',monospace;color:var(--lavender);margin:0 0 1rem">blog</h1>
+      <ul class="rows">
+        <li class="row">
+          <div class="row-left"><div class="dot">◦</div><div><a class="row-title" href="blog-18-10-25.html">18 Oct 2025 — Writing a Nix helper script</a></div></div>
+          <div class="row-right">2025‑10‑18</div>
         </li>
-        <li>
-          <div class="blog-info">
-            <a href="blog-17-05-25.html"
-              <span class="blog-title">17 May 2025 - Dealing with AIDL</span>
-            </a>
-          </div>
+        <li class="row">
+          <div class="row-left"><div class="dot">◦</div><div><a class="row-title" href="blog-25-06-25.html">25 Jun 2025 — Fixing Google’s cluttered device trees</a></div></div>
+          <div class="row-right">2025‑06‑25</div>
         </li>
-    </div>
-  </body>
-  <script src="../js/navbar.js"></script>
+        <li class="row">
+          <div class="row-left"><div class="dot">◦</div><div><a class="row-title" href="blog-22-05-25.html">22 May 2025 — How AOSP Device Trees are structured</a></div></div>
+          <div class="row-right">2025‑05‑22</div>
+        </li>
+        <li class="row">
+          <div class="row-left"><div class="dot">◦</div><div><a class="row-title" href="blog-18-05-25.html">18 May 2025 — Getting into AOSP Development</a></div></div>
+          <div class="row-right">2025‑05‑18</div>
+        </li>
+        <li class="row">
+          <div class="row-left"><div class="dot">◦</div><div><a class="row-title" href="blog-17-05-25.html">17 May 2025 — Dealing with AIDL</a></div></div>
+          <div class="row-right">2025‑05‑17</div>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <p>© 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a></p>
+  </footer>
+
+  <script src="../js/site.js"></script>
+</body>
 </html>

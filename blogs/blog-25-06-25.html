@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>blog: 25/06/25 </title>
-    <link rel="stylesheet" href="../blog.css">
-    <link rel="stylesheet" href="../style.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fixing Google’s cluttered device trees — 25/06/25 • sidharthify</title>
+  <meta name="theme-color" content="#1e1e2e" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../blog.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <nav class="navbar">
-        <div>
-            <a href="../index.html" class="navbar-logo">sidharthify </a>
-             </div>
-        <button class="navbar-toggle" aria-label="Toggle navigation">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </button>
-        <ul class="navbar-links">
-          <li><a href="../index.html">home</a></li>
-          <li><a href="../about/about.html">about</a></li>
-          <li><a href="../blogs/blog.html" aria-current="page">blog</a></li>
-          <li><a href="../music/music.html">music</a></li>
-        </ul>
-      </nav>
-    <main class="container">
-        <header>
-        <h1 class="bloglogo">Blog 4</h1>
-        <main>
-            <div class="content">
-                <p class="blog-description">Fixing Google's Device Trees after they abandoned them</p>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="shell">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">sidharthify</a>
+      <ul class="menu">
+        <li><a href="../index.html">home</a></li>
+        <li><a href="../about/about.html">about</a></li>
+        <li><a aria-current="page" href="../blogs/blog.html">blog</a></li>
+        <li><a href="../music/music.html">music</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="shell">
+    <article>
+      <header>
+        <h1>Fixing Google’s cluttered device trees</h1>
+        <p class="post-meta">25/06/25</p>
+      </header>
 
                 <p> With the release of Android 16, Google decided to not open source the device trees for their smartphones anymore. The reasoning for this was that Google wanted to seperate the device specific code and AOSP from each other.
                 </p>
@@ -54,9 +53,15 @@
                 </p>
 
                 <p> And that was *mostly* it! Atleast for Android 15, I will make a seperate blog of making these trees Android 16 ready, it should already be out by the time you're reading this. Thank you for reading!</p>
-                        <a href="blog.html" class="link">go back</a>
-    </header>
+
+      <p><a href="blog.html">← back to all posts</a></p>
+    </article>
+  </main>
+
+  <footer class="shell footer">
+    <p>© 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a></p>
+  </footer>
+
+  <script src="../js/navbar.js"></script>
 </body>
-<script src="../js/navbar.js"></script>
-</main>
 </html>
