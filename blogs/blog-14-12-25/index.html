@@ -36,7 +36,7 @@
     <article>
       <header>
         <h1>Breaking free from Bazel in the Pixel kernel pipeline</h1>
-        <p class="post-meta">18/10/25</p>
+        <p class="post-meta">14/12/25</p>
       </header>
 
                     <p>
@@ -98,23 +98,57 @@
                     <h1>Generic Kernel Image</h1>
 
                     <p>
-                        GKI, in practice, means that the kernel is <strong>no longer a single,</strong> <strong>self contained image.</strong> 
-                    </p>
-                    
-                    <p>
-                        With GKI, the core kernel image is intentionally minimal and stable. Almost everything that actually makes the device work 
-                        lives outside of it as loadable modules.
+                        GKI does not mean that the kernel is smaller, simpler, or “minimal” in the
+                        usual sense. It means that the kernel is no longer fragmented.
                     </p>
 
-                    <p> Storage drivers, WiFi, bluetooth, NFC, display drivers, fingerprint drivers, <strong>all of it</strong>.</p>
-                    <p>This is where things stopped being simple.</p>
-
-                    <p>Building the image with make was only half the job. The real work started when we had to replicate how google builds, 
-                    installs, signs, and validates kernel modules across <code>vendor_dlkm</code>, <code>system_dlkm</code>, and <code>vendor_kernel_boot</code>.</p>
+                    <p>
+                        Before GKI, the Android kernel stack looked roughly like this:
+                        Linux Stable → Android Common Kernel → Vendor Kernel → OEM Kernel.
+                        Each layer carried its own patches, its own ABI expectations, and its own
+                        long-term maintenance burden.
+                    </p>
 
                     <p>
-                        From this point on, most failures were not boot failures, but silent breakages, missing modules, and VINTF
-                        refusing to cooperate.
+                        GKI collapses that stack.
+                    </p>
+
+                    <p>
+                        With GKI, there is a single, Google-maintained core kernel image that is
+                        shared across devices. This kernel is <em>generic</em> in the literal sense:
+                        it contains support for a wide range of hardware and use cases, rather
+                        than being tightly tailored to a specific device.
+                    </p>
+
+                    <p>
+                        Device-specific functionality is no longer implemented by modifying the
+                        core kernel. Instead, it is delivered through loadable kernel modules.
+                    </p>
+
+                    <p>
+                        Storage drivers, WiFi, Bluetooth, NFC, display drivers, fingerprint
+                        drivers, and large parts of SoC-specific logic all live outside the core
+                        image as modules.
+                    </p>
+
+                    <p>
+                        This is the key tradeoff of GKI. The core kernel is unified, but the system
+                        as a whole becomes more modular, more policy-driven, and more sensitive to
+                        how modules are built, installed, signed, and loaded.
+                    </p>
+
+                    <p>
+                        Building the kernel image with <code>make</code> was only half the job.
+                        The real work began when we had to replicate how Google builds, installs,
+                        signs, and validates kernel modules across
+                        <code>system_dlkm</code>, <code>vendor_dlkm</code>, and
+                        <code>vendor_kernel_boot</code>.
+                    </p>
+
+                    <p>
+                        From this point on, most failures were no longer obvious boot failures.
+                        They manifested as silent breakages, missing functionality, modules
+                        refusing to load, and VINTF rejecting the build outright.
                     </p>
 
                     <hr>
@@ -233,7 +267,7 @@ done</code></pre>
                         happy enough.
                     </p>
 
-                    <h2>Why This Approach Was Flawed</h2>
+                    <h2>Why this approach was flawed</h2>
 
                     <p>
                         At first glance, this felt like the correct way to do things.
@@ -272,7 +306,7 @@ done</code></pre>
                         This worked, but only in the sense that forcing things to work often does.
                     </p>
 
-                    <h2>What Actually Needed to Happen</h2>
+                    <h2>What actually needed to happen</h2>
 
                     <p>
                         Once I understood this, the solution became obvious.
@@ -298,7 +332,7 @@ done</code></pre>
                         was designed to do.</strong>
                     </p>
 
-                    <h2>The Refactor</h2>
+                    <h2>The refactor</h2>
 
                     <p>
                         The script no longer loops over module directories or calls
@@ -426,9 +460,61 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
 
                     <p>
                         <code>vendor_kernel_boot</code> contains modules that must be available
-                        very early during boot, <code>vendor_dlkm</code> contains vendor-owned
-                        hardware modules, and <code>system_dlkm</code> contains system-level
-                        modules that are tied more closely to userspace.
+                        extremely early in the boot process. These are modules that need to be
+                        loadable in recovery and during first-stage init, before the full userspace
+                        is up.
+                    </p>
+
+                    <p>
+                        On Pixel devices, modules that previously lived in
+                        <code>vendor_boot</code> were moved into
+                        <code>vendor_kernel_boot</code>.
+                    </p>
+
+                    <p>
+                        Google does not document the exact reason for this change. It appears
+                        to be a Pixel-specific design decision related to boot flow and
+                        tooling, rather than a general Android requirement.
+                    </p>
+
+                    <p>
+                        What makes this evolution clearer is how it unfolded across Pixel
+                        generations.
+                    </p>
+
+                    <p>
+                        On the Pixel 6 series, Google shipped multiple
+                        <code>vendor_ramdisk</code> fragments: a default fragment and a
+                        <code>dlkm</code> fragment, with kernel modules stored in the latter.
+                        This design allowed kernel modules to be separated from the rest of
+                        <code>vendor_boot</code>.
+                    </p>
+
+                    <p>
+                        However, vendor ramdisk fragments are treated as independently
+                        replaceable by flashing tools, which made it easy to accidentally
+                        remove required fragments and break early boot.
+                    </p>
+
+                    <p>
+                        Starting with Pixel 7, Google stopped placing modules in
+                        <code>vendor_ramdisk</code> entirely and introduced a dedicated
+                        <code>vendor_kernel_boot</code> partition. This isolated early-boot modules
+                        from ramdisk fragment handling and removed an entire category of failure
+                        modes.
+                    </p>
+
+                    <p>
+                        <code>vendor_dlkm</code> contains vendor-owned hardware modules. These are
+                        SoC and device-specific drivers supplied by the vendor and loaded
+                        dynamically at runtime, outside of the early boot path.
+                    </p>
+
+                    <p>
+                        <code>system_dlkm</code> contains core GKI modules. These modules are treated
+                        as an extension of the kernel itself under the GKI model. They are expected
+                        to remain untouched by OEMs and are governed by Google’s kernel and KMI
+                        policy, rather than vendor customization.
                     </p>
 
                     <p>
@@ -437,26 +523,51 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
                     </p>
 
                     <p>
-                        This patch introduces a declarative approach. Module names are matched
-                        against curated lists for each partition. The priority is intentional:
-                        modules assigned to <code>vendor_kernel_boot</code> always win, followed
-                        by <code>vendor_dlkm</code>, and finally <code>system_dlkm</code> as a
-                        fallback.
+                        The partition assignment is driven by an explicit priority order.
+                        Modules listed for <code>vendor_kernel_boot</code> are placed there
+                        unconditionally. If a module is not listed there, it is then evaluated
+                        against <code>vendor_dlkm</code>. Any remaining modules fall back to
+                        <code>system_dlkm</code>.
                     </p>
                     <hr>
                     <h1>Stripping, Staging, and Dependency Resolution</h1>
 
                     <p>
                         Every module is stripped of debug symbols before being staged. This is not
-                        optional. Android expects production modules to be minimal, and unstripped
-                        modules can cause subtle issues later in the pipeline.
+                        strictly required by Android, but it is the standard practice used by
+                        Google and most downstream kernel builders.
+                    </p>
+
+                    <p>
+                        Unstripped modules are significantly larger, often ballooning to hundreds
+                        of megabytes, which is undesirable for production images. Stripping keeps
+                        module size reasonable and avoids unnecessary bloat in DLKM partitions.
                     </p>
 
                     <p>
                         Once modules are placed into their respective partition trees, the script
                         runs <code>depmod</code> separately for each partition root. This step is
-                        critical. Dependency metadata must reflect the filesystem layout that the
-                        device will actually see at runtime.
+                        critical.
+                    </p>
+
+                    <p>
+                        Its job is to generate the metadata required for the kernel to understand
+                        the dependency structure of kernel modules at runtime.
+                    </p>
+
+                    <p>
+                        This metadata is what allows the kernel and userspace tooling to determine
+                        load order, resolve symbol requirements, and handle inter-module
+                        relationships correctly.
+                    </p>
+
+
+                    <p>
+                        Running it per-partition ensures that dependency information is generated
+                        against the exact set of modules visible within that partition root. This
+                        allows the kernel to correctly resolve inter-module dependencies at
+                        runtime, including cross-partition references, without leaking assumptions
+                        from unrelated module trees.
                     </p>
 
                     <p>
@@ -664,7 +775,7 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
 
                     <p>
                         Google’s build logic does not rely solely on the numeric kernel version.
-                        It also inspects the kernel release string. When a specific prefix (<code>android-14-11-</code>) is
+                        It also inspects the kernel release string. When a specific prefix (<code>android14-11</code>) is
                         detected, the FCM kernel level is silently adjusted during
                         validation.
                     </p>
@@ -702,9 +813,29 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
 
                     <p>
                         My custom kernel was functionally identical to Google’s, but it did not
-                        carry the expected release prefix. As far as VINTF was concerned, it was
-                        an unknown kernel, and unknown kernels are rejected by default.
+                        carry the expected release prefix. Because of that, VINTF did not recognize
+                        it as a Google-uprevved kernel.
                     </p>
+
+                    <p>
+                        Once that heuristic failed to trigger, VINTF treated the kernel like it
+                        would on any other device: it validated it strictly against the FCM level
+                        declared by the device configuration, without applying any Google-specific
+                        exceptions.
+                    </p>
+
+                    <p>
+                        On Pixel devices, those exceptions exist for a reason. The Pixel 6 and 7
+                        families were ported from older kernels to 6.1 late in their lifecycle.
+                        To make that work, Google relaxed the usual FCM checks when a known release
+                        signature is detected.
+                    </p>
+
+                    <p>
+                        My kernel did not match that signature, so the exception was never applied.
+                        As a result, VINTF enforced the standard FCM rules, and the build failed.
+                    </p>
+
                     <hr>
                     <h1>Why this was so hard to see</h1>
 
@@ -749,36 +880,64 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
 
                     <h1>GKI, DLKM, and Why Modules Are Special</h1>
 
+
                     <p>
-                        Under the GKI model, the kernel image and most of
-                        the hardware specific logic are split apart.
+                        Under the GKI model, the kernel image and device-specific functionality are
+                        deliberately split.
                     </p>
 
                     <p>
-                        The core kernel image is kept minimal and stable, while functionality is
-                        delivered through loadable kernel modules. These modules live on separate
-                        dynamic partitions inside the super image, most notably
-                        <code>system_dlkm</code> and <code>vendor_dlkm</code>.
+                        The kernel image itself is generic and shared across devices, while most
+                        hardware and feature-specific logic is delivered through loadable kernel
+                        modules. These modules live on separate dynamic partitions inside the super
+                        image, most notably <code>system_dlkm</code> and <code>vendor_dlkm</code>.
                     </p>
 
                     <p>
-                        This separation allows Google to update kernel modules independently of
-                        the rest of the system, but it also introduces strict rules.
+                        This split is the core idea behind GKI: allow the kernel image to evolve
+                        independently from vendor-specific components, without forcing every OEM
+                        to ship a fully custom kernel.
                     </p>
 
                     <p>
-                        GKI modules are built and signed together with the kernel. There is no ABI
-                        stability guarantee between a kernel and modules built against a
-                        different kernel. For modules to load correctly at runtime, they must be
-                        built <em>with</em> the kernel they are intended to run on.
+                        It is important to distinguish between different kinds of modules.
                     </p>
 
                     <p>
-                        In other words, the kernel and its modules are inseparable as a unit, even
-                        if Android stores them on different partitions.
+                        <strong>GKI modules</strong> are the modules placed in
+                        <code>system_dlkm</code>. These are considered part of the GKI surface
+                        itself and are treated as an extension of the kernel image. They are built
+                        and signed by Google and are expected to follow the GKI Kernel Module
+                        Interface (KMI) guarantees for a given release.
                     </p>
+
+                    <p>
+                        Because of this, the kernel image and its corresponding GKI modules are
+                        tightly coupled. While GKI exists to provide a stable interface, that
+                        stability is scoped and versioned. A kernel image expects a matching set of
+                        GKI modules built against the same KMI generation.
+                    </p>
+
+                    <p>
+                        <code>vendor_dlkm</code> modules are different. These are vendor-owned,
+                        device-specific drivers. They are not part of the GKI surface and do not
+                        benefit from the same compatibility guarantees. In practice, they must be
+                        built against the exact kernel they are intended to run on.
+                    </p>
+
+                    <p>
+                        This is where many assumptions break down.
+                    </p>
+
+                    <p>
+                        GKI allows the kernel image and <em>GKI modules</em> to be updated as a
+                        coherent, Google-controlled unit, while vendor modules remain tightly bound
+                        to the kernel they were built against. Android may store these pieces on
+                        different partitions, but at runtime the dependencies are very real.
+                    </p>
+
                     <hr>
-                    <h1>Cross-Partition Dependencies</h1>
+                    <h1>Cross-Partition dependencies</h1>
 
                     <p>
                         Another important detail is that modules are not isolated by partition.
@@ -803,7 +962,7 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
 
                     <hr>
 
-                    <h1>Early Module Load Errors</h1>
+                    <h1>Early module load errors</h1>
 
                     <p>
                         The first sign of trouble appeared very early during boot from <code>pstore</code>:
@@ -869,7 +1028,7 @@ insmod: failed to load rfkill.ko: Permission denied
                     </code></pre>
 
                     <hr>
-                    <h1>Module Signing</h1>
+                    <h1>Module signing</h1>
 
                     <p>
                         At this point, it became clear to cyberknight777.
@@ -881,7 +1040,7 @@ insmod: failed to load rfkill.ko: Permission denied
                     </p>
 
                     <p>
-                        On Android, kernel modules are not just built. They are signed.
+                        On Android, core GKI kernel modules (<code>system_dlkm</code>) are not just built. They are signed.
                     </p>
 
                     <p>
@@ -900,7 +1059,7 @@ insmod: failed to load rfkill.ko: Permission denied
                     </p>
 
                     <hr>
-                    <h1>Re-Signing the Modules</h1>
+                    <h1>Re-Signing the modules</h1>
 
                     <p>
                         The fix was straightforward once we understood the mechanisms
@@ -1050,7 +1209,7 @@ fi
                     </p>
 
                     <p>
-                        This was my biggest blog yet, and I am glad it is. Thank you for reading!
+                        This was my longest blog yet, and I am glad it is. Thank you for reading!
                     </p>
 
                     
