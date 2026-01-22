@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="../../assets/css/blog.css" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
 </head>
+
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -31,79 +33,84 @@
         <p class="post-meta">22/05/25</p>
       </header>
 
-                    <p>
-                    It's been a while since I did my last blog, so I thought I'd write something today. I'm gonna be talking about
-                    the layout and structure of AOSP device trees. I hope this won't be too confusing for newbies or someone completely
-                    new to AOSP.
-                    </p>
+      <p>
+        It's been a while since I did my last blog, so I thought I'd write something today. I'm gonna be talking about
+        the layout and structure of AOSP device trees. I hope this won't be too confusing for newbies or someone
+        completely
+        new to AOSP.
+      </p>
 
-                    <p>
-                    In AOSP, to compile a build for a specific device, we need to have a defined device tree for that phone so Android knows
-                    what to include in the build, what the system specifications are for that device, and etcetera.
-                    </p>
+      <p>
+        In AOSP, to compile a build for a specific device, we need to have a defined device tree for that phone so
+        Android knows
+        what to include in the build, what the system specifications are for that device, and etcetera.
+      </p>
 
-                    <p>
-                    Android device trees have makefiles that define what needs to be built and everything else. You usually have:
-                    <br>
-                    - <code>AndroidProducts.mk</code>
-                    <br>
-                    - <code>Android.bp</code>
-                    <br>
-                    - <code>Android.mk</code>
-                    <br>
-                    - <code>BoardConfig.mk</code>
-                    <br>
-                    - <code>device.mk</code>
-                    <br>
-                    - <code>aosp_codename.mk</code>
-                    <br>
-                    And a bunch of other subdirectories and scripts.
-                    </p>
+      <p>
+        Android device trees have makefiles that define what needs to be built and everything else. You usually have:
+        <br>
+        - <code>AndroidProducts.mk</code>
+        <br>
+        - <code>Android.bp</code>
+        <br>
+        - <code>Android.mk</code>
+        <br>
+        - <code>BoardConfig.mk</code>
+        <br>
+        - <code>device.mk</code>
+        <br>
+        - <code>aosp_codename.mk</code>
+        <br>
+        And a bunch of other subdirectories and scripts.
+      </p>
 
-                    <img src="../../assets/images/screenshot.png" width="700px">
-                    <h1> AndroidProducts.mk</h1> 
-                    <pre><code>
+      <img src="../../assets/images/screenshot.png" width="700px">
+      <h1> AndroidProducts.mk</h1>
+      <pre><code class="language-makefile">
 PRODUCT_MAKEFILES := \
 $(LOCAL_DIR)/aosp_codename.mk
                     </code></pre>
-                    <p>
-                    This makefile includes the makefiles for your device to be used in the lunch command to build AOSP.
-                    </p>
-                    <h1> Android.bp </h1>
-                    <p>
-                      This is the new <code>soong</code> buildsystem used in Android which is gonna import the needed repositories which are needed for the tree to be completely built.
-                      </p>
-                    <pre><code>soong_namespace {
+      <p>
+        This makefile includes the makefiles for your device to be used in the lunch command to build AOSP.
+      </p>
+      <h1> Android.bp </h1>
+      <p>
+        This is the new <code>soong</code> buildsystem used in Android which is gonna import the needed repositories
+        which are needed for the tree to be completely built.
+      </p>
+      <pre><code class="language-makefile">soong_namespace {
 imports: [
 // insert repositories here
 ],
 }
 </code></pre>
 
-                    <h1> Android.mk </h1>
-                    <p>
-                    Usually contains the following:
-                    </p>
-                    <pre><code>LOCAL_PATH := $(call my-dir)
+      <h1> Android.mk </h1>
+      <p>
+        Usually contains the following:
+      </p>
+      <pre><code class="language-makefile">LOCAL_PATH := $(call my-dir)
 ifeq ($(TARGET_DEVICE),codename)
 include $(call all-subdir-makefiles,$(LOCAL_PATH))
 endif
 </code></pre>
 
-                    <p>
-                    This will set the local path to the directory you are in and will call the device's codename and reveal it to the rest
-                    of the build system. For now I have used a placeholder codename.
-                    </p>
+      <p>
+        This will set the local path to the directory you are in and will call the device's codename and reveal it to
+        the rest
+        of the build system. For now I have used a placeholder codename.
+      </p>
 
-                    <h1>BoardConfig.mk</h1>
-                    <p>
-                      It contains a set of flags that define the device's architecture, kernel configuration, sometimes drivers, etc.
-                      You can look at an example of a BoardConfig here: 
-                      <a href="https://github.com/yaap/device_google_gs201/blob/fifteen/BoardConfig-common.mk" class="blog-link" </a>BoardConfig-common.mk</a>
-                      </p>
+      <h1>BoardConfig.mk</h1>
+      <p>
+        It contains a set of flags that define the device's architecture, kernel configuration, sometimes drivers, etc.
+        You can look at an example of a BoardConfig here:
+        <a href="https://github.com/yaap/device_google_gs201/blob/fifteen/BoardConfig-common.mk" class="blog-link"
+          </a>BoardConfig-common.mk</a>
+      </p>
 
-                      <p> I'll drop some lines of "code" from the makefile here:</p>
-                      <pre><code># Architecture
+      <p> I'll drop some lines of "code" from the makefile here:</p>
+      <pre><code class="language-makefile"># Architecture
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
@@ -130,14 +137,16 @@ BOARD_KERNEL_OFFSET := 0x00008000
 BOARD_KERNEL_TAGS_OFFSET := 0x07c88000
 BOARD_RAMDISK_OFFSET := 0x26f08000
                       </code></pre>
-                      
-                      <h1>
-                        device.mk
-                      </h1>
-                      <p>
-                      Usually for telling Android to include specific things in the build you're doing. It contains flags like <code>PRODUCT_PACKAGES</code> and <code>PRODUCT_COPY_FILES</code>. <code>PRODUCT_PACKAGES</code> tell Android to compile a service and <code>PRODUCT_COPY_FILES</code> copy a file from a location to another.
-                      </p>
-<pre><code># Audio
+
+      <h1>
+        device.mk
+      </h1>
+      <p>
+        Usually for telling Android to include specific things in the build you're doing. It contains flags like
+        <code>PRODUCT_PACKAGES</code> and <code>PRODUCT_COPY_FILES</code>. <code>PRODUCT_PACKAGES</code> tell Android to
+        compile a service and <code>PRODUCT_COPY_FILES</code> copy a file from a location to another.
+      </p>
+      <pre><code class="language-makefile"># Audio
 PRODUCT_PACKAGES += \
     android.hardware.audio.effect@7.0-impl \
     android.hardware.audio@7.1-impl \
@@ -174,14 +183,14 @@ PRODUCT_COPY_FILES += \
     // and so on..
 </code></pre>
 
-                    <p>
-                      You would need to know what to include in the build and what to not while bringing up a custom ROM for example.
-                    </p>
-                      <h1> aosp_codename.mk </h1>
-                      <p>
-                      This makefile usually contains the following content (this is an example):
-                      </p>
-                    <pre><code>$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+      <p>
+        You would need to know what to include in the build and what to not while bringing up a custom ROM for example.
+      </p>
+      <h1> aosp_codename.mk </h1>
+      <p>
+        This makefile usually contains the following content (this is an example):
+      </p>
+      <pre><code class="language-makefile">$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
                       
 # Inherit some common AOSP stuff.
@@ -207,27 +216,31 @@ DeviceProduct=$(PRODUCT_SYSTEM_NAME)
                       
 PRODUCT_GMS_CLIENTID_BASE := android-nothing
 </code></pre>
-                
-                    <p>
-                      It's  pretty simple, at first it inherits some common makefiles from Android and then goes on to inherit device.mk which we just defined,
-                      after that, it defines <code>PRODUCT</code> flags for the device we're building to give it a proper codename and/or name inside Android. At last, we define
-                      the fingerprint for the build.
-                    </p>
 
-                    <p>
-                      You do not need to understand everything here, these are just flags to tell Android what the device should be called.
-                    </p>
+      <p>
+        It's pretty simple, at first it inherits some common makefiles from Android and then goes on to inherit
+        device.mk which we just defined,
+        after that, it defines <code>PRODUCT</code> flags for the device we're building to give it a proper codename
+        and/or name inside Android. At last, we define
+        the fingerprint for the build.
+      </p>
 
-                    <h1>
-                    proprietary-files.txt
-                    </h1>
+      <p>
+        You do not need to understand everything here, these are just flags to tell Android what the device should be
+        called.
+      </p>
 
-                    <p>
-                    This file is used to extract proprietary blobs from the device to include them in a seperate repository - <code>vendor/oem/codename</code>. This file will
-                    contain a list of blobs with their directories, like:
-                    </p>
+      <h1>
+        proprietary-files.txt
+      </h1>
 
-                    <pre><code># All proprietary files from this list, unless pinned and noted otherwise,
+      <p>
+        This file is used to extract proprietary blobs from the device to include them in a seperate repository -
+        <code>vendor/oem/codename</code>. This file will
+        contain a list of blobs with their directories, like:
+      </p>
+
+      <pre><code class="language-makefile"># All proprietary files from this list, unless pinned and noted otherwise,
 # are from Nothing Phone 2A (Pacman_V3.0-240617).
 
 # AEE
@@ -258,45 +271,56 @@ vendor/lib64/libaudioprimarydevicehalifclient.so
 vendor/lib64/libaudiosmartpamtk.so
 // and so on</code></pre>
 
-                    <p>
-                      This file is linked to two other files, <code>extract-files.sh</code> and <code>setup-makefiles.sh</code> which actually does the logic stuff.
-                    </p>
+      <p>
+        This file is linked to two other files, <code>extract-files.sh</code> and <code>setup-makefiles.sh</code> which
+        actually does the logic stuff.
+      </p>
 
-                    <h1>/configs</h1>
-                    <p>
-                      /configs usually includes manifest(s) and FCM (framework compatibility matrix), audio configs, power configs, and thermal configs.
-                      These are built into the build through device.mk with the flag <code>PRODUCT_COPY_FILES</code>.
-                    </p>
+      <h1>/configs</h1>
+      <p>
+        /configs usually includes manifest(s) and FCM (framework compatibility matrix), audio configs, power configs,
+        and thermal configs.
+        These are built into the build through device.mk with the flag <code>PRODUCT_COPY_FILES</code>.
+      </p>
 
-                    <h1>/overlays</h1>
-                    <p>
-                      This subdirectory is used to override or modify system resources without having to touch the core framework files. It's part of Android's RRO (Runtime Resource Overlay) system.
-                      </p>
-                      
-                      <p>
-                      Inside overlays/, you'll usually find folders named after packages like <code>frameworks/base</code> or <code>packages/apps/Settings</code>. These folders contain XML files that override default values like colors, strings, dimensions, booleans, and other UI-related resources.
-                      </p>
-                      
-                      <p>
-                      These overlays get picked up during the build and packaged as part of the system image, allowing the device to have custom behavior or visuals without modifying upstream AOSP code directly.
-                      </p>
+      <h1>/overlays</h1>
+      <p>
+        This subdirectory is used to override or modify system resources without having to touch the core framework
+        files. It's part of Android's RRO (Runtime Resource Overlay) system.
+      </p>
 
-                      <h1>/sepolicy</h1>
-                      <p>
-                        This directory is used for defining SELinux policies specific to the device. SELinux (Security-Enhanced Linux) is a mandatory access control system built into Android to enforce security rules on what processes can do.
-                        </p>
-                        
-                        <p>
-                        In this folder, you'll find files like <code>file_contexts</code>, <code>plat_sepolicy.cil</code>, <code>vendor_sepolicy.cil</code>, and sometimes custom sepolicy files. These define what labels get assigned to files, and what types of interactions are allowed between system components.
-                        </p>
-                        
-                        <p>
-                        If your SELinux policy isn't properly defined or violates security rules, your build might bootloop or spam avc: denied messages in logcat. So writing good policies is important for getting your build to boot in enforcing mode.
-                        </p>
+      <p>
+        Inside overlays/, you'll usually find folders named after packages like <code>frameworks/base</code> or
+        <code>packages/apps/Settings</code>. These folders contain XML files that override default values like colors,
+        strings, dimensions, booleans, and other UI-related resources.
+      </p>
 
-                        <p>
-                          And that's mostly it! Thank you for reading.
-                        </p>
+      <p>
+        These overlays get picked up during the build and packaged as part of the system image, allowing the device to
+        have custom behavior or visuals without modifying upstream AOSP code directly.
+      </p>
+
+      <h1>/sepolicy</h1>
+      <p>
+        This directory is used for defining SELinux policies specific to the device. SELinux (Security-Enhanced Linux)
+        is a mandatory access control system built into Android to enforce security rules on what processes can do.
+      </p>
+
+      <p>
+        In this folder, you'll find files like <code>file_contexts</code>, <code>plat_sepolicy.cil</code>,
+        <code>vendor_sepolicy.cil</code>, and sometimes custom sepolicy files. These define what labels get assigned to
+        files, and what types of interactions are allowed between system components.
+      </p>
+
+      <p>
+        If your SELinux policy isn't properly defined or violates security rules, your build might bootloop or spam avc:
+        denied messages in logcat. So writing good policies is important for getting your build to boot in enforcing
+        mode.
+      </p>
+
+      <p>
+        And that's mostly it! Thank you for reading.
+      </p>
 
       <p><a href="../">← back to all posts</a></p>
     </article>
@@ -307,5 +331,9 @@ vendor/lib64/libaudiosmartpamtk.so
   </footer>
 
   <script src="../assets/js/navbar.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-makefile.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 </body>
+
 </html>

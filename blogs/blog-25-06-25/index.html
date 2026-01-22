@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="../../assets/css/blog.css" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
 </head>
+
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -31,28 +33,39 @@
         <p class="post-meta">25/06/25</p>
       </header>
 
-                <p> With the release of Android 16, Google decided to not open source the device trees for their smartphones anymore. The reasoning for this was that Google wanted to seperate the device specific code and AOSP from each other.
-                </p>
+      <p> With the release of Android 16, Google decided to not open source the device trees for their smartphones
+        anymore. The reasoning for this was that Google wanted to seperate the device specific code and AOSP from each
+        other.
+      </p>
 
-                <p> So all custom ROM developers were a bit shaked because of this, since the development for new Google devices would be a lot harder to do and an Open Source device tree would have to be made. But this would also mean the
-                    existing device trees would have to be adapted to the custom ROM community's standards, which is exactly what this blog is gonna be about!
-                </p>
+      <p> So all custom ROM developers were a bit shaked because of this, since the development for new Google devices
+        would be a lot harder to do and an Open Source device tree would have to be made. But this would also mean the
+        existing device trees would have to be adapted to the custom ROM community's standards, which is exactly what
+        this blog is gonna be about!
+      </p>
 
-                <p>
-                    When all of this was happening, I saw a great opportunity to update these cluttered device trees for my phone (Pixel 7/7 Pro), which is what I started doing. LineageOS also did the same later on with their Lineage 23.0 release,
-                    but I did so a week earlier :).
-                </p>
+      <p>
+        When all of this was happening, I saw a great opportunity to update these cluttered device trees for my phone
+        (Pixel 7/7 Pro), which is what I started doing. LineageOS also did the same later on with their Lineage 23.0
+        release,
+        but I did so a week earlier :).
+      </p>
 
-                <p>
-                    Now, this device tree <code>device_google_pantah</code> was made for not just two, but four boards. The first category is just Pixel 7 and Pixel 7 Pro (panther and cheetah, respectively) and two other boards called 'ravenclaw' and 'clourdipper'.
-                    ravenclaw and cloudripper are apparently testing boards which only Google has access to. Custom ROM developers do not need these, so obviously, we deleted the files of both of these boards.
-                </p>
+      <p>
+        Now, this device tree <code>device_google_pantah</code> was made for not just two, but four boards. The first
+        category is just Pixel 7 and Pixel 7 Pro (panther and cheetah, respectively) and two other boards called
+        'ravenclaw' and 'clourdipper'.
+        ravenclaw and cloudripper are apparently testing boards which only Google has access to. Custom ROM developers
+        do not need these, so obviously, we deleted the files of both of these boards.
+      </p>
 
-                <p>
-                    The second part is where I had to cleanup some makefiles which were pretty cluttered and just very poorly written. They were inconsistent, ugly and had outdated commented code.
-                </p>
+      <p>
+        The second part is where I had to cleanup some makefiles which were pretty cluttered and just very poorly
+        written. They were inconsistent, ugly and had outdated commented code.
+      </p>
 
-                <p> And that was *mostly* it! Atleast for Android 15, I will make a seperate blog of making these trees Android 16 ready, it should already be out by the time you're reading this. Thank you for reading!</p>
+      <p> And that was *mostly* it! Atleast for Android 15, I will make a seperate blog of making these trees Android 16
+        ready, it should already be out by the time you're reading this. Thank you for reading!</p>
 
       <p><a href="../">← back to all posts</a></p>
     </article>
@@ -63,5 +76,7 @@
   </footer>
 
   <script src="../assets/js/navbar.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 </body>
+
 </html>

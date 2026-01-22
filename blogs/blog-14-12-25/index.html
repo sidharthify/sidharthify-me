@@ -1,164 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Breaking free from Bazel in the Pixel kernel pipeline — 14/12/25 • sidharthify</title>
-  <meta name="theme-color" content="#1e1e2e" />
-  <link rel="stylesheet" href="../../assets/css/style.css" />
-  <link rel="stylesheet" href="../../assets/css/blog.css" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="Breaking free from Bazel in the Pixel kernel pipeline" />
-  <meta property="og:description" content="Rebuilding the Pixel kernel pipeline without Bazel, and understanding GKI, DLKM, VINTF, and Android’s implicit kernel contracts." />
-  <meta property="og:url" content="https://sidharthify.github.io/blog/2025/12/breaking-free-from-bazel/" />
-  <meta property="og:site_name" content="sidharthify" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Breaking free from Bazel in the Pixel kernel pipeline" />
-  <meta name="twitter:description" content="A deep dive into building and integrating Pixel kernels without Bazel." />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Breaking free from Bazel in the Pixel kernel pipeline — 14/12/25 • sidharthify</title>
+    <meta name="theme-color" content="#1e1e2e" />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../assets/css/blog.css" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Breaking free from Bazel in the Pixel kernel pipeline" />
+    <meta property="og:description"
+        content="Rebuilding the Pixel kernel pipeline without Bazel, and understanding GKI, DLKM, VINTF, and Android’s implicit kernel contracts." />
+    <meta property="og:url" content="https://sidharthify.github.io/blog/2025/12/breaking-free-from-bazel/" />
+    <meta property="og:site_name" content="sidharthify" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Breaking free from Bazel in the Pixel kernel pipeline" />
+    <meta name="twitter:description" content="A deep dive into building and integrating Pixel kernels without Bazel." />
 </head>
+
 <body>
-  <a class="skip-link" href="#main">Skip to main content</a>
+    <a class="skip-link" href="#main">Skip to main content</a>
 
-  <header class="shell">
-    <nav class="nav" aria-label="Primary">
-      <a class="brand" href="../../">sidharthify</a>
-      <ul class="menu">
-        <li><a href="../../">home</a></li>
-        <li><a href="../../about/">about</a></li>
-        <li><a aria-current="page" href="../">blog</a></li>
-        <li><a href="../../music/">music</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header class="shell">
+        <nav class="nav" aria-label="Primary">
+            <a class="brand" href="../../">sidharthify</a>
+            <ul class="menu">
+                <li><a href="../../">home</a></li>
+                <li><a href="../../about/">about</a></li>
+                <li><a aria-current="page" href="../">blog</a></li>
+                <li><a href="../../music/">music</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <main id="main" class="shell">
-    <article>
-      <header>
-        <h1>Breaking free from Bazel in the Pixel kernel pipeline</h1>
-        <p class="post-meta">14/12/25</p>
-      </header>
+    <main id="main" class="shell">
+        <article>
+            <header>
+                <h1>Breaking free from Bazel in the Pixel kernel pipeline</h1>
+                <p class="post-meta">14/12/25</p>
+            </header>
 
-                    <p>
-                        When I first got my Pixel 7 in March of this year, I didn't know what I'd be signing up for in the future.
-                    </p>
+            <p>
+                When I first got my Pixel 7 in March of this year, I didn't know what I'd be signing up for in the
+                future.
+            </p>
 
-                    <p>
-                        I used to just use the prebuilt kernel trees provided by Google for building my ROMs because I found it convenient.
-                        Nonetheless, <a href="https://cyberknight777.dev/" class="blog-link"
-                            </a>cyberknight777</a>, a kernel developer, and a good friend of mine, got me to finally start building a custom kernel
-                        for the device.
-                    </p>
+            <p>
+                I used to just use the prebuilt kernel trees provided by Google for building my ROMs because I found it
+                convenient.
+                Nonetheless, <a href="https://cyberknight777.dev/" class="blog-link" </a>cyberknight777</a>, a kernel
+                developer, and a good friend of mine, got me to finally start building a custom kernel
+                for the device.
+            </p>
 
 
-                    <p>
-                        And when I finally started on around June of this year, we stumbled upon <strong>tons</strong> of unexpected design choices.
-                        This blog covers our journey of building the gs201 kernel with just Make and a build script, and throwing
-                        Google's bazel in the bin.
-                    </p>
+            <p>
+                And when I finally started on around June of this year, we stumbled upon <strong>tons</strong> of
+                unexpected design choices.
+                This blog covers our journey of building the gs201 kernel with just Make and a build script, and
+                throwing
+                Google's bazel in the bin.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>The very start</h1>
-                    <p>
-                        We didn't do much, so we just cloned the specific tag of the ACK (Android Common Kernel) for 
-                        the device (<code>android-gs-pantah-6.1</code>) from Google's source, and started the build with the default build scripts that Google
-                        gives its users - <code>build_pantah.sh</code>
-                    </p>
+            <h1>The very start</h1>
+            <p>
+                We didn't do much, so we just cloned the specific tag of the ACK (Android Common Kernel) for
+                the device (<code>android-gs-pantah-6.1</code>) from Google's source, and started the build with the
+                default build scripts that Google
+                gives its users - <code>build_pantah.sh</code>
+            </p>
 
-                    <p>What I noticed was that Google makes it looks like an AOSP build, it compresses verbose messages like you see 
-                        while building the Kernel in pure make, and just acts as a script that does some magic in the background and 
-                        prints some messages.
-                    </p>
+            <p>What I noticed was that Google makes it looks like an AOSP build, it compresses verbose messages like you
+                see
+                while building the Kernel in pure make, and just acts as a script that does some magic in the background
+                and
+                prints some messages.
+            </p>
 
-                    <p>We instantly found this to be holding us back from our freedom. So I ran the following commands manually:
-                        <br>
-                        <br>
-                        1. <code>ARCH=arm64 make LLVM=/home/sidharthify/kernel/prebuilts/clang/host/linux-x86/clang-r487747c/bin/ O=out gki_defconfig</code>
-                        <br>
-                        <br>
-                        2. <code>ARCH=arm64 make -j$(nproc) LLVM=/home/sidharthify/kernel/prebuilts/clang/host/linux-x86/clang-r487747c/bin/ O=out Image.lz4</code>
-                    </p>
+            <p>We instantly found this to be holding us back from our freedom. So I ran the following commands manually:
+                <br>
+                <br>
+                1.
+                <code>ARCH=arm64 make LLVM=/home/sidharthify/kernel/prebuilts/clang/host/linux-x86/clang-r487747c/bin/ O=out gki_defconfig</code>
+                <br>
+                <br>
+                2.
+                <code>ARCH=arm64 make -j$(nproc) LLVM=/home/sidharthify/kernel/prebuilts/clang/host/linux-x86/clang-r487747c/bin/ O=out Image.lz4</code>
+            </p>
 
-                    <p>And there we have it, we started the build with make. And no, this isn't the end, not even close.</p>
-                    <p>I used this clang version because it corresponds to the version used in stock, we can see this by expanding the kernel info
-                        inside about phone.
-                    </p>
+            <p>And there we have it, we started the build with make. And no, this isn't the end, not even close.</p>
+            <p>I used this clang version because it corresponds to the version used in stock, we can see this by
+                expanding the kernel info
+                inside about phone.
+            </p>
 
-                    <p>After this, we just expanded on the script to build the modules as well. Modules, modules, oh modules...
-                        This will be the most important talking point of this whole blog.
-                    </p>
+            <p>After this, we just expanded on the script to build the modules as well. Modules, modules, oh modules...
+                This will be the most important talking point of this whole blog.
+            </p>
 
-                    <p>Either way, the next thing we needed to do was build the modules as well. Because of course,
-                        this is a modern GKI (Generic Kernel Image) Android kernel. Heavy words, eh?
-                    </p>
+            <p>Either way, the next thing we needed to do was build the modules as well. Because of course,
+                this is a modern GKI (Generic Kernel Image) Android kernel. Heavy words, eh?
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>Generic Kernel Image</h1>
+            <h1>Generic Kernel Image</h1>
 
-                    <p>
-                        GKI does not mean that the kernel is smaller, simpler, or “minimal” in the
-                        usual sense. It means that the kernel is no longer fragmented.
-                    </p>
+            <p>
+                GKI does not mean that the kernel is smaller, simpler, or “minimal” in the
+                usual sense. It means that the kernel is no longer fragmented.
+            </p>
 
-                    <p>
-                        Before GKI, the Android kernel stack looked roughly like this:
-                        Linux Stable → Android Common Kernel → Vendor Kernel → OEM Kernel.
-                        Each layer carried its own patches, its own ABI expectations, and its own
-                        long-term maintenance burden.
-                    </p>
+            <p>
+                Before GKI, the Android kernel stack looked roughly like this:
+                Linux Stable → Android Common Kernel → Vendor Kernel → OEM Kernel.
+                Each layer carried its own patches, its own ABI expectations, and its own
+                long-term maintenance burden.
+            </p>
 
-                    <p>
-                        GKI collapses that stack.
-                    </p>
+            <p>
+                GKI collapses that stack.
+            </p>
 
-                    <p>
-                        With GKI, there is a single, Google-maintained core kernel image that is
-                        shared across devices. This kernel is <em>generic</em> in the literal sense:
-                        it contains support for a wide range of hardware and use cases, rather
-                        than being tightly tailored to a specific device.
-                    </p>
+            <p>
+                With GKI, there is a single, Google-maintained core kernel image that is
+                shared across devices. This kernel is <em>generic</em> in the literal sense:
+                it contains support for a wide range of hardware and use cases, rather
+                than being tightly tailored to a specific device.
+            </p>
 
-                    <p>
-                        Device-specific functionality is no longer implemented by modifying the
-                        core kernel. Instead, it is delivered through loadable kernel modules.
-                    </p>
+            <p>
+                Device-specific functionality is no longer implemented by modifying the
+                core kernel. Instead, it is delivered through loadable kernel modules.
+            </p>
 
-                    <p>
-                        Storage drivers, WiFi, Bluetooth, NFC, display drivers, fingerprint
-                        drivers, and large parts of SoC-specific logic all live outside the core
-                        image as modules.
-                    </p>
+            <p>
+                Storage drivers, WiFi, Bluetooth, NFC, display drivers, fingerprint
+                drivers, and large parts of SoC-specific logic all live outside the core
+                image as modules.
+            </p>
 
-                    <p>
-                        This is the key tradeoff of GKI. The core kernel is unified, but the system
-                        as a whole becomes more modular, more policy-driven, and more sensitive to
-                        how modules are built, installed, signed, and loaded.
-                    </p>
+            <p>
+                This is the key tradeoff of GKI. The core kernel is unified, but the system
+                as a whole becomes more modular, more policy-driven, and more sensitive to
+                how modules are built, installed, signed, and loaded.
+            </p>
 
-                    <p>
-                        Building the kernel image with <code>make</code> was only half the job.
-                        The real work began when we had to replicate how Google builds, installs,
-                        signs, and validates kernel modules across
-                        <code>system_dlkm</code>, <code>vendor_dlkm</code>, and
-                        <code>vendor_kernel_boot</code>.
-                    </p>
+            <p>
+                Building the kernel image with <code>make</code> was only half the job.
+                The real work began when we had to replicate how Google builds, installs,
+                signs, and validates kernel modules across
+                <code>system_dlkm</code>, <code>vendor_dlkm</code>, and
+                <code>vendor_kernel_boot</code>.
+            </p>
 
-                    <p>
-                        From this point on, most failures were no longer obvious boot failures.
-                        They manifested as silent breakages, missing functionality, modules
-                        refusing to load, and VINTF rejecting the build outright.
-                    </p>
+            <p>
+                From this point on, most failures were no longer obvious boot failures.
+                They manifested as silent breakages, missing functionality, modules
+                refusing to load, and VINTF rejecting the build outright.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>Building the modules</h1>
+            <h1>Building the modules</h1>
 
-                    <p>
-                        We started by declaring the directories of the modules we want: (for now, this logic was heavily modified later on)
+            <p>
+                We started by declaring the directories of the modules we want: (for now, this logic was heavily
+                modified later on)
 
-                        <pre><code>EXT_MODULES="private/google-modules/amplifiers/snd_soc_wm_adsp \
+            <pre><code class="language-bash">EXT_MODULES="private/google-modules/amplifiers/snd_soc_wm_adsp \
              private/google-modules/amplifiers/cs35l41 \
              private/google-modules/amplifiers/cs35l45 \
              private/google-modules/amplifiers/cs40l25 \
@@ -239,14 +253,15 @@
              private/google-modules/misc/sscoredump"
 </code></pre>
 
-                    <p>Yeah, long list. But either way, these were pulled directly from <a href="https://android.googlesource.com" class="blog-link"
-                            </a>android.googlesource.com </a>, by cloning the directories
-                        into a seperate folder outside the kernel.
-                    </p>
+            <p>Yeah, long list. But either way, these were pulled directly from <a
+                    href="https://android.googlesource.com" class="blog-link" </a>android.googlesource.com </a>, by
+                cloning the directories
+                into a seperate folder outside the kernel.
+            </p>
 
-                    <p>After defining these, we build the modules roughly like so:</p>
+            <p>After defining these, we build the modules roughly like so:</p>
 
-                    <pre><code>for EXT_MOD in ${EXT_MODULES}; do
+            <pre><code class="language-bash">for EXT_MOD in ${EXT_MODULES}; do
   ABS_EXT_MOD="${ROOT_DIR}/${EXT_MOD}"
   EXT_MOD_REL=$(rel_path "${ABS_EXT_MOD}" "${KERNEL_DIR}")
   mkdir -p "${OUT_DIR}/${EXT_MOD_REL}"
@@ -261,86 +276,86 @@
        "${MAKE_ARGS[@]}" modules_install
   set +x
 done</code></pre>
-                    <p>
-                        This... well, I later realized that this wasn't the best method to do this.
-                        But for now, I was getting my kernel to be built with the modules, so I was
-                        happy enough.
-                    </p>
+            <p>
+                This... well, I later realized that this wasn't the best method to do this.
+                But for now, I was getting my kernel to be built with the modules, so I was
+                happy enough.
+            </p>
 
-                    <h2>Why this approach was flawed</h2>
+            <h2>Why this approach was flawed</h2>
 
-                    <p>
-                        At first glance, this felt like the correct way to do things.
-                    </p>
+            <p>
+                At first glance, this felt like the correct way to do things.
+            </p>
 
-                    <p>
-                        Google keeps most Pixel specific code under
-                        <code>private/google-modules/</code>, outside the core kernel directories.
-                        Bazel treats these as separate units. The natural assumption, then, was
-                        that these modules needed to be built separately as well.
-                    </p>
+            <p>
+                Google keeps most Pixel specific code under
+                <code>private/google-modules/</code>, outside the core kernel directories.
+                Bazel treats these as separate units. The natural assumption, then, was
+                that these modules needed to be built separately as well.
+            </p>
 
-                    <p>
-                        That assumption was <strong>wrong</strong>.
-                    </p>
+            <p>
+                That assumption was <strong>wrong</strong>.
+            </p>
 
-                    <p>
-                        From Kbuild’s point of view, there is no meaningful distinction between
-                        “kernel code” and “Google modules”. Anything that lives inside the kernel
-                        source tree and contains proper <code>Kbuild</code> files is simply part of
-                        the kernel build graph.
-                    </p>
+            <p>
+                From Kbuild’s point of view, there is no meaningful distinction between
+                “kernel code” and “Google modules”. Anything that lives inside the kernel
+                source tree and contains proper <code>Kbuild</code> files is simply part of
+                the kernel build graph.
+            </p>
 
-                    <p>
-                        By treating these directories as external modules, I was effectively
-                        fighting Kbuild instead of using it.
-                    </p>
+            <p>
+                By treating these directories as external modules, I was effectively
+                fighting Kbuild instead of using it.
+            </p>
 
-                    <p>
-                        The long <code>EXT_MODULES</code> list, the manual loop, the relative-path
-                        juggling, all of that existed to maintain an artificial boundary that the
-                        kernel build system does not recognize.
-                    </p>
+            <p>
+                The long <code>EXT_MODULES</code> list, the manual loop, the relative-path
+                juggling, all of that existed to maintain an artificial boundary that the
+                kernel build system does not recognize.
+            </p>
 
-                    <p>
-                        This worked, but only in the sense that forcing things to work often does.
-                    </p>
+            <p>
+                This worked, but only in the sense that forcing things to work often does.
+            </p>
 
-                    <h2>What actually needed to happen</h2>
+            <h2>What actually needed to happen</h2>
 
-                    <p>
-                        Once I understood this, the solution became obvious.
-                    </p>
+            <p>
+                Once I understood this, the solution became obvious.
+            </p>
 
-                    <p>
-                        Instead of treating Google’s modules as out-of-tree components, they
-                        should be built the same way every other kernel module is built: as part
-                        of a single, unified kernel tree.
-                    </p>
+            <p>
+                Instead of treating Google’s modules as out-of-tree components, they
+                should be built the same way every other kernel module is built: as part
+                of a single, unified kernel tree.
+            </p>
 
-                    <p>
-                        In practice, this meant removing the explicit
-                        <code>EXT_MODULES</code> list entirely and letting Kbuild discover modules
-                        through its normal <code>obj-m</code> and <code>obj-y</code> relationships.
-                        Instead of invoking <code>make modules</code> separately for each directory,
-                        the entire module set could be built in a single pass, with all modules
-                        staged through one unified <code>modules_install</code> step.
-                    </p>
+            <p>
+                In practice, this meant removing the explicit
+                <code>EXT_MODULES</code> list entirely and letting Kbuild discover modules
+                through its normal <code>obj-m</code> and <code>obj-y</code> relationships.
+                Instead of invoking <code>make modules</code> separately for each directory,
+                the entire module set could be built in a single pass, with all modules
+                staged through one unified <code>modules_install</code> step.
+            </p>
 
-                    <p>
-                        In other words, <strong>stop telling Kbuild what to build, and let it do what it
-                        was designed to do.</strong>
-                    </p>
+            <p>
+                In other words, <strong>stop telling Kbuild what to build, and let it do what it
+                    was designed to do.</strong>
+            </p>
 
-                    <h2>The refactor</h2>
+            <h2>The refactor</h2>
 
-                    <p>
-                        The script no longer loops over module directories or calls
-                        <code>make -C</code> on individual paths. Instead, it builds the kernel and
-                        all associated modules in one pass:
-                    </p>
+            <p>
+                The script no longer loops over module directories or calls
+                <code>make -C</code> on individual paths. Instead, it builds the kernel and
+                all associated modules in one pass:
+            </p>
 
-                    <pre><code>ROOT_DIR="/home/sidharthify/kernel"
+            <pre><code class="language-bash">ROOT_DIR="/home/sidharthify/kernel"
 KERNEL_DIR="${ROOT_DIR}/aosp"
 LLVM_DIR="${ROOT_DIR}/prebuilts/clang/host/linux-x86/clang-r487747c/bin/"
 OUT_DIR="${KERNEL_DIR}/out"
@@ -359,69 +374,69 @@ make -j96 "${TOOL_ARGS[@]}" Image.lz4
 make -j96 "${TOOL_ARGS[@]}" modules
 make -j96 "${TOOL_ARGS[@]}" INSTALL_MOD_PATH="${MODULES_STAGING_DIR}" modules_install</code></pre>
 
-                    <p>
-                        This dramatically simplified the script, removing more than a hundred
-                        lines of fragile glue logic, and aligning the build flow with how upstream
-                        Kbuild expects to operate.
-                    </p>
+            <p>
+                This dramatically simplified the script, removing more than a hundred
+                lines of fragile glue logic, and aligning the build flow with how upstream
+                Kbuild expects to operate.
+            </p>
 
-                    <p>
-                        More importantly, it removed an entire class of subtle failures.
-                    </p>
+            <p>
+                More importantly, it removed an entire class of subtle failures.
+            </p>
 
 
-                    <h2>And?</h2>
+            <h2>And?</h2>
 
-                    <p>
-                        This pattern repeated itself... a lot of times.
-                    </p>
+            <p>
+                This pattern repeated itself... a lot of times.
+            </p>
 
-                    <p>
-                        Google’s tooling makes the Pixel kernel <em>look</em> more complex than it
-                        actually is. Bazel enforces boundaries that are convenient for Google’s
-                        internal build infrastructure, but those boundaries do not exist at the
-                        kernel level.
-                    </p>
+            <p>
+                Google’s tooling makes the Pixel kernel <em>look</em> more complex than it
+                actually is. Bazel enforces boundaries that are convenient for Google’s
+                internal build infrastructure, but those boundaries do not exist at the
+                kernel level.
+            </p>
 
-                    <p>
-                        Once the tooling is stripped away, what remains is a conventional (android) Linux
-                        kernel tree with conventional rules.
-                    </p>
-                    <hr>
-                    <h1>Finishing the script up</h1>
+            <p>
+                Once the tooling is stripped away, what remains is a conventional (android) Linux
+                kernel tree with conventional rules.
+            </p>
+            <hr>
+            <h1>Finishing the script up</h1>
 
-                    <p>
-                        Up to this point, the kernel technically worked. It built, it booted, and
-                        the modules existed. But this was still not a <em>real</em> kernel in the
-                        Android sense.
-                    </p>
+            <p>
+                Up to this point, the kernel technically worked. It built, it booted, and
+                the modules existed. But this was still not a <em>real</em> kernel in the
+                Android sense.
+            </p>
 
-                    <p>
-                        What Bazel had been quietly handling all along was not just compilation,
-                        but integration. Modules were not meant to simply exist as <code>.ko</code>
-                        files copied into a directory. They needed to be sorted, stripped, grouped
-                        into the correct partitions, indexed properly, and finally packaged into
-                        filesystem images that Android actually understands.
-                    </p>
+            <p>
+                What Bazel had been quietly handling all along was not just compilation,
+                but integration. Modules were not meant to simply exist as <code>.ko</code>
+                files copied into a directory. They needed to be sorted, stripped, grouped
+                into the correct partitions, indexed properly, and finally packaged into
+                filesystem images that Android actually understands.
+            </p>
 
-                    <h3>Cleaning Up the Old Assumptions</h3>
-                    <p>
-                        The first visible change was simple: instead of trying to
-                        update individual <code>.ko</code> files in an existing prebuilt tree,
-                        the script now deletes all previously staged modules and copies over
-                        everything that was just built.
-                    </p>
+            <h3>Cleaning Up the Old Assumptions</h3>
+            <p>
+                The first visible change was simple: instead of trying to
+                update individual <code>.ko</code> files in an existing prebuilt tree,
+                the script now deletes all previously staged modules and copies over
+                everything that was just built.
+            </p>
 
-                    <p>
-                        This matters more than it sounds. Kernel modules are tightly coupled to
-                        the exact kernel image they are built against. Allowing old modules to
-                        linger creates “zombie” mismatches that are extremely hard to debug.
-                        Starting from a clean slate every time makes the result deterministic.
-                    </p>
-                    <hr>
-                    <h1>Introducing Proper DLKM Partitioning</h1>
+            <p>
+                This matters more than it sounds. Kernel modules are tightly coupled to
+                the exact kernel image they are built against. Allowing old modules to
+                linger creates “zombie” mismatches that are extremely hard to debug.
+                Starting from a clean slate every time makes the result deterministic.
+            </p>
+            <hr>
+            <h1>Introducing Proper DLKM Partitioning</h1>
 
-                    <pre><code>#####
+            <pre><code class="language-bash">#####
 #####
 # pack images
 #####
@@ -452,175 +467,176 @@ fi
 python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --dtb "${OUT_DIR}/combined.dtb" --header_version 4 --vendor_boot "${OUT_DIR}/vendor_kernel_boot.img"
 </code></pre>
 
-                    <p>
-                        Modern Android kernels do not load all modules from a single location.
-                        Instead, modules are split across three partitions, each with different
-                        expectations and lifetimes:
-                    </p>
+            <p>
+                Modern Android kernels do not load all modules from a single location.
+                Instead, modules are split across three partitions, each with different
+                expectations and lifetimes:
+            </p>
 
-                    <p>
-                        <code>vendor_kernel_boot</code> contains modules that must be available
-                        extremely early in the boot process. These are modules that need to be
-                        loadable in recovery and during first-stage init, before the full userspace
-                        is up.
-                    </p>
+            <p>
+                <code>vendor_kernel_boot</code> contains modules that must be available
+                extremely early in the boot process. These are modules that need to be
+                loadable in recovery and during first-stage init, before the full userspace
+                is up.
+            </p>
 
-                    <p>
-                        On Pixel devices, modules that previously lived in
-                        <code>vendor_boot</code> were moved into
-                        <code>vendor_kernel_boot</code>.
-                    </p>
+            <p>
+                On Pixel devices, modules that previously lived in
+                <code>vendor_boot</code> were moved into
+                <code>vendor_kernel_boot</code>.
+            </p>
 
-                    <p>
-                        Google does not document the exact reason for this change. It appears
-                        to be a Pixel-specific design decision related to boot flow and
-                        tooling, rather than a general Android requirement.
-                    </p>
+            <p>
+                Google does not document the exact reason for this change. It appears
+                to be a Pixel-specific design decision related to boot flow and
+                tooling, rather than a general Android requirement.
+            </p>
 
-                    <p>
-                        What makes this evolution clearer is how it unfolded across Pixel
-                        generations.
-                    </p>
+            <p>
+                What makes this evolution clearer is how it unfolded across Pixel
+                generations.
+            </p>
 
-                    <p>
-                        On the Pixel 6 series, Google shipped multiple
-                        <code>vendor_ramdisk</code> fragments: a default fragment and a
-                        <code>dlkm</code> fragment, with kernel modules stored in the latter.
-                        This design allowed kernel modules to be separated from the rest of
-                        <code>vendor_boot</code>.
-                    </p>
+            <p>
+                On the Pixel 6 series, Google shipped multiple
+                <code>vendor_ramdisk</code> fragments: a default fragment and a
+                <code>dlkm</code> fragment, with kernel modules stored in the latter.
+                This design allowed kernel modules to be separated from the rest of
+                <code>vendor_boot</code>.
+            </p>
 
-                    <p>
-                        However, vendor ramdisk fragments are treated as independently
-                        replaceable by flashing tools, which made it easy to accidentally
-                        remove required fragments and break early boot.
-                    </p>
+            <p>
+                However, vendor ramdisk fragments are treated as independently
+                replaceable by flashing tools, which made it easy to accidentally
+                remove required fragments and break early boot.
+            </p>
 
-                    <p>
-                        Starting with Pixel 7, Google stopped placing modules in
-                        <code>vendor_ramdisk</code> entirely and introduced a dedicated
-                        <code>vendor_kernel_boot</code> partition. This isolated early-boot modules
-                        from ramdisk fragment handling and removed an entire category of failure
-                        modes.
-                    </p>
+            <p>
+                Starting with Pixel 7, Google stopped placing modules in
+                <code>vendor_ramdisk</code> entirely and introduced a dedicated
+                <code>vendor_kernel_boot</code> partition. This isolated early-boot modules
+                from ramdisk fragment handling and removed an entire category of failure
+                modes.
+            </p>
 
-                    <p>
-                        <code>vendor_dlkm</code> contains vendor-owned hardware modules. These are
-                        SoC and device-specific drivers supplied by the vendor and loaded
-                        dynamically at runtime, outside of the early boot path.
-                    </p>
+            <p>
+                <code>vendor_dlkm</code> contains vendor-owned hardware modules. These are
+                SoC and device-specific drivers supplied by the vendor and loaded
+                dynamically at runtime, outside of the early boot path.
+            </p>
 
-                    <p>
-                        <code>system_dlkm</code> contains core GKI modules. These modules are treated
-                        as an extension of the kernel itself under the GKI model. They are expected
-                        to remain untouched by OEMs and are governed by Google’s kernel and KMI
-                        policy, rather than vendor customization.
-                    </p>
+            <p>
+                <code>system_dlkm</code> contains core GKI modules. These modules are treated
+                as an extension of the kernel itself under the GKI model. They are expected
+                to remain untouched by OEMs and are governed by Google’s kernel and KMI
+                policy, rather than vendor customization.
+            </p>
 
-                    <p>
-                        Bazel encodes this logic implicitly. Without it, the rules have to be made
-                        explicit.
-                    </p>
+            <p>
+                Bazel encodes this logic implicitly. Without it, the rules have to be made
+                explicit.
+            </p>
 
-                    <p>
-                        The partition assignment is driven by an explicit priority order.
-                        Modules listed for <code>vendor_kernel_boot</code> are placed there
-                        unconditionally. If a module is not listed there, it is then evaluated
-                        against <code>vendor_dlkm</code>. Any remaining modules fall back to
-                        <code>system_dlkm</code>.
-                    </p>
-                    <hr>
-                    <h1>Stripping, Staging, and Dependency Resolution</h1>
+            <p>
+                The partition assignment is driven by an explicit priority order.
+                Modules listed for <code>vendor_kernel_boot</code> are placed there
+                unconditionally. If a module is not listed there, it is then evaluated
+                against <code>vendor_dlkm</code>. Any remaining modules fall back to
+                <code>system_dlkm</code>.
+            </p>
+            <hr>
+            <h1>Stripping, Staging, and Dependency Resolution</h1>
 
-                    <p>
-                        Every module is stripped of debug symbols before being staged. This is not
-                        strictly required by Android, but it is the standard practice used by
-                        Google and most downstream kernel builders.
-                    </p>
+            <p>
+                Every module is stripped of debug symbols before being staged. This is not
+                strictly required by Android, but it is the standard practice used by
+                Google and most downstream kernel builders.
+            </p>
 
-                    <p>
-                        Unstripped modules are significantly larger, often ballooning to hundreds
-                        of megabytes, which is undesirable for production images. Stripping keeps
-                        module size reasonable and avoids unnecessary bloat in DLKM partitions.
-                    </p>
+            <p>
+                Unstripped modules are significantly larger, often ballooning to hundreds
+                of megabytes, which is undesirable for production images. Stripping keeps
+                module size reasonable and avoids unnecessary bloat in DLKM partitions.
+            </p>
 
-                    <p>
-                        Once modules are placed into their respective partition trees, the script
-                        runs <code>depmod</code> separately for each partition root. This step is
-                        critical.
-                    </p>
+            <p>
+                Once modules are placed into their respective partition trees, the script
+                runs <code>depmod</code> separately for each partition root. This step is
+                critical.
+            </p>
 
-                    <p>
-                        Its job is to generate the metadata required for the kernel to understand
-                        the dependency structure of kernel modules at runtime.
-                    </p>
+            <p>
+                Its job is to generate the metadata required for the kernel to understand
+                the dependency structure of kernel modules at runtime.
+            </p>
 
-                    <p>
-                        This metadata is what allows the kernel and userspace tooling to determine
-                        load order, resolve symbol requirements, and handle inter-module
-                        relationships correctly.
-                    </p>
+            <p>
+                This metadata is what allows the kernel and userspace tooling to determine
+                load order, resolve symbol requirements, and handle inter-module
+                relationships correctly.
+            </p>
 
 
-                    <p>
-                        Running it per-partition ensures that dependency information is generated
-                        against the exact set of modules visible within that partition root. This
-                        allows the kernel to correctly resolve inter-module dependencies at
-                        runtime, including cross-partition references, without leaking assumptions
-                        from unrelated module trees.
-                    </p>
+            <p>
+                Running it per-partition ensures that dependency information is generated
+                against the exact set of modules visible within that partition root. This
+                allows the kernel to correctly resolve inter-module dependencies at
+                runtime, including cross-partition references, without leaking assumptions
+                from unrelated module trees.
+            </p>
 
-                    <p>
-                        To make this work, the script temporarily provides <code>depmod</code>
-                        with the same metadata files Bazel would normally supply:
-                        <code>modules.builtin</code>, <code>modules.order</code>, and
-                        <code>System.map</code>.
-                    </p>
+            <p>
+                To make this work, the script temporarily provides <code>depmod</code>
+                with the same metadata files Bazel would normally supply:
+                <code>modules.builtin</code>, <code>modules.order</code>, and
+                <code>System.map</code>.
+            </p>
 
-                    <p>
-                        Once dependency generation is complete, all temporary artifacts are
-                        removed, leaving behind a clean, self-contained module tree.
-                    </p>
+            <p>
+                Once dependency generation is complete, all temporary artifacts are
+                removed, leaving behind a clean, self-contained module tree.
+            </p>
 
-                    <p>
-                        Finally, each DLKM tree is packaged into an EROFS image using
-                        <code>mkfs.erofs</code>, and the <code>vendor_kernel_boot</code>
-                        is packaged with <code>mkbootimg</code>.
-                    </p>
+            <p>
+                Finally, each DLKM tree is packaged into an EROFS image using
+                <code>mkfs.erofs</code>, and the <code>vendor_kernel_boot</code>
+                is packaged with <code>mkbootimg</code>.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>Building the kernel binary into AOSP</h1>
-                    <p>Now that the prebuilt kernel directory was built, I had to finally start up a build and get my phone booted, right?
-                        Well, yes, but here's where it gets good.
-                    </p>
+            <h1>Building the kernel binary into AOSP</h1>
+            <p>Now that the prebuilt kernel directory was built, I had to finally start up a build and get my phone
+                booted, right?
+                Well, yes, but here's where it gets good.
+            </p>
 
-                    <p>
-                        The kernel built. The images were picked up correctly. The build made
-                        it much further than before.
-                    </p>
+            <p>
+                The kernel built. The images were picked up correctly. The build made
+                it much further than before.
+            </p>
 
-                    <p>
-                        <strong>And then it failed.</strong>
-                    </p>
+            <p>
+                <strong>And then it failed.</strong>
+            </p>
 
-                    <p>
-                        Not with a compiler error, not with a missing module. But with a hard stop
-                        from VINTF.
-                    </p>
+            <p>
+                Not with a compiler error, not with a missing module. But with a hard stop
+                from VINTF.
+            </p>
 
-                    <p>
-                        VINTF, or the Vendor Interface, is Android’s way of enforcing
-                        compatibility between the kernel, vendor components, and userspace.
-                        It does not care whether your kernel boots. It cares whether your kernel
-                        is <em>allowed</em> to boot.
-                    </p>
+            <p>
+                VINTF, or the Vendor Interface, is Android’s way of enforcing
+                compatibility between the kernel, vendor components, and userspace.
+                It does not care whether your kernel boots. It cares whether your kernel
+                is <em>allowed</em> to boot.
+            </p>
 
-                    <p>
-                        The error was exactly like so:
-                    </p>
+            <p>
+                The error was exactly like so:
+            </p>
 
-                    <pre><code>
+            <pre><code class="language-bash">
 2025-12-12 07:53:36 - check_target_files_vintf.py - INFO    : stderr: ERROR: files are incompatible: Runtime info and framework compatibility matrix are incompatible: No kernel entry found for kernel version 6.1 at kernel FCM version 6. The following kernel requirements are checked:
 
   Minimum LTS: 4.19.191, kernel FCM version: 6
@@ -727,60 +743,60 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
   Minimum LTS: 6.12.0, kernel FCM version: 202504, with conditionals
   Minimum LTS: 6.12.0, kernel FCM version: 202504, with conditionals: Success
                     </code></pre>
-                    <hr>
-                    <h1>The Apparent Contradiction</h1>
+            <hr>
+            <h1>The Apparent Contradiction</h1>
 
-                    <p>
-                        On paper, the failure made sense. The Pixel 7 ships with API level 33. API level 33 maps to FCM level 7.
-                        FCM level 7 officially supports kernels up to 5.15.
-                    </p>
+            <p>
+                On paper, the failure made sense. The Pixel 7 ships with API level 33. API level 33 maps to FCM level 7.
+                FCM level 7 officially supports kernels up to 5.15.
+            </p>
 
-                    <p>
-                        But the kernel I was building was 6.1.141.
-                    </p>
+            <p>
+                But the kernel I was building was 6.1.141.
+            </p>
 
-                    <p>
-                        From VINTF’s perspective, this should never work. Except it clearly <em>does</em>.
-                    </p>
+            <p>
+                From VINTF’s perspective, this should never work. Except it clearly <em>does</em>.
+            </p>
 
-                    <p>
-                        Pixel 7 runs 6.1 kernels on the exact same
-                        API and FCM levels. There was no experimental configuration here. This
-                        was not undefined behavior. The stock kernel itself was 6.1.124.
-                    </p>
+            <p>
+                Pixel 7 runs 6.1 kernels on the exact same
+                API and FCM levels. There was no experimental configuration here. This
+                was not undefined behavior. The stock kernel itself was 6.1.124.
+            </p>
 
-                    <p>
-                        Which meant one thing: the rules we were looking at were incomplete.
-                    </p>
-                    <hr>
+            <p>
+                Which meant one thing: the rules we were looking at were incomplete.
+            </p>
+            <hr>
 
-                    <h1>What was actually happening</h1>
+            <h1>What was actually happening</h1>
 
-                    <p>
-                        At this point, we stopped trying to "fix" the error and started
-                        to trace it instead.
-                    </p>
+            <p>
+                At this point, we stopped trying to "fix" the error and started
+                to trace it instead.
+            </p>
 
-                    <p>
-                        We dug through the VINTF validation logic and the code paths responsible
-                        for determining the effective kernel compatibility level. We even edited
-                        the code of the file that checks for the kernel requirements with VINTF and
-                        added more debugging. What we found was not a configuration flag, a manifest override, 
-                        or a device-specific exception.
-                    </p>
+            <p>
+                We dug through the VINTF validation logic and the code paths responsible
+                for determining the effective kernel compatibility level. We even edited
+                the code of the file that checks for the kernel requirements with VINTF and
+                added more debugging. What we found was not a configuration flag, a manifest override,
+                or a device-specific exception.
+            </p>
 
-                    <p>
-                        It was a heuristic.
-                    </p>
+            <p>
+                It was a heuristic.
+            </p>
 
-                    <p>
-                        Google’s build logic does not rely solely on the numeric kernel version.
-                        It also inspects the kernel release string. When a specific prefix (<code>android14-11</code>) is
-                        detected, the FCM kernel level is silently adjusted during
-                        validation.
-                    </p>
+            <p>
+                Google’s build logic does not rely solely on the numeric kernel version.
+                It also inspects the kernel release string. When a specific prefix (<code>android14-11</code>) is
+                detected, the FCM kernel level is silently adjusted during
+                validation.
+            </p>
 
-                    <pre><code>// To support devices without GKI, RuntimeInfo::fetchAllInformation does not report errors
+            <pre><code class="language-bash">// To support devices without GKI, RuntimeInfo::fetchAllInformation does not report errors
     // if kernel level cannot be retrieved. If so, fetch kernel FCM version from device HAL
     // manifest and store it in RuntimeInfo too.
     if (flags & RuntimeInfo::FetchFlag::KERNEL_FCM) {
@@ -801,277 +817,277 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
         }
     }</code></pre>
 
-                    <p>Snippet from
-    <a href="https://android.googlesource.com/platform/system/libvintf/+/master/VintfObject.cpp#671">
-        VintfObject.cpp#671
-    </a>
-</p>
-                    <p>
-                        In other words, compatibility was being inferred from metadata, not
-                        declared explicitly.
-                    </p>
+            <p>Snippet from
+                <a href="https://android.googlesource.com/platform/system/libvintf/+/master/VintfObject.cpp#671">
+                    VintfObject.cpp#671
+                </a>
+            </p>
+            <p>
+                In other words, compatibility was being inferred from metadata, not
+                declared explicitly.
+            </p>
 
-                    <p>
-                        My custom kernel was functionally identical to Google’s, but it did not
-                        carry the expected release prefix. Because of that, VINTF did not recognize
-                        it as a Google-uprevved kernel.
-                    </p>
+            <p>
+                My custom kernel was functionally identical to Google’s, but it did not
+                carry the expected release prefix. Because of that, VINTF did not recognize
+                it as a Google-uprevved kernel.
+            </p>
 
-                    <p>
-                        Once that heuristic failed to trigger, VINTF treated the kernel like it
-                        would on any other device: it validated it strictly against the FCM level
-                        declared by the device configuration, without applying any Google-specific
-                        exceptions.
-                    </p>
+            <p>
+                Once that heuristic failed to trigger, VINTF treated the kernel like it
+                would on any other device: it validated it strictly against the FCM level
+                declared by the device configuration, without applying any Google-specific
+                exceptions.
+            </p>
 
-                    <p>
-                        On Pixel devices, those exceptions exist for a reason. The Pixel 6 and 7
-                        families were ported from older kernels to 6.1 late in their lifecycle.
-                        To make that work, Google relaxed the usual FCM checks when a known release
-                        signature is detected.
-                    </p>
+            <p>
+                On Pixel devices, those exceptions exist for a reason. The Pixel 6 and 7
+                families were ported from older kernels to 6.1 late in their lifecycle.
+                To make that work, Google relaxed the usual FCM checks when a known release
+                signature is detected.
+            </p>
 
-                    <p>
-                        My kernel did not match that signature, so the exception was never applied.
-                        As a result, VINTF enforced the standard FCM rules, and the build failed.
-                    </p>
+            <p>
+                My kernel did not match that signature, so the exception was never applied.
+                As a result, VINTF enforced the standard FCM rules, and the build failed.
+            </p>
 
-                    <hr>
-                    <h1>Why this was so hard to see</h1>
+            <hr>
+            <h1>Why this was so hard to see</h1>
 
-                    <p>
-                        This behavior is not documented.
-                    </p>
+            <p>
+                This behavior is not documented.
+            </p>
 
-                    <p>
-                        Nothing in the manifests explains it. Nothing in the device configuration
-                        hints at it. If you approach the problem assuming the system is purely
-                        declarative, you will never find the answer.
-                    </p>
+            <p>
+                Nothing in the manifests explains it. Nothing in the device configuration
+                hints at it. If you approach the problem assuming the system is purely
+                declarative, you will never find the answer.
+            </p>
 
-                    <p>
-                        The only way to uncover it is to read the code and observe how the system
-                        behaves when the metadata changes.
-                    </p>
+            <p>
+                The only way to uncover it is to read the code and observe how the system
+                behaves when the metadata changes.
+            </p>
 
-                    <p>
-                        Once the prefix was restored and the kernel release string matched what
-                        Pixel devices expect, the VINTF error disappeared entirely.
-                    </p>
+            <p>
+                Once the prefix was restored and the kernel release string matched what
+                Pixel devices expect, the VINTF error disappeared entirely.
+            </p>
 
-                    <hr>
-                    
-                    <h1>Getting the kernel to fully boot</h1>
+            <hr>
 
-                    <p>Now, everything was nearly done. I wasn't relying on bazel at all, and it was building normally.
-                        All I needed to check now, was whether it actually boots or not.
-                    </p>
+            <h1>Getting the kernel to fully boot</h1>
 
-                    <p>Well, not everything can go well, so no, it didn't. For a very specific reason. This actually
-                        completely hardbricked my phone too, and I had to format it and downgrade to Android 16 QPR0.
-                    </p>
-                    
-                    <p>
-                        The reason turned out to be subtle, deeply tied to how GKI works, and
-                        completely invisible until runtime.
-                    </p>
+            <p>Now, everything was nearly done. I wasn't relying on bazel at all, and it was building normally.
+                All I needed to check now, was whether it actually boots or not.
+            </p>
 
-                    <hr>
+            <p>Well, not everything can go well, so no, it didn't. For a very specific reason. This actually
+                completely hardbricked my phone too, and I had to format it and downgrade to Android 16 QPR0.
+            </p>
 
-                    <h1>GKI, DLKM, and Why Modules Are Special</h1>
+            <p>
+                The reason turned out to be subtle, deeply tied to how GKI works, and
+                completely invisible until runtime.
+            </p>
+
+            <hr>
+
+            <h1>GKI, DLKM, and Why Modules Are Special</h1>
 
 
-                    <p>
-                        Under the GKI model, the kernel image and device-specific functionality are
-                        deliberately split.
-                    </p>
+            <p>
+                Under the GKI model, the kernel image and device-specific functionality are
+                deliberately split.
+            </p>
 
-                    <p>
-                        The kernel image itself is generic and shared across devices, while most
-                        hardware and feature-specific logic is delivered through loadable kernel
-                        modules. These modules live on separate dynamic partitions inside the super
-                        image, most notably <code>system_dlkm</code> and <code>vendor_dlkm</code>.
-                    </p>
+            <p>
+                The kernel image itself is generic and shared across devices, while most
+                hardware and feature-specific logic is delivered through loadable kernel
+                modules. These modules live on separate dynamic partitions inside the super
+                image, most notably <code>system_dlkm</code> and <code>vendor_dlkm</code>.
+            </p>
 
-                    <p>
-                        This split is the core idea behind GKI: allow the kernel image to evolve
-                        independently from vendor-specific components, without forcing every OEM
-                        to ship a fully custom kernel.
-                    </p>
+            <p>
+                This split is the core idea behind GKI: allow the kernel image to evolve
+                independently from vendor-specific components, without forcing every OEM
+                to ship a fully custom kernel.
+            </p>
 
-                    <p>
-                        It is important to distinguish between different kinds of modules.
-                    </p>
+            <p>
+                It is important to distinguish between different kinds of modules.
+            </p>
 
-                    <p>
-                        <strong>GKI modules</strong> are the modules placed in
-                        <code>system_dlkm</code>. These are considered part of the GKI surface
-                        itself and are treated as an extension of the kernel image. They are built
-                        and signed by Google and are expected to follow the GKI Kernel Module
-                        Interface (KMI) guarantees for a given release.
-                    </p>
+            <p>
+                <strong>GKI modules</strong> are the modules placed in
+                <code>system_dlkm</code>. These are considered part of the GKI surface
+                itself and are treated as an extension of the kernel image. They are built
+                and signed by Google and are expected to follow the GKI Kernel Module
+                Interface (KMI) guarantees for a given release.
+            </p>
 
-                    <p>
-                        Because of this, the kernel image and its corresponding GKI modules are
-                        tightly coupled. While GKI exists to provide a stable interface, that
-                        stability is scoped and versioned. A kernel image expects a matching set of
-                        GKI modules built against the same KMI generation.
-                    </p>
+            <p>
+                Because of this, the kernel image and its corresponding GKI modules are
+                tightly coupled. While GKI exists to provide a stable interface, that
+                stability is scoped and versioned. A kernel image expects a matching set of
+                GKI modules built against the same KMI generation.
+            </p>
 
-                    <p>
-                        <code>vendor_dlkm</code> modules are different. These are vendor-owned,
-                        device-specific drivers. They are not part of the GKI surface and do not
-                        benefit from the same compatibility guarantees. In practice, they must be
-                        built against the exact kernel they are intended to run on.
-                    </p>
+            <p>
+                <code>vendor_dlkm</code> modules are different. These are vendor-owned,
+                device-specific drivers. They are not part of the GKI surface and do not
+                benefit from the same compatibility guarantees. In practice, they must be
+                built against the exact kernel they are intended to run on.
+            </p>
 
-                    <p>
-                        This is where many assumptions break down.
-                    </p>
+            <p>
+                This is where many assumptions break down.
+            </p>
 
-                    <p>
-                        GKI allows the kernel image and <em>GKI modules</em> to be updated as a
-                        coherent, Google-controlled unit, while vendor modules remain tightly bound
-                        to the kernel they were built against. Android may store these pieces on
-                        different partitions, but at runtime the dependencies are very real.
-                    </p>
+            <p>
+                GKI allows the kernel image and <em>GKI modules</em> to be updated as a
+                coherent, Google-controlled unit, while vendor modules remain tightly bound
+                to the kernel they were built against. Android may store these pieces on
+                different partitions, but at runtime the dependencies are very real.
+            </p>
 
-                    <hr>
-                    <h1>Cross-Partition dependencies</h1>
+            <hr>
+            <h1>Cross-Partition dependencies</h1>
 
-                    <p>
-                        Another important detail is that modules are not isolated by partition.
-                    </p>
+            <p>
+                Another important detail is that modules are not isolated by partition.
+            </p>
 
-                    <p>
-                        Modules in <code>vendor_dlkm</code> are allowed to depend on modules in
-                        <code>system_dlkm</code>. These dependencies are recorded in
-                        <code>modules.dep</code> during the build.
-                    </p>
+            <p>
+                Modules in <code>vendor_dlkm</code> are allowed to depend on modules in
+                <code>system_dlkm</code>. These dependencies are recorded in
+                <code>modules.dep</code> during the build.
+            </p>
 
-                    <p>
-                        At runtime, when a vendor module is loaded, the kernel automatically
-                        resolves these dependencies and loads the required GKI modules from
-                        <code>system_dlkm</code>.
-                    </p>
+            <p>
+                At runtime, when a vendor module is loaded, the kernel automatically
+                resolves these dependencies and loads the required GKI modules from
+                <code>system_dlkm</code>.
+            </p>
 
-                    <p>
-                        This only works if dependency metadata is correct and the modules can
-                        actually be loaded by the kernel.
-                    </p>
+            <p>
+                This only works if dependency metadata is correct and the modules can
+                actually be loaded by the kernel.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>Early module load errors</h1>
+            <h1>Early module load errors</h1>
 
-                    <p>
-                        The first sign of trouble appeared very early during boot from <code>pstore</code>:
-                    </p>
+            <p>
+                The first sign of trouble appeared very early during boot from <code>pstore</code>:
+            </p>
 
-                    <pre><code>[    0.408049][    T1] init: Failed to load kernel modules</code></pre>
+            <pre><code class="language-bash">[    0.408049][    T1] init: Failed to load kernel modules</code></pre>
 
-                    <p>
-                        Digging deeper revealed a specific failure:
-                    </p>
+            <p>
+                Digging deeper revealed a specific failure:
+            </p>
 
-                    <pre><code>
+            <pre><code class="language-bash">
 [    0.382399][  T122] init: Failed to insmod '/lib/modules/ufs-pixel-fips140.ko'
 with args 'fips_first_lba=86406 fips_last_lba=86917 fips_lu=0 use_hw_keys=true':
 Exec format error
                     </code></pre>
 
-                    <p>
-                        This module is extremely sensitive and tightly coupled to the kernel
-                        configuration. Disabling it via
-                        <code>CONFIG_SCSI_UFS_PIXEL_FIPS140=n</code> allowed it to get
-                        further in the boot process.
-                    </p>
+            <p>
+                This module is extremely sensitive and tightly coupled to the kernel
+                configuration. Disabling it via
+                <code>CONFIG_SCSI_UFS_PIXEL_FIPS140=n</code> allowed it to get
+                further in the boot process.
+            </p>
 
-                    <p>
-                        The device now booted, but major subsystems were missing.
-                    </p>
+            <p>
+                The device now booted, but major subsystems were missing.
+            </p>
 
-                    <hr>
-                    <h1>It Booted, But Nothing Worked</h1>
+            <hr>
+            <h1>It Booted, But Nothing Worked</h1>
 
-                    <p>
-                        WiFi, Bluetooth, NFC, UWB, and USB networking were all broken.
-                    </p>
+            <p>
+                WiFi, Bluetooth, NFC, UWB, and USB networking were all broken.
+            </p>
 
-                    <p>
-                        A quick <code>lsmod</code> showed that many critical modules were simply
-                        not loaded, even though they had been built correctly.
-                    </p>
+            <p>
+                A quick <code>lsmod</code> showed that many critical modules were simply
+                not loaded, even though they had been built correctly.
+            </p>
 
-                    <p>
-                        Attempting to load them manually resulted in a flood of errors like:
-                    </p>
+            <p>
+                Attempting to load them manually resulted in a flood of errors like:
+            </p>
 
-                    <pre><code>
+            <pre><code class="language-bash">
 bcmdhd4389: Unknown symbol cfg80211_register_netdevice (err -2)
 bcmdhd4389: Unknown symbol rfkill_alloc (err -2)
 bluetooth: Unknown symbol rfkill_register (err -2)
                     </code></pre>
 
-                    <p>
-                        These errors are extremely specific. They do not indicate missing code.
-                        They indicate that the kernel refuses to link the module at load time.
-                    </p>
+            <p>
+                These errors are extremely specific. They do not indicate missing code.
+                They indicate that the kernel refuses to link the module at load time.
+            </p>
 
-                    <p>
-                        Even more telling was this:
-                    </p>
+            <p>
+                Even more telling was this:
+            </p>
 
-                    <pre><code>
+            <pre><code class="language-bash">
 insmod rfkill.ko
 insmod: failed to load rfkill.ko: Permission denied
                     </code></pre>
 
-                    <hr>
-                    <h1>Module signing</h1>
+            <hr>
+            <h1>Module signing</h1>
 
-                    <p>
-                        At this point, it became clear to cyberknight777.
-                    </p>
+            <p>
+                At this point, it became clear to cyberknight777.
+            </p>
 
-                    <p>
-                        The modules were present. Their dependencies were correct. The symbols
-                        existed in the kernel. But the kernel was refusing to load them.
-                    </p>
+            <p>
+                The modules were present. Their dependencies were correct. The symbols
+                existed in the kernel. But the kernel was refusing to load them.
+            </p>
 
-                    <p>
-                        On Android, core GKI kernel modules (<code>system_dlkm</code>) are not just built. They are signed.
-                    </p>
+            <p>
+                On Android, core GKI kernel modules (<code>system_dlkm</code>) are not just built. They are signed.
+            </p>
 
-                    <p>
-                        The kernel enforces module signature verification. Any module that is not
-                        signed with the expected key is rejected at load time. This failure
-                        surfaces indirectly as “unknown symbol” errors or permission failures.
-                    </p>
+            <p>
+                The kernel enforces module signature verification. Any module that is not
+                signed with the expected key is rejected at load time. This failure
+                surfaces indirectly as “unknown symbol” errors or permission failures.
+            </p>
 
-                    <p>
-                        Bazel normally handles this silently.
-                    </p>
+            <p>
+                Bazel normally handles this silently.
+            </p>
 
-                    <p>
-                        By replacing Bazel, I had also removed the step that signs every module
-                        with the kernel’s build-time key pair.
-                    </p>
+            <p>
+                By replacing Bazel, I had also removed the step that signs every module
+                with the kernel’s build-time key pair.
+            </p>
 
-                    <hr>
-                    <h1>Re-Signing the modules</h1>
+            <hr>
+            <h1>Re-Signing the modules</h1>
 
-                    <p>
-                        The fix was straightforward once we understood the mechanisms
-                    </p>
+            <p>
+                The fix was straightforward once we understood the mechanisms
+            </p>
 
-                    <p>
-                        After staging the modules into their respective DLKM trees, every
-                        <code>.ko</code> needed to be signed using the kernel’s own signing tools
-                        and keys.
-                    </p>
+            <p>
+                After staging the modules into their respective DLKM trees, every
+                <code>.ko</code> needed to be signed using the kernel’s own signing tools
+                and keys.
+            </p>
 
-                    <pre><code>
+            <pre><code class="language-bash">
 # re-sign modules
 
 SIGN_FILE="${OUT_DIR}/scripts/sign-file"
@@ -1085,15 +1101,16 @@ if [ -f "${SIGN_FILE}" ] && [ -f "${SIGN_KEY}" ] && [ -f "${SIGN_CERT}" ]; then
 fi
                     </code></pre>
 
-                    <p>
-    This was taken from kleaf's own <code>build_system_dlkm</code> function:
-    <a href="https://android.googlesource.com/kernel/build/+/refs/heads/master-kernel-build-2022/build_utils.sh#340">
-        build_utils.sh#340
-    </a>
-    :
-</p>
+            <p>
+                This was taken from kleaf's own <code>build_system_dlkm</code> function:
+                <a
+                    href="https://android.googlesource.com/kernel/build/+/refs/heads/master-kernel-build-2022/build_utils.sh#340">
+                    build_utils.sh#340
+                </a>
+                :
+            </p>
 
-                    <pre><code>
+            <pre><code class="language-bash">
   # Re-sign the stripped modules using kernel build time key
   # If SYSTEM_DLKM_RE_SIGN=0, this is a trick in Kleaf for building
   # device-specific system_dlkm image, where keys are not available but the
@@ -1107,120 +1124,124 @@ fi
   fi
                     </code></pre>
 
-                    <p>
-                        This step restores the trust relationship between the kernel and its
-                        modules.
-                    </p>
+            <p>
+                This step restores the trust relationship between the kernel and its
+                modules.
+            </p>
 
-                    <p>
-                        Once the modules were properly signed, all subsystems loaded correctly.
-                        WiFi, Bluetooth, NFC, and USB came up without further changes.
-                    </p>
-                    <hr>
-                    <h1>Why this was so easy to miss</h1>
+            <p>
+                Once the modules were properly signed, all subsystems loaded correctly.
+                WiFi, Bluetooth, NFC, and USB came up without further changes.
+            </p>
+            <hr>
+            <h1>Why this was so easy to miss</h1>
 
-                    <p>
-                        None of this is obvious if you approach the problem purely from a build
-                        perspective.
-                    </p>
+            <p>
+                None of this is obvious if you approach the problem purely from a build
+                perspective.
+            </p>
 
-                    <p>
-                        The kernel built. The modules built. The images flashed. The failure only
-                        appeared at runtime, and the error messages pointed in misleading
-                        directions.
-                    </p>
+            <p>
+                The kernel built. The modules built. The images flashed. The failure only
+                appeared at runtime, and the error messages pointed in misleading
+                directions.
+            </p>
 
-                    <p>
-                        This is another example of an implicit contract enforced by the Android
-                        kernel pipeline. Bazel does not just build code. It encodes policy.
-                    </p>
+            <p>
+                This is another example of an implicit contract enforced by the Android
+                kernel pipeline. Bazel does not just build code. It encodes policy.
+            </p>
 
-                    <p>
-                        Once that final piece was in place, the kernel booted cleanly, without disabling
-                        the signing and the modules fully loaded.
-                    </p>
-                    <hr>
-                    <h1>We did it!</h1>
+            <p>
+                Once that final piece was in place, the kernel booted cleanly, without disabling
+                the signing and the modules fully loaded.
+            </p>
+            <hr>
+            <h1>We did it!</h1>
 
-                    <p>
-                        This was never about proving that Bazel is bad, or that Google’s tooling is
-                        wrong. Bazel exists for real reasons, at real scale.
-                    </p>
+            <p>
+                This was never about proving that Bazel is bad, or that Google’s tooling is
+                wrong. Bazel exists for real reasons, at real scale.
+            </p>
 
-                    <p>
-                        This was about understanding what that tooling actually does.
-                    </p>
+            <p>
+                This was about understanding what that tooling actually does.
+            </p>
 
-                    <p>
-                        Once Bazel was removed, nothing magically became simpler. In fact, things
-                        became harder. Responsibilities that were previously implicit had to be
-                        made explicit. Policies had to be discovered, not assumed. Contracts had
-                        to be honored manually.
-                    </p>
+            <p>
+                Once Bazel was removed, nothing magically became simpler. In fact, things
+                became harder. Responsibilities that were previously implicit had to be
+                made explicit. Policies had to be discovered, not assumed. Contracts had
+                to be honored manually.
+            </p>
 
-                    <p>
-                        But in doing so, the system stopped being opaque.
-                    </p>
+            <p>
+                But in doing so, the system stopped being opaque.
+            </p>
 
-                    <p>
-                        What emerged was not a fragile hack, but a conventional Linux kernel build
-                        pipeline that behaves exactly as Android expects, as long as its rules are
-                        followed. The difficulty was never in building the kernel. It was in
-                        learning which parts of the process were technical, and which parts were
-                        policy.
-                    </p>
+            <p>
+                What emerged was not a fragile hack, but a conventional Linux kernel build
+                pipeline that behaves exactly as Android expects, as long as its rules are
+                followed. The difficulty was never in building the kernel. It was in
+                learning which parts of the process were technical, and which parts were
+                policy.
+            </p>
 
-                    <p>
-                        A special thanks goes to <a href="https://cyberknight777.dev/" class="blog-link"
-                            </a>cyberknight777</a>, who helped me do all this, did a lot of the tracing,
-                            and stayed with me during the bringup.
-                    </p>
+            <p>
+                A special thanks goes to <a href="https://cyberknight777.dev/" class="blog-link" </a>cyberknight777</a>,
+                who helped me do all this, did a lot of the tracing,
+                and stayed with me during the bringup.
+            </p>
 
-                    <p>
-                        The full build script developed during this process is available here:
-                        <a href="https://github.com/sidharthify/auto">
-                            https://github.com/sidharthify/auto
-                        </a>
-                    </p>
+            <p>
+                The full build script developed during this process is available here:
+                <a href="https://github.com/sidharthify/auto">
+                    https://github.com/sidharthify/auto
+                </a>
+            </p>
 
-                    <p>
-                        The kernel source itself, including all related changes, lives here:
-                        <a href="https://github.com/sidharthify/android_kernel_google_gs201">
-                            https://github.com/sidharthify/android_kernel_google_gs201
-                        </a>
-                    </p>
+            <p>
+                The kernel source itself, including all related changes, lives here:
+                <a href="https://github.com/sidharthify/android_kernel_google_gs201">
+                    https://github.com/sidharthify/android_kernel_google_gs201
+                </a>
+            </p>
 
-                    <p>
-                        The kernel is named <strong>syd</strong>. The name is not meant as branding.
-                        It is a reference to Syd Barrett, and more specifically to the idea of
-                        creation that is raw, unstable, and unconcerned with polish or approval.
-                    </p>
+            <p>
+                The kernel is named <strong>syd</strong>. The name is not meant as branding.
+                It is a reference to Syd Barrett, and more specifically to the idea of
+                creation that is raw, unstable, and unconcerned with polish or approval.
+            </p>
 
-                    <p>
-                        This kernel exists because the system did not make sense until it was
-                        understood end to end. The name reflects that process more than the
-                        result.
-                    </p>
+            <p>
+                This kernel exists because the system did not make sense until it was
+                understood end to end. The name reflects that process more than the
+                result.
+            </p>
 
-                    <p>
-                        If there is a takeaway from all of this, it is that most complexity in
-                        modern systems does not come from necessity. It comes from abstraction
-                        layers quietly encoding decisions on your behalf.
-                    </p>
+            <p>
+                If there is a takeaway from all of this, it is that most complexity in
+                modern systems does not come from necessity. It comes from abstraction
+                layers quietly encoding decisions on your behalf.
+            </p>
 
-                    <p>
-                        This was my longest blog yet, and I am glad it is. Thank you for reading!
-                    </p>
+            <p>
+                This was my longest blog yet, and I am glad it is. Thank you for reading!
+            </p>
 
-                    
-      <p><a href="../">← back to all posts</a></p>
-    </article>
-  </main>
 
-  <footer class="shell footer">
-    <p>© 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a></p>
-  </footer>
+            <p><a href="../">← back to all posts</a></p>
+        </article>
+    </main>
 
-  <script src="../assets/js/navbar.js"></script>
+    <footer class="shell footer">
+        <p>© 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a></p>
+    </footer>
+
+    <script src="../assets/js/navbar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
 </body>
+
 </html>

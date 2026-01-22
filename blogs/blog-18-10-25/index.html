@@ -1,81 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Writing a Nix helper script — 18/10/25 • sidharthify</title>
-  <meta name="theme-color" content="#1e1e2e" />
-  <link rel="stylesheet" href="../../assets/css/style.css" />
-  <link rel="stylesheet" href="../../assets/css/blog.css" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Writing a Nix helper script — 18/10/25 • sidharthify</title>
+    <meta name="theme-color" content="#1e1e2e" />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../assets/css/blog.css" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
 </head>
+
 <body>
-  <a class="skip-link" href="#main">Skip to main content</a>
+    <a class="skip-link" href="#main">Skip to main content</a>
 
-  <header class="shell">
-    <nav class="nav" aria-label="Primary">
-      <a class="brand" href="../../">sidharthify</a>
-      <ul class="menu">
-        <li><a href="../../">home</a></li>
-        <li><a href="../../about/">about</a></li>
-        <li><a aria-current="page" href="../">blog</a></li>
-        <li><a href="../../music/">music</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header class="shell">
+        <nav class="nav" aria-label="Primary">
+            <a class="brand" href="../../">sidharthify</a>
+            <ul class="menu">
+                <li><a href="../../">home</a></li>
+                <li><a href="../../about/">about</a></li>
+                <li><a aria-current="page" href="../">blog</a></li>
+                <li><a href="../../music/">music</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <main id="main" class="shell">
-    <article>
-      <header>
-        <h1>Writing a Nix helper script</h1>
-        <p class="post-meta">18/10/25</p>
-      </header>
+    <main id="main" class="shell">
+        <article>
+            <header>
+                <h1>Writing a Nix helper script</h1>
+                <p class="post-meta">18/10/25</p>
+            </header>
 
-                    <p>
-                        On a random Thursday evening, I had the idea to run a bash command that’d write directly into my
-                        <code>packages.nix</code> file.
-                        That single command eventually became what I now call <strong>syd</strong>.
-                    </p>
+            <p>
+                On a random Thursday evening, I had the idea to run a bash command that’d write directly into my
+                <code>packages.nix</code> file.
+                That single command eventually became what I now call <strong>syd</strong>.
+            </p>
 
-                    <p>
-                        There wasn’t a plan or a roadmap or literally anything that's linked with productivity, just
-                        that quiet moment where you fix a small annoyance,
-                        and it slowly becomes something that feels right.
-                        That’s what <strong>syd</strong> is. Something that took form over time.
-                    </p>
+            <p>
+                There wasn’t a plan or a roadmap or literally anything that's linked with productivity, just
+                that quiet moment where you fix a small annoyance,
+                and it slowly becomes something that feels right.
+                That’s what <strong>syd</strong> is. Something that took form over time.
+            </p>
 
-                    <h1>What is syd?</h1>
-                    <p>
-                        <strong>syd</strong> is a lightweight command-line tool written in <strong>Python</strong>
-                        for managing your <strong>NixOS</strong> packages declaratively.
-                        It lets you install, remove, list, and search for packages by directly editing your
-                        Nix configuration files, so you don’t have to open them manually every time you want to make a
-                        change.
-                    </p>
+            <h1>What is syd?</h1>
+            <p>
+                <strong>syd</strong> is a lightweight command-line tool written in <strong>Python</strong>
+                for managing your <strong>NixOS</strong> packages declaratively.
+                It lets you install, remove, list, and search for packages by directly editing your
+                Nix configuration files, so you don’t have to open them manually every time you want to make a
+                change.
+            </p>
 
-                    <p>
-                        It was originally written in <strong>Bash</strong>, then rewritten in <strong>Python</strong> a
-                        day later -
-                        mostly because it felt cleaner, and gave me more room to build on top of it.
-                    </p>
+            <p>
+                It was originally written in <strong>Bash</strong>, then rewritten in <strong>Python</strong> a
+                day later -
+                mostly because it felt cleaner, and gave me more room to build on top of it.
+            </p>
 
-                    <h1>Why the name</h1>
-                    <p>
-                        <strong>syd</strong> is named after <strong>Syd Barrett</strong>, Pink Floyd’s original frontman
-                        who left the band in 1968 due to mental illness. There’s no deep reason behind the name - I just
-                        like rock.
-                        It used to be called <strong>nixstall</strong>, but that felt too generic.
-                        <strong>syd</strong> fit better.
-                    </p>
+            <h1>Why the name</h1>
+            <p>
+                <strong>syd</strong> is named after <strong>Syd Barrett</strong>, Pink Floyd’s original frontman
+                who left the band in 1968 due to mental illness. There’s no deep reason behind the name - I just
+                like rock.
+                It used to be called <strong>nixstall</strong>, but that felt too generic.
+                <strong>syd</strong> fit better.
+            </p>
 
-                    <h1>How does it function?</h1>
-                    <p>Alright, so we’re gonna get a lil’ nerdy here and look at some code snippets.</p>
+            <h1>How does it function?</h1>
+            <p>Alright, so we’re gonna get a lil’ nerdy here and look at some code snippets.</p>
 
-                    <p>Let’s open <a href="syd.py" class="blog-link"
-                            </a>https://github.com/sidharthify/syd/blob/main/syd.py</a> and
-                        look into it </p>
+            <p>Let’s open <a href="syd.py" class="blog-link" </a>https://github.com/sidharthify/syd/blob/main/syd.py</a>
+                and
+                look into it </p>
 
-                    <pre><code>INFO = f"{Fore.BLUE}syd:{Style.RESET_ALL}"
+            <pre><code class="language-python">INFO = f"{Fore.BLUE}syd:{Style.RESET_ALL}"
 SUCCESS = f"{Fore.GREEN}SUCCESS:{Style.RESET_ALL}"
 ERROR = f"{Fore.RED}ERROR:{Style.RESET_ALL}"
 
@@ -91,32 +93,32 @@ CONFIG_FILE = CONFIG_DIR / "config"
 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
 </code></pre>
 
-                    <p>
-                        This part defines the basic “personality” of <strong>syd</strong> - how it talks back to you in
-                        the terminal.
-                        <code>INFO</code>, <code>SUCCESS</code>, and <code>ERROR</code> use <code>colorama</code> to
-                        colorize text output,
-                        making logs easier to read and distinguish at a glance.
-                    </p>
+            <p>
+                This part defines the basic “personality” of <strong>syd</strong> - how it talks back to you in
+                the terminal.
+                <code>INFO</code>, <code>SUCCESS</code>, and <code>ERROR</code> use <code>colorama</code> to
+                colorize text output,
+                making logs easier to read and distinguish at a glance.
+            </p>
 
-                    <p>
-                        Then, it deals with configuration paths. if <strong>syd</strong> is run with <code>sudo</code>,
-                        it figures out who actually invoked it by checking
-                        the <code>SUDO_USER</code> environment variable. that’s important because running sudo changes
-                        your home directory to <code>/root</code>,
-                        and <strong>syd</strong> needs to know where <em>your</em> config really lives - not root’s.
-                    </p>
+            <p>
+                Then, it deals with configuration paths. if <strong>syd</strong> is run with <code>sudo</code>,
+                it figures out who actually invoked it by checking
+                the <code>SUDO_USER</code> environment variable. that’s important because running sudo changes
+                your home directory to <code>/root</code>,
+                and <strong>syd</strong> needs to know where <em>your</em> config really lives - not root’s.
+            </p>
 
-                    <p>
-                        Finally, it builds out the config directory structure using Python’s <code>pathlib</code>.
-                        if <code>~/.config/syd/</code> doesn't exist, it's created automatically.
-                    </p>
+            <p>
+                Finally, it builds out the config directory structure using Python’s <code>pathlib</code>.
+                if <code>~/.config/syd/</code> doesn't exist, it's created automatically.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>help()</h1>
+            <h1>help()</h1>
 
-                    <pre><code>def help():
+            <pre><code class="language-python">def help():
     print(f"{INFO} a lightweight declarative package manager for NixOS\\n")
     print(f"{Fore.GREEN}USAGE:{Style.RESET_ALL}")
     print("  sudo syd install &lt;package&gt; [more packages]")
@@ -145,35 +147,35 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     print(f"{INFO} Current config file: {CONFIG_FILE}")
 </code></pre>
 
-                    <p>
-                        This function just prints out usage info when you run <code>syd --help</code>.
-                        unlike the rest of the program, there’s no logic or state manipulation here.
-                    </p>
+            <p>
+                This function just prints out usage info when you run <code>syd --help</code>.
+                unlike the rest of the program, there’s no logic or state manipulation here.
+            </p>
 
-                    <p>
-                        the use of <code>colorama</code> again makes it clean and readable:
-                        <strong>INFO</strong> shows context messages in blue, <strong>SUCCESS</strong> in green, and
-                        <strong>ERROR</strong> in red.
-                        the spacing and examples are designed to mirror what you’d see in standard nix or systemctl help
-                        pages,
-                        so even new users can get the gist quickly.
-                    </p>
+            <p>
+                the use of <code>colorama</code> again makes it clean and readable:
+                <strong>INFO</strong> shows context messages in blue, <strong>SUCCESS</strong> in green, and
+                <strong>ERROR</strong> in red.
+                the spacing and examples are designed to mirror what you’d see in standard nix or systemctl help
+                pages,
+                so even new users can get the gist quickly.
+            </p>
 
-                    <p>
-                        the last line helps confirm
-                        which configuration file syd is currently reading from.
-                        this is especially useful when testing with <code>sudo</code> - since you might accidentally be
-                        writing to root’s config otherwise.
-                    </p>
-                    <hr>
-                    <p>
-                        now that we’ve seen the basics, let’s get into the actual logic that makes <strong>syd</strong>
-                        work.
-                    </p>
+            <p>
+                the last line helps confirm
+                which configuration file syd is currently reading from.
+                this is especially useful when testing with <code>sudo</code> - since you might accidentally be
+                writing to root’s config otherwise.
+            </p>
+            <hr>
+            <p>
+                now that we’ve seen the basics, let’s get into the actual logic that makes <strong>syd</strong>
+                work.
+            </p>
 
-                    <h1>check_pkg_exists()</h1>
+            <h1>check_pkg_exists()</h1>
 
-                    <pre><code>def check_pkg_exists(pkg: str) -> bool:
+            <pre><code class="language-python">def check_pkg_exists(pkg: str) -> bool:
     result = subprocess.run(
         [
             "/run/current-system/sw/bin/nix",
@@ -188,18 +190,18 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     return result.returncode == 0
 </code></pre>
 
-                    <p>
-                        This one’s simple enough. it uses nix itself to check if a package exists inside nixpkgs.
-                        it runs a command through <code>subprocess</code> and just checks the exit code (<code>0</code>
-                        means success).
-                        if nix says it found the package, <strong>syd</strong> takes that as a yes.
-                    </p>
+            <p>
+                This one’s simple enough. it uses nix itself to check if a package exists inside nixpkgs.
+                it runs a command through <code>subprocess</code> and just checks the exit code (<code>0</code>
+                means success).
+                if nix says it found the package, <strong>syd</strong> takes that as a yes.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>reset_config()</h1>
+            <h1>reset_config()</h1>
 
-                    <pre><code>def reset_config():
+            <pre><code class="language-python">def reset_config():
     if CONFIG_FILE.exists():
         CONFIG_FILE.unlink()
         print(f"{INFO} Config reset. Next run will ask for path and rebuild command again.")
@@ -207,17 +209,17 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         print(f"{ERROR} No config file found at {CONFIG_FILE}")
 </code></pre>
 
-                    <p>
-                        This deletes the current config file if it exists, basically a reset button.
-                        it’s how you tell syd to start from zero. if there’s nothing to delete, it
-                        politely complains.
-                    </p>
+            <p>
+                This deletes the current config file if it exists, basically a reset button.
+                it’s how you tell syd to start from zero. if there’s nothing to delete, it
+                politely complains.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>setup_config()</h1>
+            <h1>setup_config()</h1>
 
-                    <pre><code>def setup_config():
+            <pre><code class="language-python">def setup_config():
     PACKAGES = None
     REBUILD = None
 
@@ -248,27 +250,27 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     return PACKAGES, REBUILD
 </code></pre>
 
-                    <p>
-                        This is syd’s “setup wizard.”
-                        it checks whether a config file exists and reads paths from it if it does.
-                        if not, it asks the user for two things:
-                    </p>
+            <p>
+                This is syd’s “setup wizard.”
+                it checks whether a config file exists and reads paths from it if it does.
+                if not, it asks the user for two things:
+            </p>
 
-                    <ul>
-                        <p>the location of your <code>packages.nix</code></p>
-                        <p>the command you use to rebuild nixos (usually <code>sudo nixos-rebuild switch</code>)</p>
-                    </ul>
+            <ul>
+                <p>the location of your <code>packages.nix</code></p>
+                <p>the command you use to rebuild nixos (usually <code>sudo nixos-rebuild switch</code>)</p>
+            </ul>
 
-                    <p>
-                        once entered, syd saves that info in <code>~/.config/syd/config</code> so you never have to
-                        enter it again.
-                    </p>
+            <p>
+                once entered, syd saves that info in <code>~/.config/syd/config</code> so you never have to
+                enter it again.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>rebuild_prompt()</h1>
+            <h1>rebuild_prompt()</h1>
 
-                    <pre><code>def rebuild_prompt():
+            <pre><code class="language-python">def rebuild_prompt():
     read = input(f"{INFO} Rebuild NixOS? [y/N]: ").strip().lower()
     if read != "y":
         print(f"{INFO} Skipping rebuild.")
@@ -290,19 +292,19 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         sys.exit(1)
 </code></pre>
 
-                    <p>
-                        This one asks if you want to rebuild nixos after making changes.
-                        it also handles edge cases - like when syd is run as root, it strips out any <code>sudo</code>
-                        from the rebuild command to avoid nesting.
-                        it fixes <code>PATH</code> issues too, since python sometimes forgets where binaries live inside
-                        nix shells.
-                    </p>
+            <p>
+                This one asks if you want to rebuild nixos after making changes.
+                it also handles edge cases - like when syd is run as root, it strips out any <code>sudo</code>
+                from the rebuild command to avoid nesting.
+                it fixes <code>PATH</code> issues too, since python sometimes forgets where binaries live inside
+                nix shells.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>install_pkgs()</h1>
+            <h1>install_pkgs()</h1>
 
-                    <pre><code>def install_pkgs(*pkgs):
+            <pre><code class="language-python">def install_pkgs(*pkgs):
     for pkg in pkgs:
         with open(PACKAGES, "r") as f:
             lines = f.readlines()
@@ -330,19 +332,19 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     rebuild_prompt()
 </code></pre>
 
-                    <p>
-                        This is syd’s main feature - adding packages declaratively.
-                        it checks whether a package already exists, verifies it actually exists in nixpkgs,
-                        and then inserts it into the list just before the closing <code>]</code> in
-                        <code>packages.nix</code>.
-                        finally, it calls <code>rebuild_prompt()</code> to offer a system rebuild.
-                    </p>
+            <p>
+                This is syd’s main feature - adding packages declaratively.
+                it checks whether a package already exists, verifies it actually exists in nixpkgs,
+                and then inserts it into the list just before the closing <code>]</code> in
+                <code>packages.nix</code>.
+                finally, it calls <code>rebuild_prompt()</code> to offer a system rebuild.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>remove_pkgs()</h1>
+            <h1>remove_pkgs()</h1>
 
-                    <pre><code>def remove_pkgs(*pkgs):
+            <pre><code class="language-python">def remove_pkgs(*pkgs):
     for pkg in pkgs:
         with open(PACKAGES, "r") as f:
             lines = f.readlines()
@@ -361,17 +363,17 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     rebuild_prompt()
 </code></pre>
 
-                    <p>
-                        this one’s just the inverse of <code>install_pkgs()</code>.
-                        it filters out any line that matches the package name, rewrites the file, and calls rebuild
-                        again.
-                    </p>
+            <p>
+                this one’s just the inverse of <code>install_pkgs()</code>.
+                it filters out any line that matches the package name, rewrites the file, and calls rebuild
+                again.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>list_pkgs()</h1>
+            <h1>list_pkgs()</h1>
 
-                    <pre><code>def list_pkgs():
+            <pre><code class="language-python">def list_pkgs():
     print(f"{INFO} Packages listed in {PACKAGES}:")
 
     with open(PACKAGES, "r") as f:
@@ -394,17 +396,17 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     print(f"\\n{INFO} Total packages: {len(pkgs)}")
 </code></pre>
 
-                    <p>
-                        lists everything currently in your nix config.
-                        it ignores comments, brackets, and blank lines - basically parsing only the package names.
-                        the total count at the end is just a nice little touch.
-                    </p>
+            <p>
+                lists everything currently in your nix config.
+                it ignores comments, brackets, and blank lines - basically parsing only the package names.
+                the total count at the end is just a nice little touch.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>search_pkgs()</h1>
+            <h1>search_pkgs()</h1>
 
-                    <pre><code>def search_pkgs(*pkgs):
+            <pre><code class="language-python">def search_pkgs(*pkgs):
     for pkg in pkgs:
         if check_pkg_exists(pkg):
             print(f"{INFO} '{pkg}' exists in nixpkgs.")
@@ -412,17 +414,17 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
             print(f"{ERROR} '{pkg}' not found in nixpkgs.")
 </code></pre>
 
-                    <p>
-                        this uses <code>check_pkg_exists()</code> to quickly verify if a package exists upstream in
-                        nixpkgs.
-                        handy for double-checking before adding something.
-                    </p>
+            <p>
+                this uses <code>check_pkg_exists()</code> to quickly verify if a package exists upstream in
+                nixpkgs.
+                handy for double-checking before adding something.
+            </p>
 
-                    <hr>
+            <hr>
 
-                    <h1>is_installed()</h1>
+            <h1>is_installed()</h1>
 
-                    <pre><code>def is_installed(*pkgs):
+            <pre><code class="language-python">def is_installed(*pkgs):
     with open(PACKAGES, "r") as f:
         lines = f.readlines()
 
@@ -433,16 +435,16 @@ CONFIG_DIR.mkdir(parents=True, exist_ok=True)
             print(f"{ERROR} Could not find '{pkg}' in {PACKAGES}")
 </code></pre>
 
-                    <p>
-                        The final utility function.
-                        checks if a given package is already listed in your local config file.
-                        unlike <code>search_pkgs()</code>, it doesn’t call nix - it just reads your own file.
-                        this helps you verify whether something is locally declared.
-                    </p>
-<hr>
+            <p>
+                The final utility function.
+                checks if a given package is already listed in your local config file.
+                unlike <code>search_pkgs()</code>, it doesn’t call nix - it just reads your own file.
+                this helps you verify whether something is locally declared.
+            </p>
+            <hr>
 
-                    <h1>the main function</h1>
-                    <pre><code>def main():
+            <h1>the main function</h1>
+            <pre><code class="language-python">def main():
     if len(sys.argv) &lt; 2:
         help()
         sys.exit(0)
@@ -522,93 +524,98 @@ if __name__ == "__main__":
     main() # call the main function
 </code></pre>
 
-                    <p>
-                        This is the function that ties <strong>syd</strong> together.
-                        it’s the part that listens to your commands, figures out what you meant, and then calls the
-                        right function to do it.
-                    </p>
+            <p>
+                This is the function that ties <strong>syd</strong> together.
+                it’s the part that listens to your commands, figures out what you meant, and then calls the
+                right function to do it.
+            </p>
 
-                    <h1>Argument parsing</h1>
+            <h1>Argument parsing</h1>
 
-                    <p>
-                        The first two lines check if you actually passed any arguments.
-                        if not, <code>help()</code> runs and the script exits.
-                    </p>
+            <p>
+                The first two lines check if you actually passed any arguments.
+                if not, <code>help()</code> runs and the script exits.
+            </p>
 
-                    <p>
-                        Then it splits things up: <code>subcommand</code> holds whatever command you entered (like
-                        <code>install</code> or <code>list</code>),
-                        and <code>args</code> holds everything that comes after - the package names or flags.
-                    </p>
+            <p>
+                Then it splits things up: <code>subcommand</code> holds whatever command you entered (like
+                <code>install</code> or <code>list</code>),
+                and <code>args</code> holds everything that comes after - the package names or flags.
+            </p>
 
-                    <h1>Loading the config</h1>
+            <h1>Loading the config</h1>
 
-                    <p>
-                        It calls <code>setup_config()</code> early on to make sure syd knows where your
-                        <code>packages.nix</code> file and rebuild command live.
-                        this ensures that every command  knows
-                        the right context to operate in.
-                    </p>
+            <p>
+                It calls <code>setup_config()</code> early on to make sure syd knows where your
+                <code>packages.nix</code> file and rebuild command live.
+                this ensures that every command knows
+                the right context to operate in.
+            </p>
 
-                    <h1>Handling sudo</h1>
+            <h1>Handling sudo</h1>
 
-                    <p>
-                        since <code>install</code> and <code>remove</code> modify system files (usually in
-                        <code>/etc/nixos</code>),
-                        syd checks if it’s running as root.
-                        if not, it prints an error and reminds you to re-run the command with <code>sudo</code>.
-                        this prevents permission errors before they happen.
-                    </p>
+            <p>
+                since <code>install</code> and <code>remove</code> modify system files (usually in
+                <code>/etc/nixos</code>),
+                syd checks if it’s running as root.
+                if not, it prints an error and reminds you to re-run the command with <code>sudo</code>.
+                this prevents permission errors before they happen.
+            </p>
 
-                    <h1>Command routing</h1>
+            <h1>Command routing</h1>
 
-                    <p>
-                        After that, it’s basically a command router - a series of <code>if</code> / <code>elif</code>
-                        blocks, each one handling a different syd command
-                    </p>
+            <p>
+                After that, it’s basically a command router - a series of <code>if</code> / <code>elif</code>
+                blocks, each one handling a different syd command
+            </p>
 
-                    <p>
-                        Each section includes basic argument validation - if you forget to type the package name,
-                        syd doesn’t crash; it just prints the correct usage format and exits.
-                    </p>
+            <p>
+                Each section includes basic argument validation - if you forget to type the package name,
+                syd doesn’t crash; it just prints the correct usage format and exits.
+            </p>
 
-                    <h1>Error handling &amp; exit behavior</h1>
+            <h1>Error handling &amp; exit behavior</h1>
 
-                    <p>
-                        For any unknown or invalid command, syd gives a clean error message and a pointer to
-                        <code>syd --help</code>.
-                    </p>
+            <p>
+                For any unknown or invalid command, syd gives a clean error message and a pointer to
+                <code>syd --help</code>.
+            </p>
 
-                    <h1>The __main__ block</h1>
+            <h1>The __main__ block</h1>
 
-                    <p>
-                        The final two lines are python’s way of saying “run this if it’s the main program.”
-                        this makes sure syd only executes when directly called (not when imported as a module).
-                        it’s the standard idiom:
-                    </p>
+            <p>
+                The final two lines are python’s way of saying “run this if it’s the main program.”
+                this makes sure syd only executes when directly called (not when imported as a module).
+                it’s the standard idiom:
+            </p>
 
-                    <pre><code>if __name__ == "__main__":
+            <pre><code class="language-python">if __name__ == "__main__":
     main()
 </code></pre>
 
-<hr>
-                <h1>End</h1>
-                    <p>
-                        And that's <b>syd</b>! Other documentation can be found on it's github repository: <a href="https://github.com/sidharthify/syd" class="blog-link"
-                            </a>https://github.com/sidharthify/syd </a>
-                        <br>
-                        <br>
-                        I made it out of boredom and curiosity just randomly - and it turned out to be quite useful! 
-                    </p>
+            <hr>
+            <h1>End</h1>
+            <p>
+                And that's <b>syd</b>! Other documentation can be found on it's github repository: <a
+                    href="https://github.com/sidharthify/syd" class="blog-link" </a>https://github.com/sidharthify/syd
+                </a>
+                <br>
+                <br>
+                I made it out of boredom and curiosity just randomly - and it turned out to be quite useful!
+            </p>
 
-      <p><a href="../">← back to all posts</a></p>
-    </article>
-  </main>
+            <p><a href="../">← back to all posts</a></p>
+        </article>
+    </main>
 
-  <footer class="shell footer">
-    <p>© 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a></p>
-  </footer>
+    <footer class="shell footer">
+        <p>© 2025 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a></p>
+    </footer>
 
-  <script src="../assets/js/navbar.js"></script>
+    <script src="../assets/js/navbar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 </body>
+
 </html>

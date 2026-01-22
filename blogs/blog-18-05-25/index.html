@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="../../assets/css/blog.css" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
 </head>
+
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
 
@@ -33,86 +35,111 @@
 
       <p class="blog-description">How I got into Android ROM development and Linux</p>
 
-                    <p>
-                    In my last blog, I talked about how I programmed an AIDL implementation of the PowerShare HAL in and got
-                    it merged into LineageOS. But this time, I wanna go back. I know barely anyone's reading this, but maybe
-                    someone will in the future, or the near future, or never! Nevertheless, I kinda just wanna talk about it,
-                    so lets begin. </p>
+      <p>
+        In my last blog, I talked about how I programmed an AIDL implementation of the PowerShare HAL in and got
+        it merged into LineageOS. But this time, I wanna go back. I know barely anyone's reading this, but maybe
+        someone will in the future, or the near future, or never! Nevertheless, I kinda just wanna talk about it,
+        so lets begin. </p>
 
-                    <p>
-                    I got into Linux way before I flashed a custom ROM for the first time. My first Linux distro was... you guessed it,
-                    Ubuntu. But something thats poetic to me is that when I was really small, my dad used to have a laptop which ran
-                    Ubuntu, so technically, my first ever Operating System was Ubuntu Linux, lol.
-                    </p>
+      <p>
+        I got into Linux way before I flashed a custom ROM for the first time. My first Linux distro was... you guessed
+        it,
+        Ubuntu. But something thats poetic to me is that when I was really small, my dad used to have a laptop which ran
+        Ubuntu, so technically, my first ever Operating System was Ubuntu Linux, lol.
+      </p>
 
-                    <p>
-                    Anyways, people usually have reasons for doing things, I didn't. I genuinely was just... curious. So I flashed Ubuntu
-                    on my laptop which was an ASUS TUF FX505DY, with a Radeon RX 560x GPU, and a Ryzen 5 3550H CPU which had a Vega 8 iGPU. 
-                    I miss this laptop a lot, because it was such a perfect little thing for Linux, it had zero issues running it, maybe one
-                    or two bugs here and there, but it was still SO good at running any flavour of Linux I tried on it.
-                    </p>
+      <p>
+        Anyways, people usually have reasons for doing things, I didn't. I genuinely was just... curious. So I flashed
+        Ubuntu
+        on my laptop which was an ASUS TUF FX505DY, with a Radeon RX 560x GPU, and a Ryzen 5 3550H CPU which had a Vega
+        8 iGPU.
+        I miss this laptop a lot, because it was such a perfect little thing for Linux, it had zero issues running it,
+        maybe one
+        or two bugs here and there, but it was still SO good at running any flavour of Linux I tried on it.
+      </p>
 
-                    <p>
-                    Either way, the first time I installed Linux was without watching any video, any guide, and I just did NOT have any idea what
-                    I was doing. I thought you could run windows executables (.exes) on Linux at the time. So when my usual programs didn't install,
-                    I ragequit, lol. I didn't know wine existed, so I thought that Linux just had zero support.
-                    </p>
+      <p>
+        Either way, the first time I installed Linux was without watching any video, any guide, and I just did NOT have
+        any idea what
+        I was doing. I thought you could run windows executables (.exes) on Linux at the time. So when my usual programs
+        didn't install,
+        I ragequit, lol. I didn't know wine existed, so I thought that Linux just had zero support.
+      </p>
 
-                    <p>
-                    My Linux journey from here was on a bit of a pause then. Until in 2021, I flashed a custom ROM on my realme 8i (RMX3151 aka spaced).
-                    I had flashed ROMs in the past, but this device had a very very niche community and it didn't have an official method of unlocking 
-                    the bootloader, we used a thing called 'MTKClient' and used that to boot the phone into BROM mode and then unlock its bootloader, and wipe
-                    the data manually.
-                    </p>
+      <p>
+        My Linux journey from here was on a bit of a pause then. Until in 2021, I flashed a custom ROM on my realme 8i
+        (RMX3151 aka spaced).
+        I had flashed ROMs in the past, but this device had a very very niche community and it didn't have an official
+        method of unlocking
+        the bootloader, we used a thing called 'MTKClient' and used that to boot the phone into BROM mode and then
+        unlock its bootloader, and wipe
+        the data manually.
+      </p>
 
-                    <p>
-                    This was.. lets just say, hard for me to do at the time. I only knew how to 'fastboot flashing unlock' and not 'python mtk da seccfg unlock'
-                    Getting MTKClient set up was just a bit hard for me, I guess, I don't exactly remember, lol.
-                    </p>
+      <p>
+        This was.. lets just say, hard for me to do at the time. I only knew how to 'fastboot flashing unlock' and not
+        'python mtk da seccfg unlock'
+        Getting MTKClient set up was just a bit hard for me, I guess, I don't exactly remember, lol.
+      </p>
 
-                    <p>
-                    But dealing with MTKClient and this device overall made me really really curious and interested. I didn't really do anything at the time, but 
-                    I always had an itch to learn about how Android ROM development worked, or how Android itself worked.
-                    </p>
+      <p>
+        But dealing with MTKClient and this device overall made me really really curious and interested. I didn't really
+        do anything at the time, but
+        I always had an itch to learn about how Android ROM development worked, or how Android itself worked.
+      </p>
 
-                    <p>
-                    Ever since I was a kid, maybe five to six years old, I would want to root my phone. I know it sounds weird. But I had always tried
-                    to root my phone even as a toddler, I didn't even comprehend what 'rooting' fully meant, but I wanted to do it, maybe to just see
-                    what was possible with it or to install Shadow Fight 2 hacks, lol. 
-                    </p>
+      <p>
+        Ever since I was a kid, maybe five to six years old, I would want to root my phone. I know it sounds weird. But
+        I had always tried
+        to root my phone even as a toddler, I didn't even comprehend what 'rooting' fully meant, but I wanted to do it,
+        maybe to just see
+        what was possible with it or to install Shadow Fight 2 hacks, lol.
+      </p>
 
-                    <p> 
-                    Anyways, I was into flashing ROMs and recoveries by this point, like, really into it. But now I also started using Fedora Linux. I got
-                    in touch with the Linux community, I finally learnt basic Linux commands, I learnt what package managers are, what the kernel is, and what not.
-                    </p>
+      <p>
+        Anyways, I was into flashing ROMs and recoveries by this point, like, really into it. But now I also started
+        using Fedora Linux. I got
+        in touch with the Linux community, I finally learnt basic Linux commands, I learnt what package managers are,
+        what the kernel is, and what not.
+      </p>
 
-                    <p>
-                    Soon enough, I started installing all types of distributions of Linux; Arch, Mint, NixOS, Nobara, Debian, etc.
-                    I fell in LOVE with the kernel. All I could think about all day is 'how?', I wanted to know more, about Linux, Android, everything. 
-                    I used to feel really fullfilled when I would deal with custom ROMs or Linux. I would sit until 3AM doing something nerdy and would not
-                    talk to people for days.
-                    </p>
+      <p>
+        Soon enough, I started installing all types of distributions of Linux; Arch, Mint, NixOS, Nobara, Debian, etc.
+        I fell in LOVE with the kernel. All I could think about all day is 'how?', I wanted to know more, about Linux,
+        Android, everything.
+        I used to feel really fullfilled when I would deal with custom ROMs or Linux. I would sit until 3AM doing
+        something nerdy and would not
+        talk to people for days.
+      </p>
 
-                    <p>
-                    A friend of mine on Telegram (genuinely forgot his name, sorry) taught me how to compile a recovery image from a recovery tree and source.
-                    I did this locally on my ASUS (yes, the 8GB RAM and R5 3550H one) and I LOVED doing it. I know that sounds weird, but seeing soong compile
-                    the image was just soothing to me. And from this point, I learnt Git, software development processes, C, Python, etc.
-                    </p>
+      <p>
+        A friend of mine on Telegram (genuinely forgot his name, sorry) taught me how to compile a recovery image from a
+        recovery tree and source.
+        I did this locally on my ASUS (yes, the 8GB RAM and R5 3550H one) and I LOVED doing it. I know that sounds
+        weird, but seeing soong compile
+        the image was just soothing to me. And from this point, I learnt Git, software development processes, C, Python,
+        etc.
+      </p>
 
-                    <p>
-                    I maintained ROMs for realme 8i and realme 9 5G Speed Edition, which taught me more things than I thought they would. Even in real life, whenever
-                    I would feel lost or something, I'd always come back to Telegram and get in touch with the community and do more than what I did last time.
-                    </p>
+      <p>
+        I maintained ROMs for realme 8i and realme 9 5G Speed Edition, which taught me more things than I thought they
+        would. Even in real life, whenever
+        I would feel lost or something, I'd always come back to Telegram and get in touch with the community and do more
+        than what I did last time.
+      </p>
 
-                    <p>
-                    Recently, I've been able to boot custom recoveries and AOSP on the Nothing Phone 2a with my buddy Witcher. I also maintain YAAP for the Pixel 7 series 
-                    (except 7a) now. I consider myself an intermediate at this stuff now. I try to learn more about programming and AOSP internals everyday, so, if you've got
-                    something, hook me up!
-                    </p>
+      <p>
+        Recently, I've been able to boot custom recoveries and AOSP on the Nothing Phone 2a with my buddy Witcher. I
+        also maintain YAAP for the Pixel 7 series
+        (except 7a) now. I consider myself an intermediate at this stuff now. I try to learn more about programming and
+        AOSP internals everyday, so, if you've got
+        something, hook me up!
+      </p>
 
-                    <p>
-                    I hope you liked reading this 'backstory', I know it's really small and nothing too exciting, but I thought I'd write something today, so I did, lol.
-                    </p>
+      <p>
+        I hope you liked reading this 'backstory', I know it's really small and nothing too exciting, but I thought I'd
+        write something today, so I did, lol.
+      </p>
 
       <p><a href="../">← back to all posts</a></p>
     </article>
@@ -123,5 +150,8 @@
   </footer>
 
   <script src="../assets/js/navbar.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 </body>
+
 </html>
