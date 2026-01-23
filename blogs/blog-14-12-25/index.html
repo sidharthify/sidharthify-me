@@ -50,7 +50,7 @@
             <p>
                 I used to just use the prebuilt kernel trees provided by Google for building my ROMs because I found it
                 convenient.
-                Nonetheless, <a href="https://cyberknight777.dev/" class="blog-link" </a>cyberknight777</a>, a kernel
+                Nonetheless, <a href="https://cyberknight777.dev/" class="blog-link">cyberknight777</a>, a kernel
                 developer, and a good friend of mine, got me to finally start building a custom kernel
                 for the device.
             </p>
@@ -254,7 +254,7 @@
 </code></pre>
 
             <p>Yeah, long list. But either way, these were pulled directly from <a
-                    href="https://android.googlesource.com" class="blog-link" </a>android.googlesource.com </a>, by
+                    href="https://android.googlesource.com" class="blog-link">android.googlesource.com</a>, by
                 cloning the directories
                 into a seperate folder outside the kernel.
             </p>
@@ -796,7 +796,7 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
                 validation.
             </p>
 
-            <pre><code class="language-bash">// To support devices without GKI, RuntimeInfo::fetchAllInformation does not report errors
+            <pre><code class="language-cpp">// To support devices without GKI, RuntimeInfo::fetchAllInformation does not report errors
     // if kernel level cannot be retrieved. If so, fetch kernel FCM version from device HAL
     // manifest and store it in RuntimeInfo too.
     if (flags & RuntimeInfo::FetchFlag::KERNEL_FCM) {
@@ -1188,7 +1188,7 @@ fi
             </p>
 
             <p>
-                A special thanks goes to <a href="https://cyberknight777.dev/" class="blog-link" </a>cyberknight777</a>,
+                A special thanks goes to <a href="https://cyberknight777.dev/" class="blog-link">cyberknight777</a>,
                 who helped me do all this, did a lot of the tracing,
                 and stayed with me during the bringup.
             </p>
