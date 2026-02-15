@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#1e1e2e" />
     <link rel="stylesheet" href="../../assets/css/style.css" />
     <link rel="stylesheet" href="../../assets/css/blog.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@catppuccin/highlightjs@1.0.1/css/catppuccin-mocha.css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Creating an open-source &amp; accurate AQI service for J&amp;K" />
@@ -41,7 +42,33 @@
         <article>
             <header>
                 <h1>Creating an open-source &amp; accurate AQI service for J&amp;K</h1>
-                <p class="post-meta">10/2/26</p>
+                <div class="post-meta">
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg> 10/02/26</span>
+                    <span class="meta-sep">·</span>
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg> 3,800 words</span>
+                    <span class="meta-sep">·</span>
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg> 19 min read</span>
+                </div>
+                <div class="post-tags">
+                    <span class="tag">AQI</span>
+                    <span class="tag">Open Source</span>
+                    <span class="tag">Android</span>
+                    <span class="tag">Python</span>
+                </div>
             </header>
 
             <p>
@@ -284,7 +311,8 @@
                 satellite estimates instead.
             </p>
 
-            <pre><code class="language-bash">if data_age > 3600:  # 1 hour
+            <pre
+                data-filename="fetchers.py"><code class="language-python">if data_age > 3600:  # 1 hour
     raise ValueError(f"Sensor data is stale ({int(data_age/60)} minutes old)")
 
 # Falls back to:
@@ -318,7 +346,10 @@ sensor_offline_warning = "Physical sensor temporarily offline. Using satellite-b
                 how the EPA specification says to do it.
             </p>
 
-            <pre><code class="language-bash">conc = math.floor(conc * 10) / 10 if pollutant == "pm2_5" else int(conc)</code></pre>
+            <pre data-filename="aqi.py"><code class="language-python">if pollutant == "pm2_5":
+    conc = math.floor(conc * 10) / 10
+else:
+    conc = int(conc)</code></pre>
 
             <hr>
             <h2>Spike detection</h2>
@@ -385,7 +416,7 @@ sensor_offline_warning = "Physical sensor temporarily offline. Using satellite-b
                 the rest in the background.
             </p>
 
-            <pre><code class="language-bash">// AQI Standard: false = US AQI (default), true = Indian NAQI
+            <pre data-filename="BreatheViewModel.kt"><code class="language-kotlin">// AQI Standard: false = US AQI (default), true = Indian NAQI
 private val _isUsAqi = MutableStateFlow(false)
 
 private fun startPolling(context: Context) {
@@ -431,7 +462,7 @@ private fun startPolling(context: Context) {
                 each animation type independently:
             </p>
 
-            <pre><code class="language-bash">data class AnimationSettings(
+            <pre data-filename="AnimationSettings.kt"><code class="language-kotlin">data class AnimationSettings(
     val animationsEnabled: Boolean = true,
     val screenTransitions: Boolean = true,
     val colorTransitions: Boolean = true,
@@ -637,7 +668,7 @@ private fun startPolling(context: Context) {
                 something like:
             </p>
 
-            <pre><code class="language-bash">breathe: Fix AQI color interpolation for edge cases
+            <pre><code class="language-plaintext">breathe: Fix AQI color interpolation for edge cases
 api: Add retry logic for Open-Meteo fallback</code></pre>
 
             <p>
@@ -725,10 +756,12 @@ api: Add retry logic for Open-Meteo fallback</code></pre>
     </footer>
 
     <script src="../assets/js/navbar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
     <script src="../../assets/js/toc.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js"></script>
+    <script src="../../assets/js/hljs-init.js"></script>
 </body>
 
 </html>

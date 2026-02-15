@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#1e1e2e" />
     <link rel="stylesheet" href="../../assets/css/style.css" />
     <link rel="stylesheet" href="../../assets/css/blog.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@catppuccin/highlightjs@1.0.1/css/catppuccin-mocha.css" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="Breaking free from Bazel in the Pixel kernel pipeline" />
@@ -39,7 +40,33 @@
         <article>
             <header>
                 <h1>Breaking free from Bazel in the Pixel kernel pipeline</h1>
-                <p class="post-meta">14/12/25</p>
+                <div class="post-meta">
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg> 14/12/25</span>
+                    <span class="meta-sep">·</span>
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg> 5,500 words</span>
+                    <span class="meta-sep">·</span>
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg> 28 min read</span>
+                </div>
+                <div class="post-tags">
+                    <span class="tag">Android</span>
+                    <span class="tag">Kernel</span>
+                    <span class="tag">Pixel</span>
+                    <span class="tag">Bazel</span>
+                </div>
             </header>
 
             <p>
@@ -172,7 +199,7 @@
                 We started by declaring the directories of the modules we want: (for now, this logic was heavily
                 modified later on)
 
-            <pre><code class="language-bash">EXT_MODULES="private/google-modules/amplifiers/snd_soc_wm_adsp \
+            <pre data-filename="build.sh"><code class="language-bash">EXT_MODULES="private/google-modules/amplifiers/snd_soc_wm_adsp \
              private/google-modules/amplifiers/cs35l41 \
              private/google-modules/amplifiers/cs35l45 \
              private/google-modules/amplifiers/cs40l25 \
@@ -261,7 +288,7 @@
 
             <p>After defining these, we build the modules roughly like so:</p>
 
-            <pre><code class="language-bash">for EXT_MOD in ${EXT_MODULES}; do
+            <pre data-filename="build.sh"><code class="language-bash">for EXT_MOD in ${EXT_MODULES}; do
   ABS_EXT_MOD="${ROOT_DIR}/${EXT_MOD}"
   EXT_MOD_REL=$(rel_path "${ABS_EXT_MOD}" "${KERNEL_DIR}")
   mkdir -p "${OUT_DIR}/${EXT_MOD_REL}"
@@ -355,7 +382,7 @@ done</code></pre>
                 all associated modules in one pass:
             </p>
 
-            <pre><code class="language-bash">ROOT_DIR="/home/sidharthify/kernel"
+            <pre data-filename="build.sh"><code class="language-bash">ROOT_DIR="/home/sidharthify/kernel"
 KERNEL_DIR="${ROOT_DIR}/aosp"
 LLVM_DIR="${ROOT_DIR}/prebuilts/clang/host/linux-x86/clang-r487747c/bin/"
 OUT_DIR="${KERNEL_DIR}/out"
@@ -436,7 +463,7 @@ make -j96 "${TOOL_ARGS[@]}" INSTALL_MOD_PATH="${MODULES_STAGING_DIR}" modules_in
             <hr>
             <h1>Introducing Proper DLKM Partitioning</h1>
 
-            <pre><code class="language-bash">#####
+            <pre data-filename="build.sh"><code class="language-bash">#####
 #####
 # pack images
 #####
@@ -636,8 +663,7 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
                 The error was exactly like so:
             </p>
 
-            <pre><code class="language-bash">
-2025-12-12 07:53:36 - check_target_files_vintf.py - INFO    : stderr: ERROR: files are incompatible: Runtime info and framework compatibility matrix are incompatible: No kernel entry found for kernel version 6.1 at kernel FCM version 6. The following kernel requirements are checked:
+            <pre data-filename="VINTF output"><code class="language-plaintext">2025-12-12 07:53:36 - check_target_files_vintf.py - INFO    : stderr: ERROR: files are incompatible: Runtime info and framework compatibility matrix are incompatible: No kernel entry found for kernel version 6.1 at kernel FCM version 6. The following kernel requirements are checked:
 
   Minimum LTS: 4.19.191, kernel FCM version: 6
   Minimum LTS: 4.19.191, kernel FCM version: 6, with conditionals
@@ -796,7 +822,7 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
                 validation.
             </p>
 
-            <pre><code class="language-bash">// To support devices without GKI, RuntimeInfo::fetchAllInformation does not report errors
+            <pre data-filename="VintfObject.cpp"><code class="language-cpp">// To support devices without GKI, RuntimeInfo::fetchAllInformation does not report errors
     // if kernel level cannot be retrieved. If so, fetch kernel FCM version from device HAL
     // manifest and store it in RuntimeInfo too.
     if (flags & RuntimeInfo::FetchFlag::KERNEL_FCM) {
@@ -984,14 +1010,14 @@ python3 "${MKBOOTIMG}" --vendor_ramdisk "${OUT_DIR}/vendor_ramdisk.cpio.lz4" --d
                 The first sign of trouble appeared very early during boot from <code>pstore</code>:
             </p>
 
-            <pre><code class="language-bash">[    0.408049][    T1] init: Failed to load kernel modules</code></pre>
+            <pre
+                data-filename="pstore"><code class="language-plaintext">[    0.408049][    T1] init: Failed to load kernel modules</code></pre>
 
             <p>
                 Digging deeper revealed a specific failure:
             </p>
 
-            <pre><code class="language-bash">
-[    0.382399][  T122] init: Failed to insmod '/lib/modules/ufs-pixel-fips140.ko'
+            <pre data-filename="dmesg"><code class="language-plaintext">[    0.382399][  T122] init: Failed to insmod '/lib/modules/ufs-pixel-fips140.ko'
 with args 'fips_first_lba=86406 fips_last_lba=86917 fips_lu=0 use_hw_keys=true':
 Exec format error
                     </code></pre>
@@ -1023,8 +1049,7 @@ Exec format error
                 Attempting to load them manually resulted in a flood of errors like:
             </p>
 
-            <pre><code class="language-bash">
-bcmdhd4389: Unknown symbol cfg80211_register_netdevice (err -2)
+            <pre data-filename="dmesg"><code class="language-plaintext">bcmdhd4389: Unknown symbol cfg80211_register_netdevice (err -2)
 bcmdhd4389: Unknown symbol rfkill_alloc (err -2)
 bluetooth: Unknown symbol rfkill_register (err -2)
                     </code></pre>
@@ -1038,8 +1063,7 @@ bluetooth: Unknown symbol rfkill_register (err -2)
                 Even more telling was this:
             </p>
 
-            <pre><code class="language-bash">
-insmod rfkill.ko
+            <pre data-filename="shell"><code class="language-plaintext">insmod rfkill.ko
 insmod: failed to load rfkill.ko: Permission denied
                     </code></pre>
 
@@ -1087,8 +1111,7 @@ insmod: failed to load rfkill.ko: Permission denied
                 and keys.
             </p>
 
-            <pre><code class="language-bash">
-# re-sign modules
+            <pre data-filename="build.sh"><code class="language-bash">
 
 SIGN_FILE="${OUT_DIR}/scripts/sign-file"
 SIGN_KEY="${OUT_DIR}/certs/signing_key.pem"
@@ -1110,8 +1133,7 @@ fi
                 :
             </p>
 
-            <pre><code class="language-bash">
-  # Re-sign the stripped modules using kernel build time key
+            <pre data-filename="build_utils.sh"><code class="language-bash">
   # If SYSTEM_DLKM_RE_SIGN=0, this is a trick in Kleaf for building
   # device-specific system_dlkm image, where keys are not available but the
   # signed and stripped modules are in MODULES_STAGING_DIR.
@@ -1243,10 +1265,11 @@ fi
     </footer>
 
     <script src="../assets/js/navbar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
     <script src="../../assets/js/toc.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js"></script>
+    <script src="../../assets/js/hljs-init.js"></script>
 </body>
 
 </html>
