@@ -47,7 +47,7 @@ body {
 .skip-link {
   position: absolute;
   left: 1rem;
-  top: -40px;
+  top: -100px;
   background: var(--mantle);
   color: var(--text);
   padding: .5rem .75rem;
@@ -300,6 +300,7 @@ body {
   margin: 0 0 .65rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

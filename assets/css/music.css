@@ -1,43 +1,143 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-:root{
-  --base:#1e1e2e; --mantle:#181825;
-  --text:#cdd6f4; --subtext:#bac2de; --overlay:#6c7086;
-  --lavender:#b4befe; --mauve:#cba6f7;
+:root {
+  --base: #1e1e2e;
+  --mantle: #181825;
+  --text: #cdd6f4;
+  --subtext: #bac2de;
+  --overlay: #6c7086;
+  --lavender: #b4befe;
+  --mauve: #cba6f7;
 }
 
-*{box-sizing:border-box}
-body{background:var(--base);color:var(--text);font-family:Inter,system-ui,sans-serif}
-
-.music-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem}
-.music-row{
-  display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:center;
-  background:var(--mantle);border:1px solid rgba(205,214,244,.09);border-radius:12px;padding:.85rem .9rem;
-  transition:background .15s, transform .12s, box-shadow .12s;
+* {
+  box-sizing: border-box
 }
-.music-row:hover{background:#1a1a29;transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.25)}
 
-.music-list img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0}
-
-.song-info{display:flex;flex-direction:column;min-width:0}
-.song-title{font-weight:700;color:var(--mauve);line-height:1.35}
-.artist{color:var(--subtext);font-size:.97rem;line-height:1.35}
-
-.play-btn{
-  width:44px;height:44px;min-width:44px;min-height:44px;border-radius:50%;
-  border:1px solid rgba(205,214,244,.12);background:transparent;color:var(--lavender);
-  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:background .15s,color .15s,border-color .15s,transform .12s;
+body {
+  background: var(--base);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif
 }
-.play-btn:hover,.play-btn:focus-visible{background:rgba(205,214,244,.08);color:var(--mauve);border-color:rgba(205,214,244,.25);transform:translateY(-1px)}
-.play-btn .icon-play{display:block}
-.play-btn .icon-pause{display:none}
-.play-btn.paused .icon-play{display:none}
-.play-btn.paused .icon-pause{display:block}
 
-@media (max-width:860px){
-  .music-list img{width:42px;height:42px;border-radius:8px}
-  .song-title{font-size:1.02rem}
-  .artist{font-size:.9rem}
-  .play-btn{width:40px;height:40px;min-width:40px;min-height:40px}
+.music-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .55rem
+}
+
+.music-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: .9rem;
+  align-items: center;
+  background: var(--mantle);
+  border: 1px solid rgba(205, 214, 244, .09);
+  border-radius: 12px;
+  padding: .85rem .9rem;
+  transition: background .15s, transform .12s, box-shadow .12s;
+}
+
+.music-row:hover {
+  background: #1a1a29;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .25)
+}
+
+.music-list img {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0
+}
+
+.song-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0
+}
+
+.song-title {
+  font-weight: 700;
+  color: var(--mauve);
+  line-height: 1.35
+}
+
+.artist {
+  color: var(--subtext);
+  font-size: .97rem;
+  line-height: 1.35
+}
+
+.song-meta {
+  color: var(--overlay);
+  font-size: .85rem;
+  margin-top: .15rem
+}
+
+.play-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(205, 214, 244, .12);
+  background: transparent;
+  color: var(--lavender);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s, transform .12s;
+}
+
+.play-btn:hover,
+.play-btn:focus-visible {
+  background: rgba(205, 214, 244, .08);
+  color: var(--mauve);
+  border-color: rgba(205, 214, 244, .25);
+  transform: translateY(-1px)
+}
+
+.play-btn .icon-play {
+  display: block
+}
+
+.play-btn .icon-pause {
+  display: none
+}
+
+.play-btn.paused .icon-play {
+  display: none
+}
+
+.play-btn.paused .icon-pause {
+  display: block
+}
+
+@media (max-width:860px) {
+  .music-list img {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px
+  }
+
+  .song-title {
+    font-size: 1.02rem
+  }
+
+  .artist {
+    font-size: .9rem
+  }
+
+  .play-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px
+  }
 }
