@@ -151,6 +151,8 @@ article>header {
   font-size: .95em;
   padding: .15em .35em;
   border-radius: 6px;
+  overflow-wrap: anywhere;
+  word-break: break-all;
 }
 
 :where(main, .container, article) pre {
