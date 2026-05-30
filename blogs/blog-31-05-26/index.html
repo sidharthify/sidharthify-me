@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exposing the Lies Behind CBSE's OnMark Portals - 31/05/26 • sidharthify</title>
+    <meta name="theme-color" content="#1e1e2e" />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../assets/css/blog.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@catppuccin/highlightjs@1.0.1/css/catppuccin-mocha.css" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Exposing the Lies Behind CBSE's OnMark Portals" />
+    <meta property="og:description"
+        content="Almost all OnMark websites from EduTek are fundamentally insecure, and CBSE is lying about it." />
+    <meta property="og:url" content="https://sidharthify.github.io/blogs/blog-31-05-26/" />
+    <meta property="og:site_name" content="sidharthify" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Exposing the Lies Behind CBSE's OnMark Portals" />
+    <meta name="twitter:description"
+        content="Almost all OnMark websites from EduTek are fundamentally insecure, and CBSE is lying about it." />
+</head>
+
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="shell">
+        <nav class="nav" aria-label="Primary">
+            <a class="brand" href="../../">sidharthify</a>
+            <ul class="menu">
+                <li><a href="../../">home</a></li>
+                <li><a href="../../about/">about</a></li>
+                <li><a aria-current="page" href="../">blog</a></li>
+                <li><a href="../../music/">music</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main" class="blog-layout">
+        <article>
+            <header>
+                <h1>Exposing the Lies Behind CBSE's OnMark Portals</h1>
+                <div class="post-meta">
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg> 31/05/26</span>
+                    <span class="meta-sep">·</span>
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg> 2,360 words</span>
+                    <span class="meta-sep">·</span>
+                    <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg> 10 min read</span>
+                </div>
+                <div class="post-tags">
+                    <span class="tag">Security</span>
+                    <span class="tag">CBSE</span>
+                    <span class="tag">Vulnerability</span>
+                </div>
+            </header>
+
+            <p>
+                This is going to be extremely different from the stuff I usually post (I know, I said that in the last
+                post too, but for real this time). I will save you the suspense and cut straight to the core of what we
+                found: <strong>Almost all OnMark websites built by EduTek are fundamentally insecure, and CBSE is lying
+                    to you about the safety of student data.</strong>
+            </p>
+            <p>
+                If anyone's new here, please do take a look at my other posts, maybe they'll be interesting, but please
+                read this one carefully. It takes a bit of time to break down exactly how deep this rot goes, so have
+                some patience while reading.
+            </p>
+            <hr>
+
+            <h1 id="context">CBSE? The hell's that?</h1>
+            <p>
+                For my international readers, <strong>CBSE</strong> (Central Board of Secondary Education) is India's
+                national education board. They oversee the curriculum and board examinations for millions of students
+                across the country. To handle the massive task of grading these exams, CBSE uses <strong>OSM</strong>
+                (On-Screen Marking), a digital evaluation portal where examiners log in to grade scanned student answer
+                sheets online. Because these platforms manage the academic futures of countless students, their security
+                is expected to be completely airtight. But the reality of government contracting is often a race to the
+                bottom. Instead of building robust, battle-tested software, these massive national projects are
+                frequently outsourced to the lowest-bidding vendors, in this case, EduTek. This creates a dangerous
+                disconnect: the developers building the portals have little incentive or accountability to implement
+                actual security, leading to a culture of negligence that puts the data of an entire generation at risk.
+            </p>
+            <hr>
+
+            <h1 id="the-discovery">Nisarga's Discovery</h1>
+            <p>
+                It all started when <strong>Nisarga</strong>, as you all may already know, a fellow security researcher,
+                uncovered the first cracks in the system. While analyzing the infrastructure of the CBSE and OnMark
+                portals, platforms responsible for the sensitive data and exam evaluations of millions of students, he
+                noticed some glaring inconsistencies. He documented these foundational vulnerabilities in his <a
+                    href="https://ni5arga.com/blog/posts/hacking-cbse/" class="blog-link" target="_blank"
+                    rel="noopener">detailed blog post</a>.
+            </p>
+
+            <img src="../../assets/images/cbse-blog/nisarga-twitter.png"
+                style="max-height: 350px; max-width: 100%; border-radius: 8px; margin: 1rem 0;" alt="">
+            <hr>
+            <h2 id="the-discovery">Sarthak's Discovery</h2>
+            <p>
+                Shortly after, <strong>Sarthak Sidhant</strong>, a 17 year old CBSE student took the initiative to
+                expose these initial findings to the
+                public, shedding light on what seemed to be a series of severe oversights by the government contractors
+                responsible for building and maintaining these portals. In his <a
+                    href="https://sarthaksidhant.com/coempt/" class="blog-link" target="_blank" rel="noopener">own
+                    write-up</a>, he proved how deeply flawed their infrastructure was, demonstrating that basic
+                security practices were completely ignored.
+            </p>
+            <img src="../../assets/images/cbse-blog/sarthak-twitter.png"
+                style="max-height: 350px; max-width: 100%; border-radius: 8px; margin: 1rem 0;" alt="">
+            <p>
+                But as is often the case with these massive government systems, the rabbit hole went much deeper than we
+                initially thought. What began as a few isolated bugs quickly spiraled into a realization that this
+                wasn't just poor coding, it was a systemic infrastructure failure.
+            </p>
+            <hr>
+
+            <h2 id="escalation">Full Access &amp; Bad Apple</h2>
+            <p>
+                Shortly after the initial findings, <strong>Nisarga</strong> teamed up with another researcher,
+                <strong>Tirth</strong>.
+                Together, they managed to breach the system once again, but this time they escalated their privileges to
+                gain full read and write (RW) access to the entire site. To prove they had complete control over the
+                infrastructure, they uploaded a series of files, most notably playing the legendary "Bad Apple"
+                animation directly on the official OnMark domain, along with a lot of other hilarious additions.
+            </p>
+            <img src="../../assets/images/cbse-blog/screenshot-badapple.png"
+                style="max-height: 350px; max-width: 100%; border-radius: 8px; margin: 1rem 0;" alt="">
+            <p>
+                Why Bad Apple? It's a classic hacker trope, but seeing it play flawlessly on a national government
+                examination portal is nothing short of surreal. It visually demonstrated that they didn't just have
+                passive read access; they had complete, unimpeded read and write privileges. They could modify the DOM,
+                inject arbitrary scripts, and completely hijack the user interface. If they could embed a YouTube video,
+                a malicious actor could have just as easily injected a silent keylogger, a credential harvester, or
+                ransomware that would instantly compromise the machine of every examiner who logged in to grade papers.
+            </p>
+            <p>
+                If you want to verify this yourself, the team preserved snapshots of the compromised domains. You can
+                view them here:
+                <a href="https://archive.is/lkI1x" class="blog-link" target="_blank" rel="noopener">Archive 1</a>,
+                <a href="https://archive.is/UWp2h" class="blog-link" target="_blank" rel="noopener">Archive 2</a>,
+                <a href="https://archive.is/G45OU" class="blog-link" target="_blank" rel="noopener">Archive 3</a>, and
+                <a href="https://archive.is/0OkSY" class="blog-link" target="_blank" rel="noopener">Archive 4</a>.
+            </p>
+            <hr>
+
+            <h1 id="digging-deeper">Getting Involved</h1>
+            <p>
+                My involvement in this started somewhat randomly after all of this went down. I happened to be in a
+                mutual Discord server with
+                Nisarga, though I didn't actually know him at the time. I managed to guess his username, and after I
+                reached out.
+            </p>
+            <p>
+                As I started poking around the infrastructure myself, things got even more concerning. One
+                of the first major red flags I discovered was how they were handling passwords on portals like
+                <strong><code>saras.cbse.gov.in</code></strong>. For context, SARAS (School Affiliation Re-Engineered
+                Automation System) is the massive central database that contains the affiliation details, regulatory
+                compliance data, and administrative records for every single CBSE-affiliated school in the country. And
+                yet, for a system holding the keys to thousands of educational institutions, they were storing
+                administrator passwords as raw MD5 hashes.
+            </p>
+            <p>
+                For those who might not know, MD5 is a hashing algorithm designed back in 1991 that was declared
+                cryptographically broken over a decade ago. It is heavily susceptible to collision attacks and can be
+                brute-forced in mere seconds using off-the-shelf hardware and tools like Hashcat. Storing passwords in
+                MD5 in 2026 is not just an oversight, it is a glaring, neon red flag that the developers lack even a
+                foundational understanding of modern security practices. It effectively means that the password of every
+                school administrator in the SARAS database was essentially stored in plain text for anyone with a basic
+                GPU.
+            </p>
+            <img src="../../assets/images/cbse-blog/siddhi-twitter.png"
+                style="max-height: 350px; max-width: 100%; border-radius: 8px; margin: 1rem 0;" alt="">
+            <p>
+                Fortunately, after discovering this, I immediately emailed them to responsibly disclose the vulnerability. To their credit, they did actually patch this specific issue, and the MD5 hashes are no longer exposed on SARAS. However, it is important to note that SARAS was built by a completely different vendor, not EduTek or OnMark. This other vendor was relatively more responsive and competent (though storing passwords in MD5 in the first place is still objectively terrible). But this small victory was short-lived. Once we turned our attention back to the portals actually built by EduTek, it was glaringly obvious how completely unsecure everything else was. Their underlying infrastructure was so fragile and exposed that it didn't require advanced exploits or sophisticated attacks; the doors were practically left wide open. But you have yet to see the most idiotic thing ever.
+            </p>
+            <hr>
+
+            <h2 id="the-123456-incident">The "123456" Incident</h2>
+            <p>
+                As if the completely exposed infrastructure and outdated MD5 hashes weren't bad enough, things took a
+                turn for the truly absurd. Shortly after Nisarga made <a
+                    href="https://x.com/ni5arga/status/2060508071072592306" class="blog-link" target="_blank"
+                    rel="noopener">this tweet</a> teasing a major finding, he messaged me in DMs. His exact words were
+                something along the lines of, "You won't guess what the password was."
+            </p>
+            <img src="../../assets/images/cbse-blog/screenshot-password.png"
+                style="max-height: 350px; max-width: 100%; border-radius: 8px; margin: 1rem 0;" alt="Nisarga's DM">
+            <p>
+                He sent me the credentials, and I honestly couldn't believe my eyes. I had to see it for myself. I
+                navigated to the administrative login portal, entered the username he provided, and then typed in the
+                password he had sent me: <code>123456</code>.
+            </p>
+            <p>
+                To my absolute disbelief, it worked perfectly. I was immediately logged in.
+            </p>
+            <img src="../../assets/images/cbse-blog/onmark-website.png"
+                style="max-height: 350px; max-width: 100%; border-radius: 8px; margin: 1rem 0;"
+                alt="OnMark Dashboard after login">
+            <p>
+                This wasn't just a basic, low-level user account either; this was a full administrative backdoor. With a
+                password that literally ranks as the most common and insecure password globally, I suddenly found myself
+                with the power to do <strong>EVERYTHING</strong>. We are talking about complete, unrestricted access to
+                the inner workings of a government-contracted portal. I could have viewed sensitive student data,
+                accessed confidential records, and tampered with national exam evaluations without triggering a single
+                alarm.
+            </p>
+            <p>
+                It is genuinely difficult to overstate how negligent this level of security is. When you build a system
+                this critical, you expect layers of defense: multi-factor authentication, IP whitelisting, stringent
+                password requirements, and rate limiting. Instead, the literal keys to the kingdom were protected by
+                <code>123456</code>, the most heavily mocked password in human history. With <code>superadmin</code>
+                access, the potential for damage is limitless. An attacker could unilaterally alter the exam scores of a
+                million students, completely destroying the integrity of the national education system. They could leak
+                the Personally Identifiable Information (PII) of examiners, students, and administrative staff, leading
+                to mass identity theft. A system built by government contractors to handle the futures of millions was
+                left wide open, proving beyond a shadow of a doubt that they had skipped even the most basic security
+                protocols.
+            </p>
+            <hr>
+
+            <h2 id="systemic-rot">RCEs &amp; Ancient Frameworks</h2>
+            <p>
+                But the nightmare didn't end there. As we kept digging, we realized this wasn't just an isolated mistake
+                on a single portal. This catastrophic lack of security was a pattern baked into almost <strong>every
+                    single OnMark website</strong>. Across all their domains, we saw the exact same insecure practices
+                and the exact same neglected infrastructure, all while CBSE continued to publicly claim their systems
+                were perfectly fine and secure.
+            </p>
+            <p>
+                To demonstrate just how deep this systemic rot went, Tirth and Nisarga managed to get a webshell running
+                on another portal: <code>https://mrvv.onmark.co.in/</code>. Nisarga sent it to me to test, and it was
+                almost comical how exposed it was. You could literally achieve Remote Code Execution (RCE) and run any
+                Windows command on their servers just by appending it to the URL.
+            </p>
+            <p>
+                It looked exactly like this:
+                <code>https://mrvv.onmark.co.in/MRVV_W25_Onmark_WebAPI/Evalbank/QP_MRV00001.aspx?cmd=[windowscommands]</code>.
+            </p>
+            <p>
+                <a href="https://x.com/thetirthparmar/status/2060792128771608833" class="blog-link" target="_blank"
+                    rel="noopener">Tirth's tweet</a> perfectly encapsulates the absolute absurdity of being able to
+                control a government server through a simple URL parameter.
+            </p>
+            <img src="../../assets/images/cbse-blog/tirth-tweet.png"
+                style="max-height: 350px; max-width: 100%; border-radius: 8px; margin: 1rem 0;" alt="Tirth's Tweet">
+            <p>
+                With this webshell access, Nisarga dug even deeper into the server. He managed to locate the database
+                connection strings and found that they were using an incredibly weak SQL password:
+                <code>Admin@1977</code> for the <code>sa</code> (system administrator) account. By executing basic
+                <code>sqlcmd</code> queries directly through the RCE, he listed out all the databases on the server. The
+                output revealed production databases for multiple massive organizations all sitting on the exact same
+                infrastructure, including <code>cbse_ctet_s26_onmarkwin_prod</code>, <code>RGUHS_ONMARK</code>, and
+                <code>MRV_ONMARK</code>.
+            </p>
+            <p>
+                This discovery highlighted a terrifying multi-tenancy disaster. EduTek wasn't just hosting one insecure
+                portal; they were hosting multiple, distinct national organizations on the exact same server instance.
+                This means that a vulnerability in one client's portal immediately compromises all other clients. If a
+                smaller, less scrutinized university portal gets hacked, the entire national CBSE database goes down
+                with it. It is a massive house of cards waiting for a breeze.
+            </p>
+            <p>
+                When querying the tables, the results were devastating. We could see the entire monolithic structure of
+                their databases, including tables like <code>CW_WORKER_MASTER</code> and <code>CW_PASSWORD_RESET</code>,
+                indicating that sensitive data was likely intermingled and poorly partitioned. A dump of the admin users
+                table laid everything bare: the credentials for <code>superadmin</code>, <code>scanadmin</code>, and
+                numerous <code>evaladmin</code> accounts. It also exposed their internal phone numbers and emails, many
+                of which belonged to <code>@coempt.in</code>, the vendor responsible for building these highly flawed
+                portals.
+            </p>
+            <hr>
+
+            <h2 id="frontend-vulnerabilities">Frontend Vulnerabilities</h2>
+            <p>
+                While they were exploiting the backend, I decided to take a closer look at the frontend. I started
+                analyzing the JavaScript bundles powering these vulnerable sites, specifically looking at domains like
+                <code>https://evalsctevt.onmark.co.in/</code> and <code>https://onmark.co.in/nmu/user</code>. What I
+                found was staggering. These "secure" portals were running on ancient, obsolete code. Hilariously,
+                <code>onmark.co.in/nmu/user</code> was actively loading Bootstrap 4 alongside a version of jQuery from
+                <strong>2013</strong> (v1.10.2). This Frankenstein's monster of a frontend exposed them to a slew of
+                known vulnerabilities, including <strong>CVE-2024-6531</strong>, <strong>CVE-2019-8331</strong>, and
+                <strong>CVE-2018-14041</strong>.
+            </p>
+            <img src="../../assets/images/cbse-blog/jquery-1.1.png"
+                style="max-height: 350px; max-width: 100%; border-radius: 8px; margin: 1rem 0;"
+                alt="jQuery 1.1 running alongside Bootstrap 4">
+            <ul style="margin: 1rem 0; line-height: 1.6; padding-left: 1.5rem;">
+                <li style="margin-bottom: 0.5rem;">
+                    <strong>CVE-2020-11022 &amp; CVE-2020-11023 (Cross-Site Scripting):</strong> The regex used in
+                    <code>jQuery.htmlPrefilter</code> to preprocess HTML before DOM insertion can be bypassed. Passing
+                    HTML from untrusted sources to methods like <code>.html()</code> or <code>.append()</code> executes
+                    untrusted code even after prior sanitization. This allows attackers to easily inject malicious
+                    scripts into the DOM via crafted self-closing tags.
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <strong>CVE-2019-11358 (Prototype Pollution):</strong> The <code>jQuery.extend()</code> function is
+                    heavily vulnerable. If an attacker passes a source object with an enumerable <code>__proto__</code>
+                    property into <code>$.extend(true, {}, src)</code>, they can pollute the global
+                    <code>Object.prototype</code>. This compromises the entire runtime, injecting properties that affect
+                    all objects, which can escalate to remote code execution (RCE) or complete application hijacking.
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <strong>CVE-2015-9251 (XSS via AJAX):</strong> Cross-domain AJAX requests that do not specify a
+                    <code>dataType</code> are vulnerable. If an attacker controls the endpoint and responds with
+                    <code>text/javascript</code>, jQuery will automatically execute the response payload directly within
+                    the page context.
+                </li>
+                <li>
+                    <strong>CVE-2012-6708 (Selector Injection XSS):</strong> The core <code>jQuery()</code> function
+                    fails to reliably distinguish between CSS selectors and raw HTML. Passing attacker-controlled input
+                    (like data from <code>location.hash</code>) directly into <code>$()</code> executes arbitrary
+                    scripts.
+                </li>
+            </ul>
+            <p>
+                Let that sink in. A critical government infrastructure platform, responsible for the integrity of
+                nationwide exams, is running on a web framework that hasn't been secure for over a decade. By failing to
+                update their dependencies, EduTek left the door wide open for automated exploit scanners to rip these
+                portals apart.
+            </p>
+            <p>
+                While XSS and Prototype Pollution might sound abstract, in the real world, this means an attacker could
+                easily send a crafted, malicious link to a CBSE examiner. Once clicked, the attacker's script silently
+                executes in the examiner's browser, immediately stealing their session token. Without warning, the
+                attacker gains full access to grade papers on the examiner's behalf. Furthermore, the lack of
+                <code>dataType</code> validation in their AJAX requests means the application blindly trusts and
+                executes whatever the server hands it. You don't need to be a sophisticated hacker; these exploits are
+                publicly available, easily executable, and completely devastating.
+            </p>
+            <hr>
+
+            <h1 id="an-ongoing-disaster">An Ongoing Disaster</h1>
+            <p>
+                The most terrifying part of all this isn't just the individual vulnerabilities, it's the undeniable
+                pattern. This isn't an isolated mistake, this exact same insecure boilerplate is deployed across
+                <strong>every single OSM (OnMark System Management) website</strong>. From raw MD5 hashes to default
+                `123456` admin passwords, from URL-based RCEs to decade-old jQuery libraries, they literally copied and
+                pasted the exact same flaws into every client portal they built. It is a systemic failure of
+                unprecedented proportions, a fundamental rot extending across their entire digital footprint.
+            </p>
+            <p>
+                And yet, the silence is deafening. What happens now? The fact that CBSE is either ignoring this or
+                actively lying about their security posture is a massive breach of public trust. When vulnerabilities of
+                this magnitude are disclosed, the standard response is an immediate system audit, forced password
+                resets, and a transparent public acknowledgment. Instead, we see nothing but denial. The data of
+                millions of students remains at acute risk. We desperately need a fundamental shift in how government
+                bodies procure, audit, and maintain software. Until there are strict, rigorously enforced cybersecurity
+                mandates, and severe penalties for vendors who deliver insecure garbage, this systemic rot will continue
+                to thrive in the dark.
+            </p>
+            <p><a href="../">← back to all posts</a></p>
+        </article>
+
+        <aside class="toc" aria-label="Table of Contents">
+            <!-- TOC will be auto-generated by toc.js -->
+        </aside>
+    </main>
+
+    <footer class="shell footer">
+        <p>© 2026 • <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a></p>
+    </footer>
+
+    <script src="../../assets/js/navbar.js"></script>
+    <script src="../../assets/js/toc.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js"></script>
+    <script src="../../assets/js/hljs-init.js"></script>
+</body>
+
+</html>
