@@ -126,7 +126,7 @@
     vec4 camPos;        // c17
     vec4 specular;      // c18
 };</code></pre>
-
+      <hr>
       <h2>Matrix and Projection Pipeline</h2>
       <p>
         To truly appreciate the complexity of <code>EngineGLES32_Shaders.cpp</code>, we need to dive into the linear
@@ -174,7 +174,7 @@
         bandwidth required per frame. Instead of updating uniforms individually, I map the buffer once, write the 128
         bytes of matrix data, and unmap it.
       </p>
-
+      <hr>
       <h2>Geometry and Vertex Buffer Operations</h2>
       <p>
         The geometry pipeline also had to be completely rewritten. The old engine loved to dispatch thousands of tiny
@@ -373,7 +373,7 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
         <img src="../../assets/images/first-run-arma.png" alt="First run with corrupted textures in portrait mode"
           style="max-width: 100%; border-radius: 8px; display: block; margin: 0 auto;">
       </p>
-
+      <hr>
       <h2>Universal ETC2 Texture Transcoding</h2>
       <p>
         I thought I was done with textures after fixing the Adreno driver issues using <code>bcdec</code>. But the
@@ -450,7 +450,7 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
         g_tex[unit] = tex;
     ++g_texBind;
 }</code></pre>
-
+      <hr>
       <h2>Audio Backend and AI State Desync</h2>
       <p>
         Finally, the most bizarre bug of all. When testing the very first mission of the campaign, the squad leader is
@@ -511,7 +511,7 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
 
         glDrawElements(GL_TRIANGLES, n, GL_UNSIGNED_SHORT, (void*)(intptr_t)(indexOffset * sizeof(WORD)));
         ++Poseidon::gPerfDrawCalls;</code></pre>
-
+      <hr>
       <h2>Touchscreen UI Input Translation</h2>
       <p>
         Rendering the game was only half the battle. ARMA CWA is a complex tactical shooter with dozens of keybinds.
@@ -567,13 +567,13 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
       <p>
         You can check out the very first teaser video I posted when the port finally worked on Twitter/X:
         <a href="https://x.com/sidharthify/status/2070869714113613837?s=20" target="_blank"
-          rel="noopener">https://x.com/sidharthify/status/2070869714113613837</a>
+          rel="noopener"><code style="word-break: break-all;">https://x.com/sidharthify/status/2070869714113613837</code></a>
       </p>
 
       <p>
         You can see a full gameplay showcase here:
         <a href="https://www.youtube.com/watch?v=VPwU9G0YAgw" target="_blank"
-          rel="noopener">https://www.youtube.com/watch?v=VPwU9G0YAgw</a>
+          rel="noopener"><code style="word-break: break-all;">https://www.youtube.com/watch?v=VPwU9G0YAgw</code></a>
       </p>
 
       <p>
