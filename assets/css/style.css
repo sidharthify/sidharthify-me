@@ -21,7 +21,7 @@
 
 html {
   color-scheme: dark;
-  text-rendering: optimizeLegibility
+  text-rendering: optimizeLegibility;
 }
 
 :focus-visible {
@@ -242,12 +242,10 @@ body {
   padding: 1.25rem 1.5rem;
   text-decoration: none;
   color: inherit;
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  transition: background .15s, border-color .15s;
 }
 
 .blog-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
   border-color: rgba(205, 214, 244, .15);
 }
 

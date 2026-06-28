@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap');
 
-/* Catppuccin Mocha */
 :root {
   --base: #1e1e2e;
   --mantle: #181825;
@@ -93,6 +92,7 @@ article {
   border: 1px solid rgba(205, 214, 244, .08);
   border-radius: 16px;
   padding: 1.5rem;
+  min-width: 0;
 }
 
 article>header {
@@ -101,7 +101,6 @@ article>header {
   margin-bottom: 1.25rem;
 }
 
-
 :where(main, .container, article) {
   font: 400 16px/1.85 Inter, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -109,6 +108,8 @@ article>header {
   max-width: 820px;
   margin-inline: auto;
   padding: 2rem 1.25rem;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 :where(main, .container, article) h1 {
@@ -148,9 +149,9 @@ article>header {
   background: #313244;
   color: var(--mauve);
   font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-  font-size: .95em;
-  padding: .15em .35em;
-  border-radius: 6px;
+  font-size: 1em;
+  padding: 0.1em 0.25em;
+  border-radius: 4px;
   overflow-wrap: anywhere;
   word-break: break-all;
 }
@@ -161,8 +162,9 @@ article>header {
   padding: 0;
   border-radius: 0.3rem;
   border: 1px solid #313244;
-  overflow: hidden;
+  overflow-x: auto;
   margin: 1.5rem 0;
+  width: 100%;
   max-width: 100%;
   position: relative;
   box-shadow: 0.1rem 0.1rem 0.2rem rgba(24, 24, 37, .5);
@@ -218,6 +220,8 @@ article>header {
 :where(main, .container, article) pre code {
   all: unset;
   display: block;
+  width: 100%;
+  box-sizing: border-box;
   padding: 1rem 0;
   color: #cdd6f4;
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -294,6 +298,7 @@ pre:has(.code-tab-bar) .code-copy-btn {
 .hljs-ln {
   border-collapse: collapse;
   width: 100%;
+  font-size: inherit;
 }
 
 .hljs-ln td {
@@ -420,8 +425,32 @@ pre:has(.code-tab-bar) .code-copy-btn {
     margin: 0.75rem 0;
   }
 
+  :where(main, .container, article) :not(pre)>code {
+    font-size: 1em;
+    padding: 0.05em 0.2em;
+  }
+
+  /* TEXT AUTOSIZING KILL-SWITCH + BRUTE FORCE OVERRIDE */
+  article pre,
+  article pre code,
+  article pre span,
+  article pre table,
+  article pre td,
+  article pre tr,
+  article pre tbody,
+  article pre div,
+  article .highlight pre,
+  article .highlight code,
+  .hljs,
+  .hljs span,
+  .hljs-ln,
+  .hljs-ln td {
+    font-size: 11px !important;
+    -webkit-text-size-adjust: none !important;
+    text-size-adjust: none !important;
+  }
+
   :where(main, .container, article) pre {
-    font-size: 0.65rem;
     padding: 0;
     margin: 0.6rem 0;
     border-radius: 0.3rem;
@@ -429,19 +458,17 @@ pre:has(.code-tab-bar) .code-copy-btn {
   }
 
   :where(main, .container, article) pre code {
-    font-size: 0.65rem;
-    line-height: 1.4;
+    line-height: 1.5;
     padding: 0.5rem;
   }
 
-  :where(main, .container, article) pre[data-filename]::before {
-    font-size: 0.65rem;
+  /* File names and tabs */
+  article pre[data-filename]::before,
+  article .code-tab-bar .code-tab {
+    font-size: 11px !important;
     padding: 0.2rem 0.5rem;
-  }
-
-  :where(main, .container, article) pre .code-tab-bar .code-tab {
-    font-size: 0.65rem;
-    padding: 0.2rem 0.5rem;
+    -webkit-text-size-adjust: none !important;
+    text-size-adjust: none !important;
   }
 
   :where(main, .container, article) ul,
@@ -483,9 +510,7 @@ pre:has(.code-tab-bar) .code-copy-btn {
 }
 
 .blog-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  display: block;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0;
@@ -499,7 +524,8 @@ pre:has(.code-tab-bar) .code-copy-btn {
 
 @media (min-width: 1100px) {
   .blog-layout {
-    grid-template-columns: 1fr 240px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
     gap: 3rem;
   }
 }
