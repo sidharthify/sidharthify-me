@@ -246,7 +246,6 @@ body {
 }
 
 .blog-card:hover {
-  background: rgba(180, 190, 254, .04);
   border-color: rgba(205, 214, 244, .15);
 }
 
