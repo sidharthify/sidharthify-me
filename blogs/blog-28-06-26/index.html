@@ -86,8 +86,10 @@
 
       <h1>Graphics Backend Implementation</h1>
       <p>
-        Let us talk about the actual code in the <code>PoseidonGLES32</code> directory first, because it is the beating
-        heart of this entire port. The core of the rendering loop lives in <code>EngineGLES32.cpp</code>. This class
+        Let us talk about the actual code in the <code>PoseidonGLES32</code> directory
+        first, because it is the beating
+        heart of this entire port. The core of the rendering loop lives in <code
+         >EngineGLES32.cpp</code>. This class
         manages the entire graphics state. It implements all the virtual functions required by the base game engine's
         abstract renderer interface. Here is a glimpse into how I initialize the Android-specific GLES 3.2 context
         through SDL:
@@ -108,7 +110,8 @@
 
       <p>
         Because I could not use the fixed function pipeline of legacy OpenGL, I had to write custom shaders for
-        everything. <code>EngineGLES32_Shaders.cpp</code> is an absolute beast of a file. It contains the source code
+        everything. <code>EngineGLES32_Shaders.cpp</code> is an absolute beast of a file.
+        It contains the source code
         for all my vertex and fragment shaders. I partitioned my uniform buffers by update frequency. Vertex shader
         slots are strictly mapped so 2D UI elements cannot accidentally clobber the 3D projection matrix. I even packed
         local light data directly into the vertex shader buffer for the night time rendering.
@@ -129,10 +132,13 @@
       <hr>
       <h2>Matrix and Projection Pipeline</h2>
       <p>
-        To truly appreciate the complexity of <code>EngineGLES32_Shaders.cpp</code>, we need to dive into the linear
+        To truly appreciate the complexity of <code>EngineGLES32_Shaders.cpp</code>, we
+        need to dive into the linear
         algebra happening behind the scenes. In the original immediate mode pipeline, Bohemia Interactive utilized the
-        fixed function matrix stack. They would call <code>glPushMatrix</code>, apply rotations and translations, and
-        then <code>glPopMatrix</code>. On modern hardware, all of this matrix multiplication must be calculated
+        fixed function matrix stack. They would call <code>glPushMatrix</code>, apply
+        rotations and translations, and
+        then <code>glPopMatrix</code>. On modern hardware, all of this matrix
+        multiplication must be calculated
         manually.
       </p>
 
@@ -178,7 +184,8 @@
       <h2>Geometry and Vertex Buffer Operations</h2>
       <p>
         The geometry pipeline also had to be completely rewritten. The old engine loved to dispatch thousands of tiny
-        triangles one by one using immediate mode. <code>EngineGLES32_Mesh.cpp</code> intercepts these legacy mesh
+        triangles one by one using immediate mode. <code>EngineGLES32_Mesh.cpp</code>
+        intercepts these legacy mesh
         formats and translates them into modern interleaved vertex arrays. It extracts positions, normals, and UV
         coordinates and packs them tightly.
       </p>
@@ -192,7 +199,8 @@
 }</code></pre>
 
       <p>
-        The real heavy lifting happens in <code>EngineGLES32_VertexBuffer.cpp</code>. Because I am constantly generating
+        The real heavy lifting happens in <code>EngineGLES32_VertexBuffer.cpp</code>.
+        Because I am constantly generating
         dynamic geometry for things like particle effects and UI elements, I rely heavily on vertex buffer orphaning. I
         initially set the dynamic buffer size to 32k. But I noticed that Adreno GPUs were choking on our allocations,
         causing terrible frame pacing and stuttering. The Qualcomm driver simply could not keep up. I bumped the vertex
@@ -200,7 +208,8 @@
       </p>
 
       <p>
-        Here is the vertex buffer update logic from <code>EngineGLES32_VertexBuffer.cpp</code> demonstrating how dynamic
+        Here is the vertex buffer update logic from <code
+         >EngineGLES32_VertexBuffer.cpp</code> demonstrating how dynamic
         memory mapped buffers are allocated using <code>glBufferData</code>:
       </p>
 
@@ -229,7 +238,8 @@
         Before we even wrote the graphics backend, we had a major architectural decision to make. The CWR codebase
         originally used legacy OpenGL. It expects a desktop environment, specifically x86 or x86_64 Linux or Windows.
         Cross compiling for ARM64 meant stripping out a lot of hardcoded assumptions, but the graphics API was the
-        elephant in the room. The entire engine relied on immediate mode rendering, <code>glBegin</code> and
+        elephant in the room. The entire engine relied on immediate mode rendering, <code
+         >glBegin</code> and
         <code>glEnd</code>, fixed function pipelines, and Matrix stacks.
       </p>
 
@@ -238,7 +248,8 @@
         under the hood. It seemed like the easiest path because I wouldn't have to rewrite the entire graphics backend.
         But after some discussion, I realized that ANGLE wrappers would add too much overhead for a mobile device with
         strict thermal limits. I eventually settled on writing a completely native OpenGL ES 3.2 backend from scratch,
-        which became <code>PoseidonGLES32</code>. GLES 3.2 gave us access to advanced texture formats and compute
+        which became <code>PoseidonGLES32</code>. GLES 3.2 gave us access to advanced
+        texture formats and compute
         shaders, which I desperately needed.
       </p>
 
@@ -286,14 +297,18 @@
       </p>
 
       <p>
-        The culprit? Architecture specific defaults for the <code>char</code> data type. On x86 and x64 platforms, C++
-        compilers default <code>char</code> to a signed type. But on ARM architecture, compilers default
-        <code>char</code> to unsigned. The game's legacy LZW font decompression algorithm was relying on integer
+        The culprit? Architecture specific defaults for the <code>char</code> data type.
+        On x86 and x64 platforms, C++
+        compilers default <code>char</code> to a signed type. But on ARM architecture,
+        compilers default
+        <code>char</code> to unsigned. The game's legacy LZW font decompression algorithm
+        was relying on integer
         underflow and negative numbers to decode the characters!
       </p>
 
       <p>
-        Fixing this was as simple as casting a variable to a <code>signed char</code>, but finding it was a nightmare.
+        Fixing this was as simple as casting a variable to a <code>signed char</code>,
+        but finding it was a nightmare.
         This was patched in commit <a
           href="https://github.com/CWR-Ports/CWR-Ports/commit/13b43f189b68b18f687fb5a7b48a6eaf7bc590c9" target="_blank"
           rel="noopener">13b43f1</a>:
@@ -319,13 +334,15 @@
 E/cwr_engine: Failed to load texture: data/textures/grass.paa</code></pre>
 
       <p>
-        ARMA CWA uses a custom texture format called <code>.paa</code>, which is essentially just a wrapper around
+        ARMA CWA uses a custom texture format called <code>.paa</code>, which is
+        essentially just a wrapper around
         standard DXT1 and DXT5 compression formats. Desktop GPUs have supported DXT natively in hardware for over two
         decades.
       </p>
 
       <p>
-        However, Qualcomm recently decided to remove the <code>GL_EXT_texture_compression_s3tc</code> extension from
+        However, Qualcomm recently decided to remove the <code
+         >GL_EXT_texture_compression_s3tc</code> extension from
         their OpenGL ES drivers starting with the Adreno 6xx series. The physical GPU hardware is fully capable of
         decoding DXT, but the driver explicitly blocks it. Because I was using OpenGL ES, the API refused to accept our
         DXT textures.
@@ -338,7 +355,8 @@ E/cwr_engine: Failed to load texture: data/textures/grass.paa</code></pre>
       </p>
 
       <p>
-        I integrated a tiny single file C library called <code>bcdec</code> into our texture loader. When the game loads
+        I integrated a tiny single file C library called <code>bcdec</code> into our
+        texture loader. When the game loads
         a DXT texture on an Adreno device, I intercept it, decode the blocks into raw pixel data, and upload the
         uncompressed RGBA array to the GPU. You can check commit <a
           href="https://github.com/CWR-Ports/CWR-Ports/commit/198efaf387c5e05404be779a7fd368a0ba67165a" target="_blank"
@@ -376,7 +394,8 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
       <hr>
       <h2>Universal ETC2 Texture Transcoding</h2>
       <p>
-        I thought I was done with textures after fixing the Adreno driver issues using <code>bcdec</code>. But the
+        I thought I was done with textures after fixing the Adreno driver issues using <code
+         >bcdec</code>. But the
         nightmare did not end there. While Adreno GPUs could technically handle the uncompressed RGBA fallback, the
         massive bandwidth penalty was destroying performance. Furthermore, ARM Mali GPUs presented a completely
         different set of problems.
@@ -389,11 +408,14 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
       </p>
 
       <p>
-        To fix this, I implemented another interception layer in <code>TextureGLES32_Loading.cpp</code>. I decompress
+        To fix this, I implemented another interception layer in <code
+         >TextureGLES32_Loading.cpp</code>. I decompress
         the DXT blocks back to RGBA on the CPU, then immediately recompress them into ETC2 blocks using a fast software
-        encoder called <code>etcpak</code>. ETC2 is natively supported everywhere on mobile, keeping VRAM usage low and
+        encoder called <code>etcpak</code>. ETC2 is natively supported everywhere on
+        mobile, keeping VRAM usage low and
         bandwidth within acceptable limits. Because the RGBA fallback was heavily bottlenecking Adreno devices as well,
-        I ultimately applied this <code>etcpak</code> transcoding pipeline universally to BOTH Adreno and Mali chips.
+        I ultimately applied this <code>etcpak</code> transcoding pipeline universally to
+        BOTH Adreno and Mali chips.
       </p>
 
       <p>
@@ -410,8 +432,10 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
       </p>
 
       <p>
-        The first major issue was a massive CPU spike happening in <code>TextureBankGLES32_Cache.cpp</code>. I
-        discovered that the engine was querying <code>HasGlExtension</code> every single time it tried to bind a
+        The first major issue was a massive CPU spike happening in <code
+         >TextureBankGLES32_Cache.cpp</code>. I
+        discovered that the engine was querying <code>HasGlExtension</code> every single
+        time it tried to bind a
         texture. On desktop drivers, querying extensions is relatively fast, but on Android, it caused huge string
         parsing overhead. I cached the extension checks into a boolean array during initialization to resolve the
         constant stuttering.
@@ -429,7 +453,8 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
     }</code></pre>
 
       <p>
-        I also built a sophisticated state tracker inside <code>GLES32BindCache.cpp</code>. Mobile GPU drivers are
+        I also built a sophisticated state tracker inside <code
+         >GLES32BindCache.cpp</code>. Mobile GPU drivers are
         notoriously slow when it comes to state changes. Instead of making raw OpenGL calls, the engine asks the cache
         to bind a texture or enable depth testing. The cache packs these requests into a state descriptor and diffs it
         against what is currently active on the GPU. If nothing has changed, it silently skips the driver call entirely.
@@ -468,9 +493,11 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
 
       <p>
         To fix this, I threw out the dynamic loader entirely for Android. I directly linked Google's static
-        <code>Oboe</code> library (a high-performance Android audio library) and patched the OpenAL-Soft vcpkg port to
+        <code>Oboe</code> library (a high-performance Android audio library) and patched
+        the OpenAL-Soft vcpkg port to
         use the Oboe backend instead of OpenSL. I also added logic to clear the deferred playing flag in
-        <code>SoundSystemOAL.cpp</code>. By restoring native audio playback, the AI state machine finally received the
+        <code>SoundSystemOAL.cpp</code>. By restoring native audio playback, the AI state
+        machine finally received the
         "audio finished" signal, and the squad leader happily ran to his jeep. You can view the exact patch in commit <a
           href="https://github.com/CWR-Ports/CWR-Ports/commit/52f8fe47bbb7a7a73d1d527ef1f0d9435dcf3527" target="_blank"
           rel="noopener">52f8fe4</a>.
@@ -484,7 +511,8 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
 
       <h2>Render Queues and Draw Ordering</h2>
       <p>
-        With geometry loaded, I needed to draw it in the correct order. <code>EngineGLES32_Queue.cpp</code> implements a
+        With geometry loaded, I needed to draw it in the correct order. <code
+         >EngineGLES32_Queue.cpp</code> implements a
         highly optimized render queue system. Mobile GPUs use tile based deferred rendering (TBDR). To optimize for this
         architecture, I sort all my draw calls meticulously.
       </p>
@@ -520,7 +548,8 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
       </p>
 
       <p>
-        In <code>EngineGLES32_2D.cpp</code>, I had to implement a coordinate translation layer. Android touch events are
+        In <code>EngineGLES32_2D.cpp</code>, I had to implement a coordinate translation
+        layer. Android touch events are
         reported in physical screen pixels, but the legacy UI expected an abstract 640x480 coordinate space. I mapped
         the touch inputs to the projection matrix, allowing players to tap on menu items seamlessly. I also implemented
         multi touch support so players could use the virtual movement joystick while simultaneously swiping to aim and
@@ -549,7 +578,8 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
       <p>
         Getting ARMA CWA running natively on ARM64 was an absolutely monumental engineering effort. It required tearing
         apart a massive, two decade old codebase and replacing its beating heart with a modern mobile rendering backend.
-        Every single file in the <code>PoseidonGLES32</code> directory represents hours of trial, error, and
+        Every single file in the <code>PoseidonGLES32</code> directory represents hours
+        of trial, error, and
         optimization.
       </p>
 
@@ -565,27 +595,29 @@ void decompress_dxt_to_rgba(const uint8_t* compressed, uint8_t* rgba, int width,
       </p>
 
       <p>
-        You can check out the very first teaser video I posted when the port finally worked on Twitter/X:
-        <a href="https://x.com/sidharthify/status/2070869714113613837?s=20" target="_blank"
-          rel="noopener"><code style="word-break: break-all;">https://x.com/sidharthify/status/2070869714113613837</code></a>
+        You can check out the very first teaser video I posted when the port finally worked on Twitter/X
+        <a href="https://x.com/sidharthify/status/2070869714113613837?s=20" target="_blank" rel="noopener">
+          here</a>.
       </p>
 
       <p>
-        You can see a full gameplay showcase here:
-        <a href="https://www.youtube.com/watch?v=VPwU9G0YAgw" target="_blank"
-          rel="noopener"><code style="word-break: break-all;">https://www.youtube.com/watch?v=VPwU9G0YAgw</code></a>
+        You can see a full gameplay showcase
+        <a href="https://www.youtube.com/watch?v=VPwU9G0YAgw" target="_blank" rel="noopener">
+          here</a>.
       </p>
 
       <p>
         This is just the start. There will be wayyy more updates in the future as the engine gets further optimized and
         refined. You can follow the development and check out the code at the official GitHub repository
-                <a href="https://github.com/CWR-Ports/CWR-Ports" target="_blank" rel="noopener">
-                    here</a>.
+        <a href="https://github.com/CWR-Ports/CWR-Ports" target="_blank" rel="noopener">
+          here</a>.
       </p>
 
       <p>
-        If you made it this far, thank you very much for reading. This was my first time doing development close to game engines.
-        I could handle it only because of the knowledge I accumulated from AOSP (Android Open Source Project) over the years. This was a very
+        If you made it this far, thank you very much for reading. This was my first time doing development close to game
+        engines.
+        I could handle it only because of the knowledge I accumulated from AOSP (Android Open Source Project) over the
+        years. This was a very
         unique blog for me, especially considering what the last one was, lmao.
       </p>
 

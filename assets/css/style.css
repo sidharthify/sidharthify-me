@@ -21,7 +21,7 @@
 
 html {
   color-scheme: dark;
-  text-rendering: optimizeLegibility
+  text-rendering: optimizeLegibility;
 }
 
 :focus-visible {
