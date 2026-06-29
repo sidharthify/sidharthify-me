@@ -151,7 +151,7 @@ article>header {
   background: #313244;
   color: var(--mauve);
   font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-  font-size: 0.8em;
+  font-size: 1em;
   padding: 0.1em 0.25em;
   border-radius: 4px;
   overflow-wrap: anywhere;
@@ -428,12 +428,17 @@ pre:has(.code-tab-bar) .code-copy-btn {
   }
 
   :where(main, .container, article) :not(pre)>code {
-    font-size: 0.7em;
+    font-size: 1em;
     padding: 0.05em 0.2em;
   }
 
-  :where(main, .container, article) pre {
+  :where(main, .container, article) pre,
+  :where(main, .container, article) pre code,
+  :where(main, .container, article) pre .hljs-ln td {
     font-size: 11px;
+  }
+
+  :where(main, .container, article) pre {
     padding: 0;
     margin: 0.6rem 0;
     border-radius: 0.3rem;
@@ -441,7 +446,6 @@ pre:has(.code-tab-bar) .code-copy-btn {
   }
 
   :where(main, .container, article) pre code {
-    font-size: 11px;
     line-height: 1.5;
     padding: 0.5rem;
   }
