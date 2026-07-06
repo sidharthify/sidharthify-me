@@ -10,6 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    const windowed = window.matchMedia('(min-width: 761px) and (pointer: fine)').matches;
+    const scrollRoot = windowed ? article.closest('.term-body') : null;
+
+    function scrollToHeading(target, smooth) {
+        if (scrollRoot) {
+            const top = target.getBoundingClientRect().top - scrollRoot.getBoundingClientRect().top + scrollRoot.scrollTop - 16;
+            scrollRoot.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
+        } else {
+            const top = target.getBoundingClientRect().top + window.scrollY - 100;
+            window.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
+        }
+    }
+
     const tocNav = document.createElement('nav');
     tocNav.className = 'toc-nav';
     tocNav.setAttribute('aria-label', 'Table of contents');
@@ -45,9 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const target = document.getElementById(heading.id);
             if (target) {
-                const offset = 100; // offset for fixed header if any
-                const top = target.getBoundingClientRect().top + window.scrollY - offset;
-                window.scrollTo({ top, behavior: 'smooth' });
+                scrollToHeading(target, true);
                 history.pushState(null, '', `#${heading.id}`);
             }
         });
@@ -60,8 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
     tocContainer.appendChild(tocNav);
 
     const observerOptions = {
-        root: null,
-        rootMargin: '-100px 0px -70% 0px',
+        root: scrollRoot,
+        rootMargin: scrollRoot ? '-8px 0px -78% 0px' : '-100px 0px -70% 0px',
         threshold: 0
     };
 
@@ -92,11 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.hash) {
         const target = document.querySelector(window.location.hash);
         if (target) {
-            setTimeout(() => {
-                const offset = 100;
-                const top = target.getBoundingClientRect().top + window.scrollY - offset;
-                window.scrollTo({ top, behavior: 'smooth' });
-            }, 100);
+            setTimeout(() => scrollToHeading(target, true), 120);
         }
     }
 });

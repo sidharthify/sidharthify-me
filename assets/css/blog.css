@@ -101,6 +101,30 @@ article>header {
   margin-bottom: 1.25rem;
 }
 
+.term-body article {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.term-body .blog-layout {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.term-body :where(main, .container, article) {
+  padding: 0;
+  margin: 0;
+}
+
+.term-body .toc-nav {
+  top: 3.5rem;
+}
+
+
 :where(main, .container, article) {
   font: 400 16px/1.85 Inter, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
