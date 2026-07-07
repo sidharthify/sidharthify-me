@@ -149,9 +149,22 @@
 
   function place(el, saved, defFn) {
     const p = saved || defFn();
+    if (p.w) el.style.width = Math.min(p.w, surf.clientWidth) + "px";
+    if (p.h) el.style.height = Math.min(p.h, surf.clientHeight) + "px";
     const [x, y] = clampPos(el, p.x, p.y);
     el.style.left = x + "px";
     el.style.top = y + "px";
+  }
+
+  function saveGeom(w) {
+    if (!w.geomKey) return;
+    const g = {
+      x: parseFloat(w.el.style.left) || 0,
+      y: parseFloat(w.el.style.top) || 0,
+    };
+    if (w.el.style.width) g.w = parseFloat(w.el.style.width);
+    if (w.el.style.height) g.h = parseFloat(w.el.style.height);
+    LS.set(w.geomKey, g);
   }
 
   function setActive(id) {
@@ -189,10 +202,63 @@
         handle.removeEventListener("pointermove", move);
         handle.removeEventListener("pointerup", up);
         w.el.classList.remove("is-dragging");
-        if (w.persistPos) w.persistPos(parseFloat(w.el.style.left) || 0, parseFloat(w.el.style.top) || 0);
+        saveGeom(w);
       };
       handle.addEventListener("pointermove", move);
       handle.addEventListener("pointerup", up);
+    });
+  }
+
+  const RZ_DIRS = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
+  const MIN_W = 280, MIN_H = 160;
+
+  function makeResizable(w) {
+    RZ_DIRS.forEach((dir) => {
+      const h = document.createElement("div");
+      h.className = "rz rz-" + dir;
+      h.style.touchAction = "none";
+      w.el.appendChild(h);
+      h.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0 || w.max) return;
+        e.preventDefault();
+        e.stopPropagation();
+        focusWin(w);
+        const r = w.el.getBoundingClientRect();
+        const sr = surf.getBoundingClientRect();
+        const start = {
+          px: e.clientX, py: e.clientY,
+          x: r.left - sr.left, y: r.top - sr.top,
+          w: r.width, h: r.height,
+        };
+        h.setPointerCapture(e.pointerId);
+        w.el.classList.add("is-resizing");
+        const move = (ev) => {
+          const dx = ev.clientX - start.px, dy = ev.clientY - start.py;
+          let x = start.x, y = start.y, wd = start.w, ht = start.h;
+          if (dir.includes("e")) wd = start.w + dx;
+          if (dir.includes("s")) ht = start.h + dy;
+          if (dir.includes("w")) { wd = start.w - dx; x = start.x + dx; }
+          if (dir.includes("n")) { ht = start.h - dy; y = start.y + dy; }
+          if (wd < MIN_W) { if (dir.includes("w")) x -= MIN_W - wd; wd = MIN_W; }
+          if (ht < MIN_H) { if (dir.includes("n")) y -= MIN_H - ht; ht = MIN_H; }
+          if (x < 0) { wd += x; x = 0; }
+          if (y < 0) { ht += y; y = 0; }
+          wd = Math.min(wd, surf.clientWidth - x);
+          ht = Math.min(ht, surf.clientHeight - y);
+          w.el.style.left = x + "px";
+          w.el.style.top = y + "px";
+          w.el.style.width = wd + "px";
+          w.el.style.height = ht + "px";
+        };
+        const up = () => {
+          h.removeEventListener("pointermove", move);
+          h.removeEventListener("pointerup", up);
+          w.el.classList.remove("is-resizing");
+          saveGeom(w);
+        };
+        h.addEventListener("pointermove", move);
+        h.addEventListener("pointerup", up);
+      });
     });
   }
 
@@ -245,7 +311,12 @@
     if (yellow) yellow.addEventListener("click", (e) => { e.stopPropagation(); minimize(w); });
     if (green) green.addEventListener("click", (e) => { e.stopPropagation(); toggleMax(w); });
     bar.querySelector(".term-dots, .win-dots").classList.add("win-controls");
+    bar.addEventListener("dblclick", (e) => {
+      if (e.target.closest(".term-dots, .win-dots")) return;
+      toggleMax(w);
+    });
     w.el.addEventListener("pointerdown", () => focusWin(w));
+    makeResizable(w);
   }
 
   function addTaskItem(w) {
@@ -267,7 +338,7 @@
     const el = document.querySelector(".terminal");
     if (!el) return null;
     const w = { id: "terminal", el, kind: "terminal", title: el.dataset.wtitle || "alacritty ~ zsh", min: false, max: false };
-    w.persistPos = (x, y) => LS.set("win.terminal", { x, y });
+    w.geomKey = "win.terminal";
     w.persistState = () => LS.set("term.state", { min: w.min, max: w.max, closed: w.el.style.display === "none" });
     place(el, LS.get("win.terminal", null), () => ({ x: (surf.clientWidth - el.offsetWidth) / 2, y: 16 }));
     wireControls(w);
@@ -294,7 +365,7 @@
       '<div class="iv-body"><img src="' + ROOT + p.src + '" alt="' + p.file + '" draggable="false"></div>';
     surf.appendChild(el);
     const w = { id: p.id, el, kind: "image", title: p.file, min: false, max: false };
-    w.persistPos = (x, y) => LS.set("win.iv." + p.id, { x, y });
+    w.geomKey = "win.iv." + p.id;
     const n = Object.values(wins).filter((x) => x.kind === "image").length;
     place(el, LS.get("win.iv." + p.id, null), () => ({ x: surf.clientWidth / 2 - 200 + n * 30, y: 40 + n * 30 }));
     wireControls(w);
@@ -459,7 +530,7 @@
     w.persistState = () => savePlayer(w);
     wirePlayer(w);
     if (!isMobile()) {
-      w.persistPos = (x, y) => LS.set("win.player", { x, y });
+      w.geomKey = "win.player";
       place(el, LS.get("win.player", null), () => ({ x: surf.clientWidth / 2 - 170, y: 36 }));
       wireControls(w);
       draggable(w);
@@ -542,7 +613,7 @@
     surf.appendChild(el);
     buildGrid(el.querySelector(".fm-grid"));
     w = { id: "music", el, kind: "folder", title: "Dolphin — ~/music", min: false, max: false };
-    w.persistPos = (x, y) => LS.set("win.music", { x, y });
+    w.geomKey = "win.music";
     place(el, LS.get("win.music", null), () => ({ x: surf.clientWidth / 2 - 300, y: 24 }));
     wireControls(w);
     draggable(w);
@@ -588,7 +659,7 @@
     surf.appendChild(el);
     const off = name === "skills.md" ? 40 : 0;
     const w = { id: id, el, kind: "doc", title: "kate — " + name, min: false, max: false };
-    w.persistPos = (x, y) => LS.set("win." + id, { x, y });
+    w.geomKey = "win." + id;
     place(el, LS.get("win." + id, null), () => ({ x: surf.clientWidth / 2 - 250 + off, y: 26 + off }));
     wireControls(w);
     draggable(w);
@@ -630,7 +701,7 @@
       '<div class="term-body soc-body">' + items + "</div>";
     surf.appendChild(el);
     const w = { id: "socials", el, kind: "folder", title: "Dolphin — ~/socials", min: false, max: false };
-    w.persistPos = (x, y) => LS.set("win.socials", { x, y });
+    w.geomKey = "win.socials";
     place(el, LS.get("win.socials", null), () => ({ x: surf.clientWidth / 2 - 150, y: 40 }));
     wireControls(w);
     draggable(w);
@@ -761,7 +832,7 @@
       '<div class="term-body doc-body"><div class="doc-h"># about this machine</div><ul class="rows">' + rows + "</ul></div>";
     surf.appendChild(el);
     const w = { id: "about", el, kind: "doc", title: "about this machine", min: false, max: false };
-    w.persistPos = (x, y) => LS.set("win.about", { x, y });
+    w.geomKey = "win.about";
     place(el, LS.get("win.about", null), () => ({ x: surf.clientWidth / 2 - 230, y: 34 }));
     wireControls(w);
     draggable(w);
