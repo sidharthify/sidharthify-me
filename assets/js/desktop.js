@@ -231,7 +231,7 @@
       w.el.remove();
       if (w.tb) w.tb.remove();
       delete wins[w.id];
-      if (w.kind === "player") LS.set("player", { open: false });
+      if (w.kind === "player") { LS.set("player", { open: false }); showNowPlaying(false); }
       LS.set("iv.open", Object.keys(wins).filter((k) => wins[k].kind === "image"));
     }
   }
@@ -391,6 +391,22 @@
     "</div>" +
     '<audio class="pl-audio" preload="metadata"></audio></div>';
 
+  let npEl = null;
+  function initPanelNP() {
+    const right = document.querySelector(".panel-right");
+    if (!right || isMobile()) return;
+    npEl = document.createElement("span");
+    npEl.className = "panel-np";
+    npEl.innerHTML = '<svg class="np-note" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span class="np-text"></span>';
+    right.insertBefore(npEl, right.firstChild);
+  }
+  function setNowPlaying(t) {
+    if (npEl) npEl.querySelector(".np-text").textContent = t.title + " — " + t.artist;
+  }
+  function showNowPlaying(on) {
+    if (npEl) npEl.classList.toggle("show", on);
+  }
+
   function loadTrack(w, idx, opts) {
     opts = opts || {};
     w.idx = (idx + PLAYLIST.length) % PLAYLIST.length;
@@ -405,6 +421,7 @@
     w.startAt = opts.time || 0;
     if (opts.autoplay !== false) w.audio.play().catch(() => {});
     MUSIC.forEach((m, i) => { if (m.el) m.el.classList.toggle("playing", i === w.idx); });
+    setNowPlaying(t);
     savePlayer(w);
   }
 
@@ -417,8 +434,8 @@
     el.querySelector(".pl-play").addEventListener("click", () => { if (a.paused) a.play(); else a.pause(); });
     el.querySelector(".pl-prev").addEventListener("click", () => loadTrack(w, w.idx - 1));
     el.querySelector(".pl-next").addEventListener("click", () => loadTrack(w, w.idx + 1));
-    a.addEventListener("play", () => { el.classList.add("playing"); savePlayer(w); });
-    a.addEventListener("pause", () => { el.classList.remove("playing"); savePlayer(w); });
+    a.addEventListener("play", () => { el.classList.add("playing"); showNowPlaying(true); savePlayer(w); });
+    a.addEventListener("pause", () => { el.classList.remove("playing"); showNowPlaying(false); savePlayer(w); });
     a.addEventListener("ended", () => loadTrack(w, w.idx + 1));
     a.addEventListener("loadedmetadata", () => {
       tot.textContent = fmt(a.duration);
@@ -449,7 +466,7 @@
       addTaskItem(w);
     } else {
       const red = el.querySelector(".dot-red");
-      if (red) red.addEventListener("click", () => { w.audio.pause(); el.remove(); delete wins.player; LS.set("player", { open: false }); });
+      if (red) red.addEventListener("click", () => { w.audio.pause(); el.remove(); delete wins.player; LS.set("player", { open: false }); showNowPlaying(false); });
     }
     wins.player = w;
     return w;
@@ -711,12 +728,152 @@
     });
   }
 
+  function tidyIcons() {
+    Object.keys(localStorage).forEach((k) => { if (k.indexOf("sidh.icon.") === 0) localStorage.removeItem(k); });
+    location.reload();
+  }
+  function resetLayout() {
+    Object.keys(localStorage).forEach((k) => { if (k.indexOf("sidh.") === 0) localStorage.removeItem(k); });
+    location.reload();
+  }
+  function aboutMachine() {
+    ensureSurf();
+    if (!surf) return;
+    if (wins.about) { const w = wins.about; w.el.style.display = ""; w.min = false; if (w.tb) w.tb.classList.remove("minimized"); focusWin(w); return; }
+    const info = [
+      ["host", "sidharthify@nixos"],
+      ["os", "NixOS 26.11 (Zokor) x86_64"],
+      ["kernel", "cachyos (bore + bbr3)"],
+      ["de", "plasma 6 · sddm · catppuccin mocha mauve"],
+      ["shell", "fish"],
+      ["editor", "vscodium (lazyvim)"],
+      ["browser", "zen"],
+      ["cpu", "12th gen i5-12400F"],
+      ["gpu", "amd rx 9060 xt (amdgpu)"],
+      ["config", "github.com/sidharthify/serialExperimentsNix"],
+    ];
+    const rows = info.map(([k, v]) => '<li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">' + k + '</div><div class="row-sub">' + v + "</div></div></li>").join("");
+    const el = document.createElement("section");
+    el.className = "window docviewer";
+    el.innerHTML =
+      '<div class="win-bar"><span class="win-dots"><i class="dot-red"></i><i class="dot-yellow"></i><i class="dot-green"></i></span>' +
+      '<span class="term-title"><b>neofetch</b> — about this machine</span><span></span></div>' +
+      '<div class="term-body doc-body"><div class="doc-h"># about this machine</div><ul class="rows">' + rows + "</ul></div>";
+    surf.appendChild(el);
+    const w = { id: "about", el, kind: "doc", title: "about this machine", min: false, max: false };
+    w.persistPos = (x, y) => LS.set("win.about", { x, y });
+    place(el, LS.get("win.about", null), () => ({ x: surf.clientWidth / 2 - 230, y: 34 }));
+    wireControls(w);
+    draggable(w);
+    addTaskItem(w);
+    wins.about = w;
+    focusWin(w);
+  }
+
+  function initContextMenu() {
+    if (!ensureSurf()) return;
+    let menu = null;
+    function close() { if (menu) { menu.remove(); menu = null; } }
+    surf.addEventListener("contextmenu", (e) => {
+      if (e.target.closest(".window") || e.target.closest(".dz-icon")) return;
+      e.preventDefault();
+      close();
+      menu = document.createElement("div");
+      menu.className = "ctx-menu";
+      const items = [
+        ["open terminal", () => termWin && restore(termWin)],
+        ["open music", () => openMusicFolder()],
+        ["open socials", () => openSocials()],
+        ["sep"],
+        ["tidy up icons", tidyIcons],
+        ["reset layout", resetLayout],
+        ["sep"],
+        ["about this machine", aboutMachine],
+      ];
+      items.forEach((it) => {
+        if (it[0] === "sep") { const d = document.createElement("div"); d.className = "ctx-sep"; menu.appendChild(d); return; }
+        const b = document.createElement("button");
+        b.className = "ctx-item";
+        b.textContent = it[0];
+        b.addEventListener("click", () => { close(); it[1](); });
+        menu.appendChild(b);
+      });
+      document.body.appendChild(menu);
+      let x = e.clientX, y = e.clientY;
+      if (x + menu.offsetWidth > window.innerWidth) x = window.innerWidth - menu.offsetWidth - 4;
+      if (y + menu.offsetHeight > window.innerHeight) y = window.innerHeight - menu.offsetHeight - 4;
+      menu.style.left = x + "px";
+      menu.style.top = y + "px";
+    });
+    document.addEventListener("click", close);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+    window.addEventListener("blur", close);
+  }
+
+  function initLauncher() {
+    const overlay = document.createElement("div");
+    overlay.className = "launcher";
+    overlay.innerHTML = '<div class="launcher-box"><input class="launcher-input" placeholder="type to open a program, photo, song, page..." aria-label="launcher" autocomplete="off" spellcheck="false"><ul class="launcher-list"></ul></div>';
+    document.body.appendChild(overlay);
+    const input = overlay.querySelector(".launcher-input");
+    const list = overlay.querySelector(".launcher-list");
+    let items = [], sel = 0;
+    const ALL = []
+      .concat([
+        { label: "home", sub: "page", act: () => (location.href = ROOT || "./") },
+        { label: "about", sub: "page", act: () => (location.href = ROOT + "about/") },
+        { label: "blog", sub: "page", act: () => (location.href = ROOT + "blogs/") },
+        { label: "terminal", sub: "app", act: () => termWin && restore(termWin) },
+        { label: "music", sub: "folder", act: () => openMusicFolder() },
+        { label: "socials", sub: "folder", act: () => openSocials() },
+      ])
+      .concat(Object.keys(DOCS).map((n) => ({ label: n, sub: "document", act: () => openDoc(n) })))
+      .concat(PHOTOS.map((p) => ({ label: p.file, sub: "image", act: () => openViewer(p) })))
+      .concat(TRACKS.map((t, i) => ({ label: t.title, sub: "song · " + t.artist, act: () => openPlayer(i) })));
+    function render(q) {
+      q = (q || "").toLowerCase().trim();
+      items = ALL.filter((x) => (x.label + " " + x.sub).toLowerCase().includes(q)).slice(0, 12);
+      sel = 0;
+      list.innerHTML = "";
+      items.forEach((x, i) => {
+        const li = document.createElement("li");
+        li.className = "launcher-item" + (i === 0 ? " sel" : "");
+        li.innerHTML = '<span class="li-label">' + x.label + '</span><span class="li-sub">' + x.sub + "</span>";
+        li.addEventListener("click", () => run(x));
+        list.appendChild(li);
+      });
+    }
+    function highlight() { Array.from(list.children).forEach((li, i) => li.classList.toggle("sel", i === sel)); }
+    function open() { overlay.classList.add("show"); render(""); input.value = ""; setTimeout(() => input.focus(), 0); }
+    function close() { overlay.classList.remove("show"); }
+    function run(x) { close(); x.act(); }
+    input.addEventListener("input", () => render(input.value));
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") { sel = Math.min(items.length - 1, sel + 1); highlight(); e.preventDefault(); }
+      else if (e.key === "ArrowUp") { sel = Math.max(0, sel - 1); highlight(); e.preventDefault(); }
+      else if (e.key === "Enter") { if (items[sel]) run(items[sel]); }
+      else if (e.key === "Escape") { close(); }
+    });
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        overlay.classList.contains("show") ? close() : open();
+      }
+    });
+  }
+
   window.addEventListener("sidh-open-music", openMusicFolder);
   window.addEventListener("beforeunload", () => { if (wins.player) savePlayer(wins.player); });
 
   document.addEventListener("DOMContentLoaded", () => {
     initReorder();
-    if (!isMobile()) initDesktop();
+    if (!isMobile()) {
+      initDesktop();
+      initPanelNP();
+      initContextMenu();
+      initLauncher();
+    }
     initMusicMobile();
     restorePlayer();
   });

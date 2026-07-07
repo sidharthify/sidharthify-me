@@ -63,6 +63,98 @@
     "i occasionally ship roms, write bash scripts and live in the UNIX terminal.",
   ];
 
+  const NIX_CONFIG = `# this is the root of all imports!!!
+
+{ config, pkgs, lib, ... }:
+
+{
+  imports = [
+    ./hardware/hardware-configuration.nix
+    ./hardware/bluetooth.nix
+    ./hardware/intel.nix
+    ./hardware/amd.nix
+    ./hardware/sata.nix
+
+    ./system/base.nix
+    ./system/desktop.nix
+    ./system/fonts.nix
+    ./system/kernel.nix
+    ./system/networking.nix
+    ./system/opengl.nix
+    ./system/nix-settings.nix
+    ./system/android-dev.nix
+    ./system/gaming.nix
+    ./system/overlays.nix
+    ./system/flake-packages.nix
+    ./system/catppuccin.nix
+    ./system/wine.nix
+
+    ./services/docker-containers.nix
+    ./services/misc.nix
+    ./services/pipewire.nix
+    ./services/steam.nix
+    ./services/flatpak.nix
+    ./services/tailscale.nix
+    ./services/waydroid.nix
+
+    ./users/fish.nix
+    ./users/sidharthify.nix
+    ./users/arkserver.nix
+  ];
+
+  environment.systemPackages = import ../packages/packages.nix pkgs;
+  system.stateVersion = "25.11";
+}`;
+
+  const NIX_FLAKE = `{
+  description = "siddhi's flake";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    spicetify-nix.url      = "github:Gerg-L/spicetify-nix";
+    zen-browser-source.url = "github:youwen5/zen-browser-flake";
+    nixcord.url            = "github:KaylorBen/nixcord";
+    lazyvim-nix.url        = "github:jla2000/lazyvim-nix";
+    syd.url                = "github:sidharthify/syd";
+    nix-flatpak.url        = "github:gmodena/nix-flatpak";
+    parsecgaming.url       = "github:DarthPJB/parsec-gaming-nix";
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows      = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+
+    catppuccin.url    = "github:catppuccin/nix";
+    millennium.url    = "github:SteamClientHomebrew/Millennium/next?dir=packages/nix";
+    balena-etcher.url = "github:sidharthify/balenaEtcher-flake";
+
+    tuxManager = {
+      url = "github:sidharthify/TuxManager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    aerothemeplasma-nix = {
+      url = "github:nyakase/aerothemeplasma-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = { inherit inputs; };
+      modules = [ ./nixos/configuration.nix ... ];
+    };
+  };
+}`;
+
+
   const FORTUNES = [
     "there is no dark side of the moon, really. matter of fact, it's all dark.",
     "talk is cheap. show me the code.  — linus",
@@ -104,7 +196,6 @@
     yay: "yay: wrong distro, buddy",
     dnf: "dnf: wrong distro, buddy",
     emerge: "emerge: compiling... just kidding. wrong distro.",
-    "nix-env": "nix-env: declaratively no.",
     reboot: "reboot: you can just refresh the page :)",
     poweroff: "poweroff: please don't",
     shutdown: "shutdown: please don't",
@@ -298,15 +389,21 @@
         print("  projects · skills · socials · neofetch · whoami · uptime");
         print("  uname · hostname · id · free · df · ps · lscpu · lsblk · env · which");
         print("  date · cal · history · cowsay <text> · fortune · ping <host>");
-        print("  clear (ctrl+l)");
+        print("  nix · nixos-rebuild · nix-collect-garbage · home-manager");
+        print("  cat /etc/nixos/configuration.nix · clear (ctrl+l)");
         print("... and plenty of real unix commands. poke around, break things.", "dim");
-        print("tip: the bar up top navigates, and you can drag/close these windows.", "dim");
+        print("tip: ctrl+space opens a launcher; right-click the desktop for a menu.", "dim");
       },
       ls(arg) {
         const t = (arg || "").replace(/^~\//, "").replace(/\/$/, "");
         if (t === "projects") return HANDLERS.projects();
         if (t === "skills") return HANDLERS.skills();
         if (t === "socials") return HANDLERS.socials();
+        if (t === "/etc/nixos" || t === "/etc/nixos/") {
+          ["flake.nix", "flake.lock", "README.md", "configuration.nix"].forEach((n) => { const s = document.createElement("span"); s.textContent = n; s.style.color = "var(--subtext)"; print(s); });
+          ["nixos", "home", "hardware", "packages", "scripts"].forEach((d) => { const s = document.createElement("span"); s.textContent = d + "/"; s.style.color = "var(--blue)"; print(s); });
+          return;
+        }
         const items = listing(CWD);
         if (!items.length) return print("");
         items.forEach((it) => {
@@ -350,6 +447,8 @@
       },
       cat(arg) {
         if (!arg) return print("cat: missing operand", "err");
+        if (/configuration\.nix$/.test(arg)) { NIX_CONFIG.split("\n").forEach((l) => print(l)); return; }
+        if (/flake\.nix$/.test(arg)) { NIX_FLAKE.split("\n").forEach((l) => print(l)); return; }
         const f = arg.replace(/^~\//, "").toLowerCase();
         if (f === "about.md") {
           ABOUT.forEach((l) => print(l));
@@ -413,8 +512,9 @@
       },
       ps() {
         print("  PID TTY          TIME CMD");
-        print(" 1337 pts/0    00:00:00 zsh");
-        print(" 2048 pts/0    00:00:03 Hyprland");
+        print(" 1337 pts/0    00:00:00 fish");
+        print(" 2048 pts/0    00:00:05 plasmashell");
+        print(" 2051 pts/0    00:00:02 kwin_wayland");
         print(" 4096 pts/0    00:00:00 alacritty");
         print(" 8080 pts/0    00:00:00 ps");
       },
@@ -438,14 +538,84 @@
         print("    inet 192.168.1.42/24 scope global dynamic enp5s0");
       },
       env() {
-        print("SHELL=/run/current-system/sw/bin/zsh");
+        print("SHELL=/run/current-system/sw/bin/fish");
         print("USER=sidharthify");
         print("HOME=/home/sidharthify");
         print("EDITOR=nvim");
-        print("WM=Hyprland");
+        print("DE=KDE Plasma 6");
         print("TERM=alacritty");
+        print("NIX_PATH=/etc/nixos");
         print("PATH=/run/current-system/sw/bin:/home/sidharthify/.local/bin");
       },
+      "nixos-rebuild"(arg) {
+        if (streaming) return;
+        const sub = (arg || "").trim().split(/\s+/)[0] || "switch";
+        if (["switch", "boot", "test", "build", "dry-build", "dry-activate"].indexOf(sub) < 0) {
+          print("nixos-rebuild: unknown action '" + sub + "'", "err");
+          return;
+        }
+        stream([
+          ["dim", "building the system configuration..."],
+          ["", "evaluating flake .#nixosConfigurations.nixos ..."],
+          ["dim", "these 7 derivations will be built:"],
+          ["dim", "  /nix/store/…-nixos-system-nixos-26.11.drv"],
+          ["dim", "  /nix/store/…-unit-display-manager.service.drv"],
+          ["", "building '/nix/store/…-etc.drv'..."],
+          ["", "building '/nix/store/…-nixos-system-nixos-26.11.drv'..."],
+          ["warn", "warning: the following units failed nothing, we're good"],
+          ["ok", sub === "switch" || sub === "boot" ? "activating the configuration..." : "built configuration (no activation for '" + sub + "')"],
+          ["", "setting up /etc..."],
+          ["", "reloading user units for sidharthify..."],
+          ["ok", "done. switched to configuration: nixos 26.11 (Zokor)"],
+        ], 120);
+      },
+      nix(arg) {
+        const parts = (arg || "").trim().split(/\s+/);
+        const sub = parts[0] || "";
+        if (sub === "flake" && parts[1] === "show") {
+          print("git+file:///etc/nixos", "accent");
+          print("└───nixosConfigurations");
+          print("    └───nixos: NixOS configuration");
+          return;
+        }
+        if (sub === "flake" && parts[1] === "metadata") {
+          print("Resolved URL:  git+file:///etc/nixos");
+          print("Description:   siddhi's flake");
+          print("Inputs:        nixpkgs, home-manager, catppuccin, spicetify-nix, zen-browser,");
+          print("               nixcord, lazyvim-nix, syd, nix-cachyos-kernel, plasma-manager, ...");
+          return;
+        }
+        if (sub === "flake" && parts[1] === "update") {
+          if (streaming) return;
+          stream([["dim", "updating lock file '/etc/nixos/flake.lock':"], ["", "• Updated input 'nixpkgs'"], ["", "• Updated input 'home-manager'"], ["ok", "done."]], 200);
+          return;
+        }
+        if (sub === "develop") { print("entering dev shell... (imagine a very cozy $SHELL)", "dim"); return; }
+        if (sub === "run") { print("nix run: fetching + running '" + (parts[1] || "nixpkgs#hello") + "' ...", "dim"); print("Hello, world!"); return; }
+        if (sub === "build") { if (streaming) return; stream([["dim", "building..."], ["ok", "done. ./result -> /nix/store/…"]], 220); return; }
+        if (sub === "search") { print("* nixpkgs." + (parts[2] || "hello") + " — a small demo package", "accent"); print("  the classic GNU greeter."); return; }
+        if (sub === "profile" && parts[1] === "list") { print("Name    Flake\n0       nixpkgs#neovim\n1       nixpkgs#git"); return; }
+        print("nix — the purely functional package manager", "accent");
+        print("try: nix flake show · nix flake metadata · nix search nixpkgs <x> · nix run · nix develop");
+      },
+      "nix-shell"() { print("nix-shell: dropping you into an ephemeral shell... (it's a website — use your imagination)", "dim"); },
+      "nix-collect-garbage"(arg) {
+        if (streaming) return;
+        const deep = (arg || "").includes("-d");
+        stream([
+          ["dim", "finding garbage collector roots..."],
+          ["", "deleting '/nix/store/…-old-generation'..."],
+          ["", "deleting unused links..."],
+          ["ok", deep ? "note: also removed old generations. 4213 store paths deleted, 6.42 GiB freed" : "1187 store paths deleted, 1.83 GiB freed"],
+        ], 140);
+      },
+      "home-manager"(arg) {
+        if (streaming) return;
+        const sub = (arg || "").trim().split(/\s+/)[0] || "switch";
+        if (sub !== "switch" && sub !== "build") { print("home-manager: try 'switch'", "dim"); return; }
+        stream([["dim", "Starting Home Manager activation..."], ["", "Activating checkLinkTargets"], ["", "Activating onFilesChange"], ["ok", "done. home-manager generation activated for sidharthify"]], 130);
+      },
+      "nix-env"() { print("nix-env: this box is declarative — see `cat /etc/nixos/configuration.nix` :)", "dim"); },
       which(arg) {
         if (!arg) return print("usage: which <command>", "dim");
         const known = COMMANDS.concat(["zsh", "bash", "nix", "hyprland", "git", "adb"]);
@@ -530,7 +700,7 @@
       shine() { print("shine on, you crazy diamond", "accent"); },
       neofetch() {
         print("NixOS 26.11 (Zokor) · sidharthify@nixos", "accent");
-        print("shell: zsh · wm: hyprland · editor: neovim");
+        print("shell: fish · de: plasma 6 · editor: lazyvim · kernel: cachyos");
         const frag = document.createDocumentFragment();
         frag.appendChild(document.createTextNode("the full splash lives on "));
         const a = document.createElement("a");
@@ -551,7 +721,8 @@
       "pwd", "clear", "whoami", "echo", "date", "neofetch", "hyfetch", "fastfetch",
       "uname", "hostname", "uptime", "id", "free", "df", "ps", "lscpu", "lsblk",
       "ip", "env", "which", "history", "tree", "cal", "cowsay", "fortune", "man",
-      "ping", "su", "adb", "xdg-open",
+      "ping", "su", "adb", "xdg-open", "nixos-rebuild", "nix", "nix-shell",
+      "nix-collect-garbage", "home-manager", "nix-env",
     ];
 
     function run(raw) {
@@ -561,9 +732,15 @@
         const [cmd, ...rest] = trimmed.split(/\s+/);
         const name = cmd.toLowerCase();
         const arg = rest.join(" ");
-        if (name === "sudo" && rest.length) {
-          print("shine on, you crazy diamond", "accent");
-          print("(nice try — there is no dark side of the moon, really)", "dim");
+        if (name === "sudo") {
+          const sub = (rest[0] || "").toLowerCase();
+          if (sub && HANDLERS[sub]) {
+            print("[sudo] password for sidharthify: ", "dim");
+            HANDLERS[sub](rest.slice(1).join(" "));
+          } else {
+            print("shine on, you crazy diamond", "accent");
+            print("(nice try — there is no dark side of the moon, really)", "dim");
+          }
         } else if (HANDLERS[name]) HANDLERS[name](arg);
         else if (TEASE[name]) print(TEASE[name], "dim");
         else print("command not found: " + cmd + " — type 'help'", "err");
