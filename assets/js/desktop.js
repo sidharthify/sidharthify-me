@@ -55,6 +55,7 @@
     { file: "shelter.mp3", title: "Shelter", artist: "Porter Robinson & Madeon", album: "Shelter", genre: "Future Bass", dur: "3:38", src: "assets/audio/shelter-preview.mp3", art: "assets/images/shelter.jpg" },
     { file: "genes_rock_a_bye.mp3", title: "Gene's Rock-A-Bye", artist: "Masafumi Takada", album: "God Hand OST", genre: "Game Soundtrack", dur: "2:57", src: "assets/audio/genes-rock-a-bye-preview.mp3", art: "assets/images/genes-rock-a-bye.jpg" },
     { file: "echoes_live_at_pompeii.mp3", title: "Echoes (Live at Pompeii)", artist: "Pink Floyd", album: "At Pompeii MCMLXXII", genre: "Progressive Rock", dur: "11:55", src: "assets/audio/echoes-pompeii-preview.mp3", art: "assets/images/echoes-pompeii.jpg" },
+    { file: "gruppa_krovi.mp3", title: "Группа крови", artist: "Кино", album: "Группа крови", genre: "Post-Punk", dur: "4:47", src: "assets/audio/gruppa-krovi-preview.mp3", art: "assets/images/gruppa-krovi.jpg" },
   ];
 
   const PHOTOS = [
