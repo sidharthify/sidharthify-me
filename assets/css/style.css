@@ -261,7 +261,8 @@ body {
   opacity: 0;
 }
 
-.terminal {
+.terminal,
+.whoami-win {
   background: rgba(30, 30, 46, .92);
   border: 1px solid var(--border-strong);
   border-radius: 12px;
@@ -358,6 +359,49 @@ body {
 
 .comment::before {
   content: "# ";
+}
+
+/* ============================================================
+   whoami intro (home)
+   ============================================================ */
+.intro {
+  margin-bottom: 1.2rem;
+}
+
+.term-body .intro-head {
+  font-size: 1.4rem;
+  line-height: 1.3;
+  font-weight: 800;
+  color: var(--text);
+  margin: .3rem 0 .5rem;
+}
+
+.intro-name {
+  color: var(--mauve);
+}
+
+.intro-lede {
+  color: var(--subtext);
+  max-width: 72ch;
+  margin-bottom: .9rem;
+}
+
+.spec {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: .2rem 1.4rem;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
+.spec dt {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.spec dd {
+  color: var(--subtext);
+  min-width: 0;
 }
 
 /* ============================================================
@@ -773,10 +817,32 @@ body {
 .window > .pl-body {
   overflow-y: auto;
   min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface1) transparent;
 }
 
-.terminal.window {
+.terminal.window,
+.whoami-win.window {
   width: min(900px, 92vw);
+}
+
+.whoami-win .intro {
+  margin-bottom: 0;
+}
+
+.whoami-win > .term-body {
+  container-type: inline-size;
+}
+
+@container (max-width: 720px) {
+  .spec {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .spec dd {
+    margin-bottom: .45rem;
+  }
 }
 
 .filemanager,
@@ -1293,6 +1359,19 @@ body {
 
   .term-body {
     padding: 1rem 1rem .9rem;
+  }
+
+  .term-body .intro-head {
+    font-size: 1.2rem;
+  }
+
+  .spec {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .spec dd {
+    margin-bottom: .45rem;
   }
 
   .term-title {

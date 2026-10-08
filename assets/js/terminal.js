@@ -176,6 +176,16 @@
     ["kotlin", "android frameworks"],
   ];
 
+  const SPECS = [
+    ["aosp framework", "yaap & cipherOS maintainer · device bring-up · HALs"],
+    ["low level", "syd, my pixel 7 kernel · a 20-year-old c++ engine ported to arm64"],
+    ["linux", "nixOS daily, fully declarative · kernel and rom build tooling"],
+    ["app development", "breathe for android (kotlin, compose) and iOS (swift, swiftui)"],
+    ["ui", "material 3 and swiftui clients, plus this whole website, no frameworks"],
+    ["fastapi", "the breatheOSS api: live CPCB and US EPA AQI from our own sensors"],
+    ["scripting", "bash and python: rom and kernel build scripts, syd for nixpkgs"],
+  ];
+
   const SOCIALS = [
     ["github", "https://github.com/sidharthify"],
     ["telegram", "https://t.me/arteryring1"],
@@ -671,7 +681,11 @@
       skills() { printRows(SKILLS); },
       socials() { SOCIALS.forEach(([l, h]) => printLink(l, h)); },
       pwd() { print(CWD); },
-      whoami() { print("sidharthify"); },
+      whoami() {
+        print("sidharthify");
+        print("sidharth — systems & android developer", "accent");
+        SPECS.forEach(([k, v]) => print(k.padEnd(17) + v));
+      },
       echo(arg) { print(arg || ""); },
       date() { print(new Date().toString()); },
       clear() { output.innerHTML = ""; },

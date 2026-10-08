@@ -129,6 +129,7 @@
   let activeId = null;
   const wins = {};
   let termWin = null;
+  let whoWin = null;
   let taskbar, taskItems;
   let surf;
   let MUSIC = [];
@@ -339,24 +340,56 @@
     w.tb = b;
   }
 
-  function registerTerminal() {
-    const el = document.querySelector(".terminal");
-    if (!el) return null;
-    const w = { id: "terminal", el, kind: "terminal", title: el.dataset.wtitle || "alacritty ~ zsh", min: false, max: false };
-    w.geomKey = "win.terminal";
-    w.persistState = () => LS.set("term.state", { min: w.min, max: w.max, closed: w.el.style.display === "none" });
-    place(el, LS.get("win.terminal", null), () => ({ x: (surf.clientWidth - el.offsetWidth) / 2, y: 16 }));
+  function registerTerminal(el, id, title, def) {
+    const w = { id, el, kind: "terminal", title, min: false, max: false };
+    w.geomKey = "win." + id;
+    const stateKey = (id === "terminal" ? "term" : id) + ".state";
+    w.persistState = () => LS.set(stateKey, { min: w.min, max: w.max, closed: w.el.style.display === "none" });
+    const saved = LS.get(w.geomKey, null);
+    if (saved && !saved.w) el.style.width = "";
+    place(el, saved, def || (() => ({ x: (surf.clientWidth - el.offsetWidth) / 2, y: 16 })));
     wireControls(w);
     draggable(w);
     addTaskItem(w);
     wins[w.id] = w;
-    const st = LS.get("term.state", null);
+    const st = LS.get(stateKey, null);
     if (st) {
       if (st.max) { w.max = true; el.classList.add("maximized"); }
       if (st.closed || st.min) { el.style.display = "none"; w.min = !!st.min; if (w.tb) w.tb.classList.add("minimized"); }
     }
     focusWin(w);
     return w;
+  }
+
+  function buildWhoami(term) {
+    const intro = term.querySelector(".intro");
+    if (!intro) return null;
+    const el = document.createElement("section");
+    el.className = "window whoami-win";
+    el.innerHTML =
+      '<div class="term-titlebar"><span class="term-dots" aria-hidden="true"><i class="dot-red"></i><i class="dot-yellow"></i><i class="dot-green"></i></span>' +
+      '<span class="term-title"><b>sidharthify@nixos</b>: ~</span><span></span></div>' +
+      '<div class="term-body"></div>';
+    el.querySelector(".term-body").appendChild(intro);
+    surf.insertBefore(el, term);
+    return el;
+  }
+
+  function homeLayout(term, who) {
+    const sw = surf.clientWidth, sh = surf.clientHeight;
+    const gap = 16, top = 16;
+    const tw = term.offsetWidth;
+    const side = Math.min(820, 0.8 * sw - 20 - gap - tw);
+    if (side >= 560) {
+      who.style.width = side + "px";
+      const h = Math.min(Math.max(who.offsetHeight, term.offsetHeight), sh - top - 10);
+      const x = (sw - side - gap - tw) / 2;
+      return { who: { x, y: top, h }, term: { x: x + side + gap, y: top, h } };
+    }
+    const x = (sw - tw) / 2;
+    const ty = top + who.offsetHeight + gap;
+    const room = sh - ty - 10;
+    return { who: { x, y: top }, term: { x, y: ty, h: room < term.offsetHeight && room >= MIN_H ? room : 0 } };
   }
 
   function openViewer(p) {
@@ -741,7 +774,12 @@
     surf = document.querySelector(".desktop-surface");
     if (!surf) return;
     buildTaskbar();
-    termWin = registerTerminal();
+    const termEl = surf.querySelector(".terminal");
+    const whoEl = HOME && termEl ? buildWhoami(termEl) : null;
+    const lay = whoEl ? homeLayout(termEl, whoEl) : null;
+    if (termEl) termWin = registerTerminal(termEl, "terminal", termEl.dataset.wtitle || "alacritty ~ zsh", lay && (() => lay.term));
+    if (whoEl) whoWin = registerTerminal(whoEl, "whoami", "alacritty ~ whoami", () => lay.who);
+    if (termWin && whoWin && termWin.el.style.display !== "none") focusWin(termWin);
     if (HOME) {
       const layer = document.querySelector(".desktop-icons");
       if (layer) {
@@ -860,6 +898,7 @@
       menu.className = "ctx-menu";
       const items = [
         ["open terminal", () => termWin && restore(termWin)],
+        ...(whoWin ? [["open whoami", () => restore(whoWin)]] : []),
         ["open music", () => openMusicFolder()],
         ["open socials", () => openSocials()],
         ["sep"],
@@ -905,6 +944,7 @@
         { label: "music", sub: "folder", act: () => openMusicFolder() },
         { label: "socials", sub: "folder", act: () => openSocials() },
       ])
+      .concat(whoWin ? [{ label: "whoami", sub: "app", act: () => restore(whoWin) }] : [])
       .concat(Object.keys(DOCS).map((n) => ({ label: n, sub: "document", act: () => openDoc(n) })))
       .concat(PHOTOS.map((p) => ({ label: p.file, sub: "image", act: () => openViewer(p) })))
       .concat(TRACKS.map((t, i) => ({ label: t.title, sub: "song · " + t.artist, act: () => openPlayer(i) })));
