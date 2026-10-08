@@ -72,14 +72,18 @@
     "projects.md": {
       heading: "# things i've worked on",
       items: [
+        ["breatheOSS", "lead dev & maintainer. an open-source, community-driven air quality network for Jammu & Kashmir and Ladakh: our own AirGradient sensors in jammu, srinagar and rajouri backed by satellite models, a FastAPI backend computing indian (CPCB) and US EPA AQI, android, iOS and web clients, a discord bot, an open data repository and a governance charter. breatheoss.app"],
+        ["breatheForecaster", "seven day PM2.5 / PM10 / AQI forecaster for the breatheOSS network, pure standard-library python. forecasts are published nightly before the days happen and graded in public afterwards"],
         ["yaap (yet another aosp project)", "maintainer / contributor"],
         ["cipherOS", "maintainer"],
         ["device trees & ports", "nothing phone 2a/2a+, realme 8i / narzo 50 4g, realme 9 5g SE, pixel 7 / 7 pro — maintainer, co-lead, contributor, tester"],
         ["lineageos contributions", "rewriting legacy hidl hardware abstraction layers to aidl, building kernels"],
-        ["nixos + homelab", "self-hosted plex, radarr, sonarr, prowlarr"],
+        ["nixos + homelab", "a modded minecraft server run as a systemd service, with a discord bot that starts it on request and stops it by in-game majority vote, ipv6 ddns, a playit tunnel and daily backups. sunshine for game streaming"],
         ["cwr engine port (arma cwa)", "ported a 20-year-old game engine to android arm64 with a custom opengl es 3.2 backend"],
         ["syd", "lightweight command-line tool for nixOS"],
-        ["breathe", "android app designed to monitor real-time AQI across Jammu & Kashmir"],
+        ["stillAlive-C", "the portal ending credits recreated in pure c for the terminal: typed-out text, ascii art and audio in sync, scaled to any window at 4:3"],
+        ["ladsave", "save editor in c for yakuza: like a dragon on linux. reverses the xor + crc32 save format and splices bytes in place so the rest of the save stays untouched"],
+        ["bcstm2wav", "batch converts nintendo 3ds .bcstm audio to .wav, written in c"],
       ],
     },
     "skills.md": {
@@ -815,13 +819,15 @@
     const info = [
       ["host", "sidharthify@nixos"],
       ["os", "NixOS 26.11 (Zokor) x86_64"],
-      ["kernel", "cachyos (bore + bbr3)"],
-      ["de", "plasma 6 · sddm · catppuccin mocha mauve"],
+      ["kernel", "7.2.8-cachyos (bore + bbr3)"],
+      ["de", "plasma 6.7 · sddm · catppuccin mocha mauve"],
       ["shell", "fish"],
       ["editor", "vscodium (lazyvim)"],
-      ["browser", "zen"],
+      ["browser", "firefox (declarative, hardened, catppuccin userChrome)"],
       ["cpu", "12th gen i5-12400F"],
       ["gpu", "amd rx 9060 xt (amdgpu)"],
+      ["memory", "32 GiB"],
+      ["display", "viewsonic vx2758a-2k · 2560x1440 @ 185 Hz"],
       ["config", "github.com/sidharthify/serialExperimentsNix"],
     ];
     const rows = info.map(([k, v]) => '<li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">' + k + '</div><div class="row-sub">' + v + "</div></div></li>").join("");
