@@ -256,6 +256,11 @@ article>header {
   background: transparent !important;
 }
 
+/* highlightjs-line-numbers skips one-line blocks, so they don't get the gutter's padding */
+:where(main, .container, article) pre code:not(:has(.hljs-ln)) {
+  padding: 1rem;
+}
+
 :where(main, .container, article) pre::-webkit-scrollbar,
 :where(main, .container, article) pre::-webkit-scrollbar-track {
   background-color: inherit;
@@ -483,6 +488,10 @@ pre:has(.code-tab-bar) .code-copy-btn {
 
   :where(main, .container, article) pre code {
     line-height: 1.5;
+    padding: 0.5rem;
+  }
+
+  :where(main, .container, article) pre code:not(:has(.hljs-ln)) {
     padding: 0.5rem;
   }
 

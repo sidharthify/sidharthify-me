@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Porting the Pixel 7 kernel to Linux 6.12 • 12/10/26 • sidharthify</title>
+  <meta name="theme-color" content="#11111b" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="../../assets/css/blog.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@catppuccin/highlightjs@1.0.1/css/catppuccin-mocha.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Porting the Pixel 7 kernel to Linux 6.12" />
+  <meta property="og:description"
+    content="Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera." />
+  <meta property="og:url" content="https://sidharthify.tech/blogs/blog-12-10-26/" />
+  <meta property="og:site_name" content="sidharthify" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Porting the Pixel 7 kernel to Linux 6.12" />
+  <meta name="twitter:description"
+    content="Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera." />
+</head>
+
+<body data-cwd="~/blog/pixel-kernel-612" data-root="../../">
+  <div class="wallpaper" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="panel">
+    <div class="panel-left">
+      <a class="panel-brand" href="../../">sidharthify</a>
+      <ul class="workspaces">
+        <li><a href="../../"><span class="ws-num">1</span>home</a></li>
+        <li><a href="../../about/"><span class="ws-num">2</span>about</a></li>
+        <li><a aria-current="page" href="../"><span class="ws-num">3</span>blog</a></li>
+      </ul>
+    </div>
+    <div class="panel-center"><span>&copy; 2026 &middot; <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a> &middot; powered by <a href="https://www.catppuccin.com/" target="_blank" rel="noopener">catppuccin</a></span></div>
+    <div class="panel-right">
+      <span class="panel-swatches" aria-hidden="true">
+        <i class="sw-red"></i><i class="sw-yellow"></i><i class="sw-green"></i><i class="sw-blue"></i><i class="sw-mauve"></i>
+      </span>
+      <span class="panel-clock"></span>
+    </div>
+  </header>
+  <main id="main" class="desktop desktop--wide desktop-surface">
+    <section class="terminal window">
+      <div class="term-titlebar">
+        <span class="term-dots" aria-hidden="true"><i class="dot-red"></i><i class="dot-yellow"></i><i class="dot-green"></i></span>
+        <span class="term-title"><b>sidharthify@nixos</b>: ~/blog/pixel-kernel-612</span>
+        <span></span>
+      </div>
+      <div class="term-body">
+        <div class="prompt"><span class="p-loc">sidharthify@nixos</span> <span class="p-path">~/blog/pixel-kernel-612</span> <span class="p-sym">$</span> <span class="p-cmd">nvim <span class="arg">pixel-kernel-612.md</span></span></div>
+        <div class="blog-layout">
+    <article>
+      <header>
+        <h1>Porting the Pixel 7 kernel to Linux 6.12</h1>
+        <div class="post-meta">
+          <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg> 12/10/26</span>
+          <span class="meta-sep">·</span>
+          <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg> 6,250 words</span>
+          <span class="meta-sep">·</span>
+          <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg> 30 min read</span>
+        </div>
+        <div class="post-tags">
+          <span class="tag">Android</span>
+          <span class="tag">Kernel</span>
+          <span class="tag">Pixel</span>
+          <span class="tag">6.12</span>
+        </div>
+      </header>
+
+      <p>
+        Hey, we're back into the AOSP stuff again! In the <a href="../blog-14-12-25/" class="blog-link">last kernel post</a>, I threw Bazel out of the Pixel 7
+        kernel build and replaced it with plain <code>make</code> and a script called
+        <a href="https://github.com/sidharthify/auto" class="blog-link">auto</a>. That kernel, syd, is still a 6.1
+        kernel, like the one the phone shipped with.
+      </p>
+
+      <p>
+        Right before starting this, I had finished a big round of optimizations on syd: a rebase onto 6.1.177, CASS,
+        a pile of Sultan's latency and battery patches, and a lot fewer idle wakeups. Once that was done, I was bored,
+        and I wanted a challenge.
+      </p>
+
+      <p>
+        Android 16's newest common kernel branch is <code>android16-6.12</code>, and Google has started a 6.12 tree for
+        gs101 (the Pixel 6's chip, gs201's older sibling). Nothing for gs201, though. So I honestly didn't know if it
+        was even possible, and I wanted to find out: a Linux 6.12 kernel for the Pixel 7 (panther), running YAAP, with
+        as much of the hardware working as possible.
+      </p>
+
+
+      <p>
+        Short version for you non-attention having dwellers: it runs as a normal YAAP build. Display, touch, Wi-Fi, charging, USB, audio, the camera and
+        <code>/data</code> encryption all work, and idle power is where it should be. The modem doesn't work yet.
+        Getting there took a few days, twelve bugs, a day with almost no electricity, and quite a few dead ends. I'm
+        keeping the dead ends in, because they're where I learned the most.
+      </p>
+
+      <img src="../../assets/images/6-12-port/yaap-6.12.png" style="max-width: 800x;" alt="YAAP booting on a 6.12 kernel" class="blog-image" />
+
+      <hr>
+
+      <h1>The plan</h1>
+
+      <p>
+        I did not really have a direct outlier for how I'd do this at the beginning. 
+        I knew that I had to port the google-modules to the newer kernel, but how? Well, the Pixel kernel comes in two parts. One is the core kernel, which Google calls the GKI, built from the Android
+        Common Kernel (ACK). The other is a big pile of vendor modules (<code>google-modules</code>) for everything
+        specific to the SoC and the board: display, touch, the TPU, the modem, the power management IC, and so on.
+      </p>
+
+      <p>The (initial) plan was:</p>
+
+      <ol>
+        <li>Take ACK <code>android16-6.12</code> as the core (6.12.93 when I started).</li>
+        <li>
+          Import pantah's 6.1 <code>google-modules</code> one by one. Why not Google's 6.12 gs101 modules? They're
+          older snapshots, and the vendor blobs in the current Pixel 7 firmware expect pantah's newer interfaces.
+        </li>
+        <li>
+          Cherry-pick Google's own gs101 6.12 compatibility commits on top. Those cover the kernel API changes between
+          6.1 and 6.12. For example, a platform driver's <code>remove()</code> callback returns <code>void</code> now.
+        </li>
+        <li>Build everything with auto, then build a YAAP ROM against it.</li>
+      </ol>
+
+      <p>
+        Most of the import was boring in a good way: cherry-pick, fix the build, repeat. The first real surprise was
+        Rust.
+      </p>
+
+      <hr>
+
+      <h1>Rust is not optional anymore</h1>
+
+      <p>
+        On <code>android16-6.12</code>, ashmem (Android's shared memory driver) is written in Rust. If you build the
+        kernel without <code>CONFIG_RUST</code>, the kernel builds just fine, but the ROM build fails its VINTF check
+        later, because the kernel compatibility matrix for this release (FCM 202504) requires
+        <code>CONFIG_ASHMEM</code>.
+      </p>
+
+      <p>Turning Rust on brought two more requirements with it:</p>
+
+      <ul>
+        <li>
+          With Rust and <code>MODVERSIONS</code> both on, symbol versions come from <code>gendwarfksyms</code> instead
+          of <code>genksyms</code>. It reads DWARF debug info, so it needs libdw. My build server didn't have it, so I
+          built elfutils 0.191 locally.
+        </li>
+        <li>
+          ACK pins a specific rustc (1.82). The system one was 1.75. Kbuild doesn't fail when the rustc is too old. It
+          just drops <code>CONFIG_RUST</code> from the config and keeps going.
+        </li>
+      </ul>
+
+      <p>
+        That last one is easy to miss, because every <code>make</code> invocation rechecks the toolchain. Forget the
+        Rust variables once, and Rust is silently gone again. So every build goes through a tiny wrapper:
+      </p>
+
+      <pre data-filename="kmake.sh"><code class="language-bash">#!/usr/bin/env bash
+# make for the 6.12 tree with the ACK toolchains (clang r536225, rustc 1.82.0.p2)
+# and a local elfutils for gendwarfksyms.
+# The Rust variables have to be on every make command line: kbuild rechecks the
+# toolchain on each run and would drop CONFIG_RUST with the system rustc.
+K=$HOME/kernel612/linux-x86
+R=$K/rust-prebuilts/linux-x86/1.82.0.p2
+E=$HOME/kernel612/host/elfutils
+export PATH=$K/clang-r536225/bin:$PATH
+export LIBCLANG_PATH=$K/clang-r536225/lib
+exec make LLVM=1 RUSTC=$R/bin/rustc HOSTRUSTC=$R/bin/rustc \
+	BINDGEN=$HOME/yaap/prebuilts/clang-tools/linux-x86/bin/bindgen \
+	HOSTCFLAGS="-I$E/include" HOSTLDFLAGS="-L$E/lib -Wl,-rpath,$E/lib" "$@"</code></pre>
+
+      <p>
+        auto does the same thing for 6.12 builds. With that, the kernel built, the modules built, and a userdebug YAAP
+        build passed its checks against it. Time to flash it.
+      </p>
+
+      <hr>
+
+      <h1>First boot: a crash with no backtrace</h1>
+
+      <p>
+        The phone showed the Google logo, then rebooted. No kernel log, no adb, nothing on screen.
+      </p>
+
+      <p>
+        Thankfully, Pixels have a nice feature here. When the kernel panics, a module called debug-snapshot stores the
+        panic message in a small buffer that survives the reset, and the bootloader prints it in its own log. You can
+        read that log from fastboot:
+      </p>
+
+      <pre data-filename="terminal"><code class="language-bash">fastboot oem dmesg | grep -A3 "reset message"</code></pre>
+
+      <p>Which gave me this:</p>
+
+      <pre data-filename="oem dmesg"><code class="language-plaintext">KP: Oops: Fatal exception: comm:kworker/u32:1 PC:__srcu_read_lock+0x3c/0x88 LR:gpiod_free_commit+0x34/0x304</code></pre>
+
+      <p>
+        So something freed a GPIO, and the GPIO code tripped over a bad pointer while doing it. But which driver? The
+        record only has the crashing function (PC) and its caller (LR). There are dozens of drivers that free GPIOs, and
+        the buffer is only 1 KiB, so there's no full backtrace in it.
+      </p>
+
+      <hr>
+
+      <h1>Things that didn't work</h1>
+
+      <p>
+        Before I found a good way to debug this, I tried a few bad ones, all on the 11th of October. That was the day
+        Jammu flooded. My area had no electricity for the entire day, apart from a few short bits. Every time the power
+        came back, my hopes went up, and two minutes later it was gone again. I was in agony.
+      </p>
+
+      <p>
+        Each of the dead ends still taught me something about the phone.
+      </p>
+
+      <h2>A "reader" slot for pstore</h2>
+
+      <p>
+        pstore saves the kernel log in a reserved piece of RAM, so the next boot can read it from
+        <code>/sys/fs/pstore</code>. The Pixel 7 has two slots (a and b), so the plan was: crash the new kernel on
+        slot a, then boot a known-good kernel on slot b and read the log.
+      </p>
+
+      <p>
+        It didn't work, twice over. First, my "known-good" slot b was a mix of images from different builds, and it died
+        too, with <code>Attempted to kill init! exitcode=0x7f00</code>. I later learned that this is simply first-stage
+        init failing to mount something. Second, and more important, pstore on this phone doesn't survive a trip
+        through the bootloader. I checked by writing a marker into <code>/dev/kmsg</code>, rebooting to the bootloader
+        and back. The marker was gone.
+      </p>
+
+      <h2>Recovery as a reader</h2>
+
+      <p>
+        The recovery on this phone runs on the same kernel as Android. So a recovery on my 6.12 kernel crashed in exactly
+        the same place. Obvious in hindsight.
+      </p>
+
+      <h2>Undocumented fastboot commands</h2>
+
+      <p>
+        The bootloader has a bunch of <code>fastboot oem</code> commands. I poked at a few, hoping for a RAM dump.
+        <code>oem uart</code> hung fastboot, and <code>oem ramdump usb</code> turned RAM dumps on, which I then had to
+        turn off again with <code>fastboot oem ramdump disable</code>. Not my best idea.
+      </p>
+
+      <h2>Bisecting the module list</h2>
+
+      <p>
+        The first stage of boot loads modules from a list in the vendor_kernel_boot ramdisk. If I loaded only the first
+        N modules, I could find out which one crashes. To avoid rebuilding the ramdisk every time, I appended a second
+        cpio archive to it that overrides <code>modules.load</code>. The kernel unpacks them in order, so later files
+        win. (This trick turned out to be really useful later.)
+      </p>
+
+      <p>
+        With 84 modules (no UFS storage driver yet), there was no GPIO crash, and init died as expected. With 85, the
+        bootloader refused to boot the slot at all:
+      </p>
+
+      <pre data-filename="oem dmesg"><code class="language-plaintext">[I] [PXL] AB Decision: force ABL into fastboot</code></pre>
+
+      <p>
+        That's the Pixel's bootloop protection. Neither slot had ever been marked as successfully booted, so after
+        enough failed tries, it stopped trying. The build had no <code>bootctl</code>, so I booted slot b and marked it
+        successful by calling the boot HAL directly:
+      </p>
+
+      <pre data-filename="adb shell"><code class="language-bash"># 8 = markBootSuccessful
+service call android.hardware.boot.IBootControl/default 8</code></pre>
+
+      <p>
+        A truncated module list kept producing new and different failures, though, and each one cost a full flash and
+        boot. I dropped the bisect.
+      </p>
+
+      <p>
+        Looking back, the problem with all of these was the same: I was guessing, and every boot gave me another vague
+        symptom to guess about. What I needed was for the phone to just tell me what happened.
+      </p>
+
+      <hr>
+
+      <h1>Making the kernel write its own crash report</h1>
+
+      <p>
+        One thing <em>always</em> made it to the bootloader, which was... the panic message. So I made the panic message carry the
+        information I wanted.
+      </p>
+
+      <p>
+        On arm64, an oops ends up in <code>die()</code>, which calls <code>panic()</code>. I wrote a debug-only patch
+        that saves the call chain with <code>stack_trace_save_regs()</code> and prints it into the panic string. The
+        <code>%ps</code> format prints a symbol name and, for code in a module, the module's name in brackets. Since
+        the buffer is small, frames inside modules go first, because those name the driver.
+      </p>
+
+      <pre data-filename="arch/arm64/kernel/traps.c (debug only)"><code class="language-c">static char die_bt[768];
+
+static const char *die_backtrace(struct pt_regs *regs)
+{
+	unsigned long entries[20];
+	unsigned int n, i;
+	int len = 0;
+
+	if (!regs)
+		return "";
+	n = stack_trace_save_regs(regs, entries, ARRAY_SIZE(entries), 0);
+
+	/* frames inside modules first: they name the driver */
+	len += scnprintf(die_bt + len, sizeof(die_bt) - len, " mods:");
+	for (i = 0; i &lt; n; i++)
+		if (is_module_text_address(entries[i]))
+			len += scnprintf(die_bt + len, sizeof(die_bt) - len,
+					 "%ps&lt;", (void *)entries[i]);
+
+	/* then the whole chain */
+	len += scnprintf(die_bt + len, sizeof(die_bt) - len, " bt:");
+	for (i = 0; i &lt; n; i++)
+		len += scnprintf(die_bt + len, sizeof(die_bt) - len, "%ps&lt;",
+				 (void *)entries[i]);
+	return die_bt;
+}
+
+/* ...and in die(): */
+	if (panic_on_oops)
+		panic("%s: Fatal exception%s", str, die_backtrace(regs));</code></pre>
+
+      <p>
+        I also made it record the last device whose driver resources were released, in case the bug was a
+        use-after-free from an earlier unbind. One flash later, the bootloader showed this (trimmed):
+      </p>
+
+      <pre data-filename="oem dmesg"><code class="language-plaintext">KP: Oops: Fatal exception mods:tbn_probe [touch_bus_negotiator]&lt; ...
+bt:__srcu_read_lock&lt;gpiod_free_commit&lt;gpiod_free&lt;gpio_free&lt;tbn_probe [touch_bus_negotiator]&lt;
+   platform_probe&lt;really_probe&lt;...&lt;deferred_probe_work_func&lt;...</code></pre>
+
+      <p>
+        The answer, in one boot. This patch (and the ones that came after it) never gets committed. They live as small
+        scripts that apply the change, build a debug kernel, and revert the source again. The build script checks that
+        the debug string is really in the image, because more than once I flashed a "debug" kernel that wasn't one.
+      </p>
+
+      <hr>
+
+      <h1>Bug #1: the touch driver frees its GPIOs twice</h1>
+
+      <p>
+        <code>touch_bus_negotiator</code> (tbn) decides whether the touchscreen bus belongs to the main CPU or to the
+        AoC (the always-on low-power core). Its probe function requests two GPIOs and an IRQ with the
+        <code>devm_*</code> helpers, which free them automatically when the probe fails or the driver goes away. But
+        when the probe fails, it also calls <code>tbn_remove()</code>, which frees them again by hand. So every failed
+        probe frees them twice.
+      </p>
+
+      <p>
+        On 6.1, that was harmless. The second <code>gpiod_free()</code> saw that the GPIO wasn't requested anymore,
+        warned, and returned. On 6.12, <code>gpiod_free()</code> drops its references to the GPIO controller
+        every time. At boot, tbn's probe defers a few times while the GPIO controller comes up, and each
+        retry drops one reference too many. Eventually the controller's <code>gpio_device</code> is freed while it's
+        still in use, and the next retry touches freed memory. That's the <code>__srcu_read_lock</code> crash.
+      </p>
+
+      <p>
+        Fun detail: Google's own 6.12 tree has the same code, including a copy-paste slip that frees the same GPIO
+        twice. The fix is to leave the devm-managed resources to devm:
+      </p>
+
+      <pre data-filename="touch_bus_negotiator.c"><code class="language-diff">@@ -570,20 +570,15 @@ static void tbn_remove(struct platform_device *pdev)
+ 	if (tbn == NULL)
+ 		return;
+
+-	if (tbn-&gt;mode == TBN_MODE_GPIO) {
+-		free_irq(tbn-&gt;aoc2ap_irq, tbn);
+-		if (gpio_is_valid(tbn-&gt;ap2aoc_gpio))
+-			gpio_free(tbn-&gt;ap2aoc_gpio);
+-		if (gpio_is_valid(tbn-&gt;aoc2ap_gpio))
+-			gpio_free(tbn-&gt;aoc2ap_gpio);
++	/* The GPIOs and the aoc2ap IRQ are devm-managed; devres frees them. */
+ #if IS_ENABLED(CONFIG_TOUCHSCREEN_TBN_AOC_CHANNEL_MODE)
+-	} else if (tbn-&gt;mode == TBN_MODE_AOC_CHANNEL) {
++	if (tbn-&gt;mode == TBN_MODE_AOC_CHANNEL) {
+ 		if (!IS_ERR(tbn-&gt;aoc_channel_task))
+ 			kthread_stop(tbn-&gt;aoc_channel_task);
+ 		if (tbn-&gt;event_wq)
+ 			destroy_workqueue(tbn-&gt;event_wq);
+-#endif
+ 	}
++#endif</code></pre>
+
+      <p>
+        To test a one-module fix, I didn't want to rebuild and repackage everything. So I built just that
+        <code>.ko</code>, stripped it with <code>llvm-strip --strip-debug</code>, signed it with
+        <code>scripts/sign-file</code> and the tree's module key, and used the appended-cpio trick from the bisect to
+        drop it into the vendor_kernel_boot ramdisk:
+      </p>
+
+      <pre data-filename="overlay.sh"><code class="language-bash"># The original ramdisk stays byte-for-byte; a cpio of $dir is appended after it,
+# and the kernel unpacks it on top.
+(cd "$dir" &amp;&amp; find . -mindepth 1 | sed 's|^\./||' | sort | cpio -o -H newc -R 0:0 --quiet) &gt; "ov-$name.cpio"
+lz4 -l -9 -f -q "ov-$name.cpio" "ov-$name.cpio.lz4"
+cat vkb/vendor_ramdisk00 "ov-$name.cpio.lz4" &gt; "rd-$name"
+mkbootimg --header_version 4 ... --vendor_ramdisk_fragment "rd-$name" --vendor_boot "vkb-$name.img"</code></pre>
+
+      <p>The crash was gone. In its place, a new problem.</p>
+
+      <hr>
+
+      <h1>Asking init why it gave up</h1>
+
+      <p>
+        Now the phone didn't crash. It rebooted into the bootloader on purpose, with the reason
+        <code>reboot bootloader</code>. That means something in early userspace (init, most likely) decided it couldn't
+        continue. But init's error message only lives in the kernel log, which I couldn't read.
+      </p>
+
+      <p>
+        Same trick, second version. A debug patch turns every <code>kernel_restart()</code> into a panic whose message
+        is the last ~900 bytes of the kernel log, with newlines swapped for <code>|</code> so it fits on one line:
+      </p>
+
+      <pre data-filename="kernel/reboot.c (debug only)"><code class="language-c">static char dbg_tail[900];
+
+static void dbg_restart_panic(const char *cmd)
+{
+	struct kmsg_dump_iter iter;
+	size_t len = 0, i;
+
+	kmsg_dump_rewind(&amp;iter);
+	kmsg_dump_get_buffer(&amp;iter, false, dbg_tail, sizeof(dbg_tail) - 1, &amp;len);
+	dbg_tail[len] = '\0';
+	for (i = 0; i &lt; len; i++)
+		if (dbg_tail[i] == '\n')
+			dbg_tail[i] = '|';
+	panic("restart(%s): %s", cmd ? cmd : "", dbg_tail);
+}</code></pre>
+
+      <p>
+        The bootloader's record now ended with <code>EXT4-fs (dm-0): bad geometry</code> and <code>Failed to mount
+        /system</code>. Not a kernel bug at all. Slot a's system partition was simply gone.
+      </p>
+
+      <p>
+        Pixels use Virtual A/B updates. When an update finishes merging into one slot, the other slot's dynamic
+        partitions (system, vendor, product, ...) aren't valid anymore. My phone had last updated into slot b, so slot
+        a had a boot image and nothing to boot into. <code>snapshotctl dump</code> confirmed it. From then on, I did all
+        testing on slot b, which holds a userdebug system built for 6.12.
+      </p>
+
+      <h2>A small discovery: the klog partition</h2>
+
+      <p>
+        Pixels keep the bootloader's own logs, including those <code>reset message</code> crash records, in a partition
+        called <code>klog</code>. Any booted system with root can read it:
+      </p>
+
+      <pre data-filename="adb shell"><code class="language-bash">strings /dev/block/by-name/klog | grep "reset message"</code></pre>
+
+      <p>
+        That meant no more racing to catch the bootloader at the right moment. It can't be fetched from fastboot,
+        though ("restricted partition"). That comes up again later.
+      </p>
+
+      <hr>
+
+      <h1>The boot animation, then init_user0_failed</h1>
+
+      <p>
+        With slot b sorted, I saw the YAAP boot animation on 6.12 for the first time. A minute later, the phone went to
+        recovery with "Can't load Android system", reason <code>init_user0_failed</code>. (Tip: never tap "Factory data
+        reset" on that screen while you're debugging. "Try again" is fine.)
+      </p>
+
+      <p>
+        900 bytes of log wasn't enough anymore. The interesting part had scrolled out behind init's shutdown messages.
+        I needed the whole kernel log.
+      </p>
+
+      <hr>
+
+      <h1>A full kernel log you can fetch from fastboot</h1>
+
+      <p>
+        The idea: right before rebooting, the debug kernel writes the entire kernel log into a partition, and I read it
+        back from fastboot. Which partition? <code>vendor_boot_a</code>. Slot a was dead anyway, and fastboot lets you
+        fetch vendor_boot partitions (unlike <code>klog</code>):
+      </p>
+
+      <pre data-filename="terminal"><code class="language-bash">fastboot fetch vendor_boot_a kmsg.img
+grep -a -b "KMSGDUMP" kmsg.img    # find the dumps and their offsets</code></pre>
+
+      <p>
+        It took three tries to get the writing side right. To tell them apart, the panic message started with the
+        dump's result, <code>dump=&lt;n&gt;</code>, so the bootloader record said whether the write worked.
+      </p>
+
+      <p>
+        The first version opened <code>/dev/block/by-name/vendor_boot_a</code> and used <code>kernel_write()</code>. It
+        got <code>dump=-3013</code>, which is my "write failed" offset plus <code>-EACCES</code>. Even file writes from
+        inside the kernel go through SELinux, with the credentials of whoever called them, which here was init.
+      </p>
+
+      <p>
+        The second version skipped files entirely. It finds the partition by its GPT name inside the kernel and writes
+        raw bios to the block device. No VFS, so no SELinux.
+      </p>
+
+      <p>
+        The third turned it into a ring. Otherwise the next reboot (say, out of recovery) would overwrite the boot I
+        actually cared about, so there's an index at the start, and each dump goes into the next 2 MB slot.
+      </p>
+
+      <p>The core of version 2:</p>
+
+      <pre data-filename="kernel/reboot.c (debug only)"><code class="language-c">static int dbg_match_part(struct device *dev, const void *name)
+{
+	struct block_device *bdev = dev_to_bdev(dev);
+
+	return bdev-&gt;bd_meta_info &amp;&amp;
+	       !strcmp((const char *)bdev-&gt;bd_meta_info-&gt;volname, name);
+}
+
+/* buf must come from vmalloc and size must be a multiple of PAGE_SIZE */
+static int dbg_bio(struct block_device *bdev, loff_t off, char *buf,
+		   size_t size, blk_opf_t opf)
+{
+	size_t done = 0;
+	int ret = 0;
+
+	while (done &lt; size &amp;&amp; !ret) {
+		struct bio *bio = bio_alloc(bdev, BIO_MAX_VECS, opf, GFP_KERNEL);
+
+		bio-&gt;bi_iter.bi_sector = (off + done) &gt;&gt; SECTOR_SHIFT;
+		while (done &lt; size &amp;&amp;
+		       bio_add_page(bio, vmalloc_to_page(buf + done), PAGE_SIZE,
+				    0) == PAGE_SIZE)
+			done += PAGE_SIZE;
+		ret = submit_bio_wait(bio);
+		bio_put(bio);
+	}
+	return ret;
+}
+
+	/* ... */
+	dev = class_find_device(&amp;block_class, NULL, "vendor_boot_a",
+				dbg_match_part);</code></pre>
+
+      <p>
+        Later I added a periodic dump as well: every few seconds early in boot, then every 20 seconds, into a fixed
+        slot. That way even a hang that ends in a hardware watchdog reset leaves a log behind.
+      </p>
+
+      <p>
+        This was the turning point of the whole port. From here on, every failed boot left a full kernel log, and
+        debugging turned into reading logs instead of guessing.
+      </p>
+
+      <hr>
+
+      <h1>Two different vbmeta keys (not the kernel)</h1>
+
+      <p>The first full log showed why <code>/data</code> never came up:</p>
+
+      <pre data-filename="kmsg"><code class="language-plaintext">vold: keystore2 Keystore createOperation returned service specific error: -33
+vold: decryptWithKeystoreKey failed</code></pre>
+
+      <p>
+        <code>-33</code> is KeyMint's <code>INVALID_KEY_BLOB</code>. vold couldn't unwrap the key that protects
+        <code>/data</code>.
+      </p>
+
+      <p>
+        My first theory was that my repacked <code>boot.img</code> was missing its AVB footer, and with it the security
+        patch level that KeyMint checks. I fixed that. It didn't help.
+      </p>
+
+      <p>
+        The real cause was that the phone's data had been created under my 20261009 release build, whose vbmeta is signed with
+        my release key. The test build's vbmeta was signed with a different key. KeyMint binds its keys to the key that
+        signed vbmeta, even with an unlocked bootloader. A different vbmeta key looks like a different device, so the
+        old key blobs are rejected. I know, this is very dumb of me to forget that userdebug builds don't get signed with release (in my configs, at least). But yeah.
+      </p>
+
+      <p>
+        For testing, I flashed the release vbmeta. For YAAP releases, it means the vbmeta signing key has to stay the
+        same, or users' data won't decrypt after an update.
+      </p>
+
+      <hr>
+
+      <h1>S2MPUs, and bug #3: the GSA</h1>
+
+      <p>With the right vbmeta, the next error was further along:</p>
+
+      <pre data-filename="kmsg"><code class="language-plaintext">gsa 17c90000.gsa-ns: mbox cmd=0x49 returned err=1
+exynos-ufs 14700000.ufs: kdn: failed to program key; err=-22</code></pre>
+
+      <p>
+        <code>/data</code> is encrypted inline by the UFS controller. To set that up, the kernel asks the GSA (a small
+        security processor inside Tensor) to program the key into the UFS key manager (KDN). Command
+        <code>0x49</code> is exactly that, and the GSA said no. <code>/data</code> mounted, but read back as garbage.
+      </p>
+
+      <p>
+        The UFS and GSA drivers made the same calls as on 6.1. The difference was in something called an S2MPU.
+      </p>
+
+      <h2>What's an S2MPU?</h2>
+
+      <p>
+        An S2MPU (stage-2 memory protection unit) is a small firewall that sits between a hardware block and RAM. Any
+        memory access the block makes on its own (DMA) has to pass through it, and it decides which pages that block
+        may touch. Tensor has dozens of them: one for the GSA, one for USB, several for the camera, and so on.
+      </p>
+
+      <p>
+        On Pixels, the one programming them is pKVM, the protected hypervisor that runs above the kernel. The kernel
+        asks it to open an S2MPU for a device, and pKVM sets up the permissions. After a reset, an S2MPU blocks
+        everything until someone configures it.
+      </p>
+
+      <p>
+        On 6.1, the GSA mailbox driver asks pKVM to set up the GSA's S2MPU before every command that makes the GSA read
+        memory. On 6.12, that pKVM S2MPU driver doesn't exist (yet): <code>android16-6.12</code> dropped the pKVM IOMMU
+        API it was built on. So that code path was compiled out, and nobody opened the GSA's S2MPU. The GSA tried to
+        read the key from RAM, got blocked, and failed.
+      </p>
+
+      <p>
+        While digging, I also found out why the rest of the phone worked at all. The S2MPU driver that does exist in
+        6.12 only binds to gs101-style nodes, and pantah's device tree has 38 S2MPU nodes in the pKVM style. So on
+        6.12, <em>no</em> S2MPU is driven at all. The display and UFS work only because the bootloader leaves their
+        S2MPUs open. The GSA's starts powered off, so it wakes up locked.
+      </p>
+
+      <p>Google's comment in the GSA driver even spells out half the story:</p>
+
+      <blockquote>
+        Since GSA SYSMMU_S2 is in GSACORE power domain, we need grab wakelock in order to make sure it is powered.
+      </blockquote>
+
+      <p>
+        So the fix, in the non-pKVM path: take a GSA wakelock (which powers the GSA core and its S2MPU), then switch the
+        S2MPU to pass-through by clearing the enable bit in its control register. pKVM's own code uses
+        <code>CTRL0 = 0</code> for the same thing when the hypervisor is off.
+      </p>
+
+      <pre data-filename="gsa_mbox.c"><code class="language-c">/* S2MPU control register; clearing ENABLE lets all traffic through */
+#define S2MPU_REG_NS_CTRL0 0x0
+
+static int gsa_data_xfer_prepare_locked(struct gsa_mbox *mb)
+{
+	int ret;
+
+	if (WARN_ON(mb-&gt;wake_ref_cnt &gt;= MAX_GSA_WAKELOCK_CNT))
+		return -EINVAL;
+
+	if (mb-&gt;wake_ref_cnt) {
+		/* just bump wake ref count */
+		++mb-&gt;wake_ref_cnt;
+		return 0;
+	}
+
+	ret = gsa_send_mbox_cmd_locked(mb, GSA_MB_CMD_WAKELOCK_ACQUIRE,
+				       NULL, 0, NULL, 0);
+	if (ret &lt; 0) {
+		dev_err(mb-&gt;dev, "gsa wakelock acquire failed (%d)\n", ret);
+		return ret;
+	}
+	++mb-&gt;wake_ref_cnt;
+
+	/* GSACORE may have been powered down, so open the S2MPU every time */
+	if (mb-&gt;s2mpu_base)
+		writel(0, mb-&gt;s2mpu_base + S2MPU_REG_NS_CTRL0);
+
+	return 0;
+}</code></pre>
+
+      <p>
+        The trade-off, to be clear: pass-through means the GSA's S2MPU no longer isolates anything. That's what any
+        kernel without pKVM S2MPU support gives you, but it's worth saying.
+      </p>
+
+      <hr>
+
+      <h1>Bug #4: pl330 reads its registers from a nonsense address</h1>
+
+      <p>
+        The next crash came from the backtrace patch again. The chain ran from the GPS driver, through SPI, into the
+        pl330 DMA engine:
+      </p>
+
+      <pre data-filename="oem dmesg"><code class="language-plaintext">pl330_tasklet [pl330] &lt; pl330_issue_pending &lt; samsung_dmadev_trigger [samsung_dma]
+  &lt; s3c64xx_spi_transfer_one_message &lt; bcm_rxtx_work_func [bcm47765]</code></pre>
+
+      <p>
+        Google's 6.12 copy of <code>pl330.c</code> changed how it reads the "wrapper" register addresses from the
+        device tree, from reading one 32-bit cell to <code>of_translate_address()</code>. Pantah's device tree has one
+        32-bit address per channel, but the node sits on a bus with <code>#address-cells = &lt;2&gt;</code>, so
+        <code>of_translate_address()</code> reads two cells per entry. Channel 0's address became
+        <code>0x10114400_10114420</code>: two neighbouring addresses glued together. The first access to it crashed.
+      </p>
+
+      <pre data-filename="pl330.c"><code class="language-diff">-	return ioremap(of_translate_address(np, reg_list + num), SZ_32);
++	return ioremap(be32_to_cpup(reg_list + num), SZ_32);</code></pre>
+
+      <p>
+        While comparing the files, I noticed one more difference: when a DMA request finishes, upstream pl330 and
+        pantah's copy reset <code>req_running</code>. Google's older snapshot lost that line, so I put it back too.
+      </p>
+
+      <hr>
+
+      <h1>It boots (almost), and bug #5: one missing suffix</h1>
+
+      <p>
+        After the GSA and pl330 fixes, Android's framework started: zygote, system_server, the works. But it sat on the
+        boot animation until the system_server watchdog crashed the kernel on purpose:
+      </p>
+
+      <pre data-filename="oem dmesg"><code class="language-plaintext">KP: sysrq triggered crash by watchdog</code></pre>
+
+      <p>
+        The periodic dump showed why. The thermal and USB HALs were crash-looping, and system_server waits for both,
+        so it stalled until its watchdog gave up. The USB HAL was failing because there was no USB controller. Why?
+      </p>
+
+      <p>
+        Another debug hook. At 60 and 180 seconds after boot, print every device still waiting in the deferred-probe
+        list (the kernel records why), plus the stack of every task currently inside <code>really_probe()</code>:
+      </p>
+
+      <pre data-filename="kmsg"><code class="language-plaintext">platform 11210000.usb: deferred probe pending: platform: supplier 11200000.phy not ready
+platform 11200000.phy: deferred probe pending: platform: supplier i2c-max77759tcpc not ready
+platform google,charger: deferred probe pending: platform: supplier i2c-max77759tcpc not ready
+platform google,cpm: deferred probe pending: platform: supplier i2c-max77759tcpc not ready</code></pre>
+
+      <p>
+        A neat chain: the USB controller waits for the USB PHY, which waits for the Type-C controller (TCPC). So does
+        the charger. And the TCPC never showed up.
+      </p>
+
+      <p>
+        The 6.12 TCPC driver asks for its interrupt line with <code>devm_gpiod_get_optional(dev,
+        "usbpd,usbpd_int")</code>. The gpiod API only matches properties ending in <code>-gpio</code> or
+        <code>-gpios</code>. Google renamed the property in gs101's device tree, but not in gs201's. So the "optional"
+        lookup returned nothing, the driver returned <code>-ENODEV</code>, and <code>-ENODEV</code> is the one probe
+        error the driver core doesn't log. So nothing in the log mentioned it at all.
+      </p>
+
+      <pre data-filename="gs201-common-typec.dtsi"><code class="language-diff">-		usbpd,usbpd_int = &lt;&amp;gpa9 7 GPIO_ACTIVE_LOW&gt;;
++		usbpd,usbpd_int-gpio = &lt;&amp;gpa9 7 GPIO_ACTIVE_LOW&gt;;</code></pre>
+
+      <p>
+        After renaming it, the phone booted to the YAAP lock screen on Linux 6.12, and it was charging.
+      </p>
+
+      <p>
+        Side note: pantah's board-level nodes (like the TCPC) actually live in the dtbo overlays, not in the SoC's dtb.
+        <code>fastboot fetch</code> on the dtbo partition plus <code>dtc</code> is a quick way to see what the phone
+        is really running.
+      </p>
+
+      <hr>
+
+      <h1>USB, and the firewall again</h1>
+
+      <p>
+        Charging worked, but USB data didn't. My PC saw the phone try to enumerate and fail:
+        <code>device descriptor read/64, error -71</code>. So the USB controller was alive, but couldn't move data. That
+        sounded a lot like the GSA. A blocked S2MPU, this time USB's (<code>s2mpu_hsi0</code>).
+      </p>
+
+      <h2>The detour: driving every S2MPU</h2>
+
+      <p>
+        The USB PHY, the USB controller, the GSA and a few others all have calls to the pKVM S2MPU driver, behind
+        <code>IS_ENABLED(CONFIG_PKVM_S2MPU)</code>. Google's kernel-side driver also has a mode for running without the
+        hypervisor (used in recovery and fastbootd), where it simply switches S2MPUs to pass-through. So my first idea
+        was the "proper" one: build only the kernel side of that driver, with a new
+        <code>PKVM_S2MPU_EL1_ONLY</code> option, and let it handle every S2MPU.
+      </p>
+
+      <p>That went sideways in a few ways:</p>
+
+      <ul>
+        <li>
+          auto put the new module in the wrong partition, because it wasn't in the first-stage list. Easy fix.
+        </li>
+        <li>
+          auto's own vendor_kernel_boot image turned out to be unbootable, on 6.1 too. Its ramdisk is owned by my build
+          user instead of root, has a <code>.</code> entry, and uses symlinks. The ROM build always repacks
+          vendor_kernel_boot from the prebuilt modules, so auto's image had simply never been booted before. That's a
+          separate bug to fix in auto. For testing, I built "ROM-style" images with the overlay trick.
+        </li>
+        <li>
+          Then the phone started freezing on the Google logo, before any kernel log was written. Swapping one thing at
+          a time showed that the new kernel with the old modules booted fine, and the old modules plus
+          <em>only</em> the S2MPU driver froze.
+        </li>
+        <li>
+          Soon after, a frozen phone would shut down completely and only came back after holding the power button for
+          about 40 seconds, unplugged. That was my cue to stop flashing experiments.
+        </li>
+      </ul>
+
+      <h2>Wireless adb</h2>
+
+      <p>
+        I needed a way to test things on a running phone instead of flashing and hoping. USB data was dead, but Wi-Fi
+        worked on 6.12. So: Developer options, Wireless debugging, and then:
+      </p>
+
+      <pre data-filename="terminal"><code class="language-bash">adb pair $PHONE:$PAIR_PORT     # code from the "Pair device with pairing code" screen
+adb connect $PHONE:$PORT
+adb tcpip 5555                 # pin the port, or adb root moves it somewhere random
+adb connect $PHONE:5555
+adb root                       # userdebug build</code></pre>
+
+      <p>
+        A root shell over Wi-Fi, on Linux 6.12. Now I could stream <code>dmesg -w</code> to the PC and
+        <code>insmod</code> the S2MPU driver on the running phone. It bound S2MPU after S2MPU, got to
+        <code>gdc1</code>, and the stream died about 10 ms later.
+      </p>
+
+      <p>
+        That pinned it down. <code>gdc1</code> sits in the camera's <code>pd-gdc</code> power domain, which was off.
+        Binding its S2MPU powered the domain on, and the automatic power-off right after locked up the whole chip.
+        Every boot-time freeze had been this.
+      </p>
+
+      <h2>Do I even need the generic driver?</h2>
+
+      <p>
+        Next, I watched the power domains (the genpd summary in debugfs) while turning the screen off and on. The
+        display's domains power-cycled, and the display kept working. So most S2MPUs come back fine after a power
+        cycle. Only a few special ones, like the GSA's and USB's, come back blocking.
+      </p>
+
+      <p>
+        For USB, the phone's own log had the clue: <code>dwc3 11210000.dwc3: unknown endpoint event 0</code>. The
+        controller writes events into RAM, and the driver was reading zeros, because the writes never got there. To
+        prove it, I wrote a tiny debug module that reads an S2MPU's control register and can clear it:
+      </p>
+
+      <pre data-filename="s2mpu_poke.c (debug only)"><code class="language-c">static int __init s2mpu_poke_init(void)
+{
+	void __iomem *base;
+	u32 ctrl0, ver, fault;
+
+	if (!addr)
+		return -EINVAL;
+	base = ioremap(addr, 0x10000);
+	if (!base)
+		return -ENOMEM;
+	ctrl0 = readl(base + REG_NS_CTRL0);
+	ver = readl(base + REG_NS_VERSION);
+	fault = readl(base + REG_NS_FAULT_STATUS);
+	pr_info("s2mpu_poke: %#lx CTRL0=%#x VERSION=%#x FAULT_STATUS=%#x\n",
+		addr, ctrl0, ver, fault);
+	if (open) {
+		writel(0, base + REG_NS_CTRL0);
+		pr_info("s2mpu_poke: %#lx CTRL0 now %#x\n", addr,
+			readl(base + REG_NS_CTRL0));
+	}
+	iounmap(base);
+	return -EAGAIN; /* don't stay loaded */
+}</code></pre>
+
+      <p>
+        It has to run while the S2MPU's power domain is on, or the read stalls the bus. So a small loop on the phone
+        waited for the USB domain to power up after I plugged the cable in, and loaded the module right then. It read
+        <code>CTRL0=0x1</code>, meaning enabled with no permissions set, so every access was blocked. Then it wrote
+        <code>CTRL0=0</code>, the PC enumerated the phone right away, and adb over USB came up.
+      </p>
+
+      <h2>Bug #6: the real USB fix</h2>
+
+      <p>
+        The power domain driver already calls <code>exynos_usbdrd_s2mpu_manual_control(1)</code> right after the USB
+        domain powers on, so pKVM can reconfigure the S2MPU. Without pKVM, that function did nothing. Now it opens the
+        S2MPU itself:
+      </p>
+
+      <pre data-filename="phy-exynos-usbdrd.c"><code class="language-c">/*
+ * Called once HSI0 is powered (exynos-pd power_on_post, dwc3 probe).
+ * Under pKVM the hypervisor configures the HSI0 S2MPU. Without it, nothing
+ * does, and the S2MPU comes out of every HSI0 power-up blocking all DMA:
+ * the controller enumerates but its event writes never reach memory
+ * ("unknown endpoint event 0"). Switch it to pass-through instead.
+ */
+int exynos_usbdrd_s2mpu_manual_control(bool on)
+{
+	struct exynos_usbdrd_phy *phy_drd;
+
+	if (!IS_ENABLED(CONFIG_PKVM_S2MPU)) {
+		phy_drd = exynos_usbdrd_get_struct();
+		if (on &amp;&amp; phy_drd &amp;&amp; phy_drd-&gt;s2mpu_base)
+			writel(0, phy_drd-&gt;s2mpu_base + S2MPU_REG_NS_CTRL0);
+		return 0;
+	}
+	/* ... */</code></pre>
+
+      <p>
+        The PHY driver maps the S2MPU from its <code>s2mpu</code> phandle at probe. I flashed the new
+        vendor_kernel_boot with <code>dd</code> from the root shell (with a sha256 check before rebooting), and USB adb
+        came up on its own at boot and survived replugging. The generic S2MPU driver is parked on a local branch. The
+        two targeted fixes, GSA and USB, are what I kept.
+      </p>
+
+      <hr>
+
+      <h1>The camera, and power domains that never power off</h1>
+
+      <p>
+        At this point most of the phone worked, but the camera didn't. The TPU driver logged this on every try:
+      </p>
+
+      <pre data-filename="kmsg"><code class="language-plaintext">edgetpu janeiro: finalize group: power on failed: -11</code></pre>
+
+      <p>
+        The Pixel camera stack leans on the TPU, so with the TPU's firmware never booting, the TPU's NNAPI HAL
+        crash-looped and the camera app couldn't open the camera. My first guess was another blocking S2MPU.
+      </p>
+
+      <p>
+        The driver never even printed <code>Powering up</code>. Before it powers the TPU on, it asks the firmware
+        that manages power (ACPM) whether the TPU block is down, and waits until it is. It never was. A small debug
+        module asked the power management unit directly, and it said the TPU's power domain was on, while the
+        kernel's own power domain summary said <code>off</code>.
+      </p>
+
+      <h2>Bug #7: sync_state</h2>
+
+      <p>The boot log had the answer, once I knew to look for it:</p>
+
+      <pre data-filename="kmsg"><code class="language-plaintext">exynos-pd 18062900.pd-tpu: sync_state() pending due to 1cc60000.s2mpu_tpu</code></pre>
+
+      <p>
+        Google's power domain driver doesn't really turn off a domain that was on at boot until every device in the
+        device tree that uses that domain has a driver. That moment is called <code>sync_state</code>. Until then, it
+        tells the kernel "off" and leaves the hardware on. That makes sense, since you don't want to cut power to a
+        block whose driver hasn't loaded yet.
+      </p>
+
+      <p>
+        The problem was the S2MPU nodes again. Every multimedia domain has S2MPUs in it, and on 6.1 pKVM's S2MPU
+        driver binds them. Without pKVM, nothing does, so the domains wait forever. 13 domains were stuck like this,
+        covering the display, G2D, the video codecs, every camera block, the TPU and the Aurora DSP. All of those
+        blocks stayed powered all the time, which is terrible for battery, and the TPU driver refused to start because
+        the block it wanted to power up was "still up".
+      </p>
+
+      <p>
+        It also explained a freeze from the night before. When I tried a generic S2MPU driver, binding the S2MPUs let
+        one domain really power off for the first time, and things went wrong from there.
+      </p>
+
+      <p>
+        To test it, I bound a do-nothing driver to only the TPU's S2MPU. The TPU domain finished its
+        <code>sync_state</code>, really powered off, and then the TPU powered up and loaded its firmware.
+      </p>
+
+      <p>
+        Once the block really loses power, two more things show up. The TPU's IO-coherency setting lives in a register
+        that loses its value on power-off, and the driver only wrote it once at probe, so now it has to be restored on
+        every power-up. And the TPU's own S2MPU comes back blocking after a power cycle (bug #8, same as USB). Before,
+        it read open only because it had never been reset.
+      </p>
+
+      <hr>
+
+      <h1>Bug #9: the TPU reads zeros</h1>
+
+      <p>
+        With the firmware running, the NNAPI HAL and the camera provider both still aborted. I built the TPU driver
+        with firmware logging on, and the firmware said:
+      </p>
+
+      <pre data-filename="tpu firmware log"><code class="language-plaintext">ERR vii_handler_layer.cc:247 - Setup is not done yet received a command of type 0.</code></pre>
+
+      <p>
+        Commands go to the TPU through a queue in memory. I dumped the queue from the kernel side and it looked fine.
+        I even filled it with <code>0xAA</code> first to make sure the TPU was seeing fresh writes. It was, and it
+        still said type 0.
+      </p>
+
+      <p>
+        So I opened the firmware itself in a disassembler (it's ARM32, loaded at <code>0x10000000</code>). The log
+        string's address led to the function that prints it, and that showed where "type" comes from. It's a value
+        inside the command's payload, a separate buffer the queue entry points to, so an all-zero payload reads as
+        type 0.
+      </p>
+
+      <p>
+        From the kernel side, the payload's address translated fine through the TPU's IOMMU and the page held valid
+        data. So the TPU was reading that buffer as zeros. The TPU's IOMMU (a Samsung SysMMU) has several page table
+        slots, and each TPU client uses its own. Dumping the registers while the firmware answered:
+      </p>
+
+      <pre data-filename="kmsg"><code class="language-plaintext">vm0 ctrl=0x1 flpt=0x8d1c0 | vm1 ctrl=0x0 flpt=0x0</code></pre>
+
+      <p>
+        Slot 1, the one the HAL's buffers use, was never enabled. Those extra slots get set up through PASIDs, and
+        Linux 6.12's IOMMU core only does that for devices that declare PASID support, then returns success either
+        way. How many PASIDs a device gets comes from <code>pasid-num-bits</code> in the device tree, and gs201's TPU
+        and SysMMU nodes didn't have it. Google added exactly this property to gs101's nodes. So the attach
+        "succeeded" and did nothing. I'd actually seen a warning about <code>pasid-num-bits</code> early on and
+        dismissed it as noise.
+      </p>
+
+      <pre data-filename="gs201 device tree"><code class="language-plaintext">pasid-num-bits = &lt;3&gt;;</code></pre>
+
+      <p>
+        With that on the TPU node and its SysMMUs, slot 1 came up and the HAL ran. Then the camera provider died one
+        step later, because the Aurora DSP's SysMMUs were missing the same property, so they got it too.
+      </p>
+
+      <h2>Bug #10: fault handlers</h2>
+
+      <p>
+        Killing the HAL in the middle of a job then panicked the whole phone with a SysMMU page fault. On 6.1, the TPU
+        and DSP drivers had per-device fault handlers that returned <code>-EAGAIN</code>, which the SysMMU driver
+        treats as "handled". Linux 6.8 removed that kind of handler, and my port kept only the domain-level ones,
+        which returned 0. The SysMMU driver panics on anything but <code>-EAGAIN</code>. The fix is one line in each
+        driver.
+      </p>
+
+      <p>
+        After all that, the camera works, for both photos and video.
+      </p>
+
+      <img src="../../assets/images/6-12-port/camera-works.jpg" alt="" style="max-width: 300px;">
+      <p>(yes, that is me)</p>
+      <hr>
+
+      <h1>A real ROM build, and a signing detour</h1>
+
+      <p>
+        Up to here I'd been testing with my debug kernel and hand-patched images. Time for a normal kernel inside a
+        full YAAP build. It booted straight into recovery with <code>init_user0_failed</code>, because
+        <code>/data</code> wouldn't decrypt again.
+      </p>
+
+      <p>
+        Same family as bug #2. My userdebug builds sign vbmeta with the AVB test key and turn verification off
+        (<code>--flags 3</code>), on purpose. Signing with my release key alone wasn't enough. KeyMint's root of trust
+        also covers the verification state, so a vbmeta with verification off still looks like a different device to
+        data made under a release build.
+      </p>
+
+      <p>
+        I didn't want to change how userdebug builds are signed, so for test flashes onto my own phone I re-sign just
+        the vbmeta on the build server. It keeps the same descriptors, but uses my release key and has verification
+        turned on.
+      </p>
+
+      <pre data-filename="build server"><code class="language-bash">avbtool make_vbmeta_image --key release.pem --algorithm SHA256_RSA2048 \
+    --rollback_index "$ROLLBACK" --include_descriptors_from_image vbmeta.img \
+    --output vbmeta-flags0.img</code></pre>
+
+      <p>With that, the full ROM booted with my data intact and the camera working.</p>
+
+      <hr>
+
+      <h1>Battery: turning the domains off for real</h1>
+
+      <p>
+        The TPU fix only bound the TPU's S2MPU. The other twelve domains were still stuck on. I couldn't just bind
+        every S2MPU with a do-nothing driver, though. The moment a domain really powers off and back on, its S2MPUs
+        come back blocking, like USB and the TPU did.
+      </p>
+
+      <p>
+        So I wrote a debug driver that binds one S2MPU at a time and opens it every time its domain powers on, and
+        went through the domains one by one.
+      </p>
+
+      <p>
+        I started with the video encoder, because <code>screenrecord</code> uses it and that makes an easy test. After
+        a real power-on, both of its S2MPUs were blocking. Once they were opened, the encoder's firmware booted and the
+        recording played fine.
+      </p>
+
+      <p>
+        The display's S2MPUs came back blocking after the screen turned on again. Without the fix, that would have
+        been a black screen after the first screen-off. With it, turning the screen off and on worked, and so did the
+        always-on display.
+      </p>
+
+      <p>
+        The camera blocks came last, including the one that froze the phone the night before. It didn't freeze this
+        time, so the earlier freeze had come from pKVM's S2MPU driver itself.
+      </p>
+
+      <p>
+        That became a small driver, <code>s2mpu-passthrough</code>. It binds every S2MPU so the domains can finish
+        <code>sync_state</code>, and switches each one to pass-through right after its domain powers on:
+      </p>
+
+      <pre data-filename="s2mpu-passthrough.c"><code class="language-c">static int s2mpu_passthrough_genpd_event(struct notifier_block *nb, unsigned long action,
+					 void *data)
+{
+	struct s2mpu_passthrough *s = container_of(nb, struct s2mpu_passthrough, nb);
+
+	/* sent once the domain is fully powered and its secure state restored */
+	if (action == GENPD_NOTIFY_ON)
+		writel(0, s->base + S2MPU_REG_NS_CTRL0);
+
+	return NOTIFY_OK;
+}</code></pre>
+
+      <p>
+        My generic attempt from before opened the S2MPUs partway through the power domain driver's power-on sequence.
+        The notifier fires after the whole sequence is done. This gives up the S2MPUs' isolation, which a kernel without pKVM can't
+        offer anyway. With the screen off, every multimedia domain is now really off. Only USB (adb was plugged in)
+        and one small always-on domain stay up.
+      </p>
+
+      <hr>
+
+      <h1>Bug #11: a class named from the stack</h1>
+
+      <p>
+        The next full ROM, with the battery fix and some modem work in it, dropped to fastboot after two kernel
+        panics:
+      </p>
+
+      <pre data-filename="fastboot oem dmesg"><code class="language-plaintext">reset message: KP: Oops: Fatal exception: comm:ueventd PC:string+0xc8/0x120 LR:vsnprintf+0x3a8/0x650</code></pre>
+
+      <p>
+        <code>ueventd</code> replays every device's "add" event at boot (coldboot), and the kernel crashed formatting
+        one of them. The registers held the text <code>SUBSYSTEM=</code>, so some device's class name pointed at
+        memory that wasn't mapped anymore. From the address, it was most likely a kernel stack that had been freed.
+      </p>
+
+      <p>
+        The new piece most likely to be guilty was the modem driver. I dropped it from the module list for one boot,
+        and the phone came up fine. That boot also gave me the full trace of the bad one, but I still didn't know which
+        device it was. So I wrote a throwaway module that walks every device and reports any class or bus name that
+        lives somewhere it shouldn't. It found exactly one, <code>atc</code>, which belongs to the display driver.
+      </p>
+
+      <pre data-filename="exynos_drm_dqe.c"><code class="language-diff">-	char dqe_name[MAX_DQE_NAME_SIZE] = "dqe";
++	const char *dqe_name;
+ ...
+-	scnprintf(dqe_name, MAX_DQE_NAME_SIZE, "dqe%u", decon->id);
++	/* the class keeps this pointer, so it must outlive the probe */
++	dqe_name = devm_kasprintf(dev, GFP_KERNEL, "dqe%u", decon->id);
++	if (!dqe_name)
++		return NULL;
+ 	dqe->dqe_class = class_create(dqe_name);</code></pre>
+
+      <p>
+        <code>class_create()</code> keeps the pointer it's given, and the name was in a local array. Google's gs101
+        code has the same line. It only bites when the display driver loads in the first boot stage, whose loader
+        thread exits before coldboot runs. Loading the modem driver only shifted the timing enough for that stack to
+        get freed first.
+      </p>
+
+      <hr>
+
+      <h1>Bug #12: a module order that never booted</h1>
+
+      <p>
+        The ROM with that fix hung on the Google logo, and the watchdog reset it. No kernel log this time, not even in
+        the bootloader's crash record. But comparing the new first-stage module list with the one that booted showed
+        ten modules in different places. Most were debug and test modules like <code>exynos-debug-test</code> and the
+        memory latency monitors, plus a few helpers and my new <code>s2mpu-passthrough</code>. The earlier builds had loaded them last,
+        because of how the list had been generated back then. This one followed the kernel's list properly, which
+        puts them early, and that order had never booted on 6.12.
+      </p>
+
+      <p>
+        Moving my own driver to the end didn't help, so it wasn't that. The kernel's list now has the order that
+        booted, and the new ROM's first-stage order matches it line for line. Which of the other nine actually hangs
+        is a question for later.
+      </p>
+
+      <p>
+        On the way, I found a bug in auto too. It picked a module's partition by substring match, so
+        <code>nfc.ko</code> landed in the first stage because <code>st21nfc.ko</code> is listed there. It matches
+        whole names now.
+      </p>
+
+      <hr>
+
+      <h1>The modem (not yet)</h1>
+
+      <p>
+        The modem is the last big piece. Google's 6.12 modem driver for gs101 didn't fit gs201's modem, so I swapped
+        in pantah's own S5300 stack from Android 17 and ported it to 6.12. Google's 6.12 device tree had also dropped
+        a reset GPIO and changed two memory region values, and without those the driver panicked at boot.
+      </p>
+
+      <p>
+        Now the driver probes and the modem boots its first stage. But after the PCIe link comes back up, the modem
+        never answers the first request from the modem daemon. Every power-off also logs <code>cannot receive
+        L23_READY</code>, a PCIe power handshake that's failing. My best guess is the PCIe controller driver, which
+        differs from the one pantah used on 6.1.
+      </p>
+
+      <hr>
+
+      <h1>Where it stands</h1>
+
+      <p>Working on 6.12 right now, in a normal YAAP build:</p>
+
+      <ul>
+        <li>Boot, with <code>/data</code> encryption</li>
+        <li>Display and touch</li>
+        <li>Wi-Fi</li>
+        <li>Charging, USB data and adb</li>
+        <li>Audio (through the AoC)</li>
+        <li>Thermal sensors and the thermal HAL</li>
+        <li>Camera, the TPU and the Aurora DSP</li>
+        <li>Hardware video encoding</li>
+        <li>Power domains that actually turn off when idle</li>
+      </ul>
+
+      <p>
+        Thermal was a nice surprise. I expected to port the gs201 thermal driver, but the gs101 one reads gs201's
+        sensors just fine. The thermal HAL crash loop from earlier was just fallout from the missing Type-C chain.
+      </p>
+
+      <p>
+        The modem doesn't work yet, and until it does, YAAP releases stay on 6.1.
+      </p>
+
+      <hr>
+
+      <h1>Wrapping up</h1>
+
+      <img src="../../assets/images/6-12-port/wrapping-up.png" alt="Wrapping up" style="max-width: 800px;">
+      <p>This... was certainly a ride. I am very proud of myself for actually putting through this and booting it, but there's way more to do.
+        I also have to release an official build for YAAP with this kernel, so fixing the modem is almost mandatory.
+      </p>
+      <p>
+        Of the twelve bugs, only five came from 6.12 itself (the double free that 6.12's GPIO code stopped forgiving,
+        the pl330 address lookup, the TCPC property name, the silent PASID attach and the removed fault handlers). Four
+        came from running without pKVM's S2MPU driver (GSA, USB, the TPU's S2MPU and <code>sync_state</code>), and the
+        rest were my signing setup, an old display bug that a new boot timing exposed, and a module order. Most of the
+        time went into building ways to see what was going on, and much less into the fixes themselves.
+      </p>
+
+      <p>
+        The kernel is on the <code>6.12-test</code> branch of my gs201 kernel repo
+        <a href="https://github.com/sidharthify/android_kernel_google_gs201/tree/6.12-test" target="_blank"
+          rel="noopener">here</a>, and the build script is
+        <a href="https://github.com/sidharthify/auto" target="_blank" rel="noopener">here</a>.
+        I'll write a follow-up once the modem works.
+      </p>
+
+      <p>
+        If you made it this far, thank you very much for reading!
+      </p>
+
+      <p><a href="../">← back to all posts</a></p>
+    </article>
+
+    <aside class="toc" aria-label="Table of Contents">
+      <!-- TOC will be auto-generated by toc.js -->
+    </aside>
+          </div>
+        <div class="cmd">
+          <div class="cmd-output"></div>
+          <div class="cmd-line">
+            <span class="p-loc">sidharthify@nixos</span>
+            <span class="p-path">~/blog/pixel-kernel-612</span>
+            <span class="p-sym">$</span>
+            <input class="cmd-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="terminal command input" />
+          </div>
+          <div class="cmd-hint">type <kbd>help</kbd> or just click. try <kbd>cd ..</kbd>, <kbd>cd ~</kbd>.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="../../assets/js/nixfs.js"></script>
+  <script src="../../assets/js/terminal.js"></script>
+  <script src="../../assets/js/desktop.js"></script>
+  <script src="../../assets/js/toc.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js"></script>
+  <script src="../../assets/js/hljs-init.js"></script>
+</body>
+
+</html>
