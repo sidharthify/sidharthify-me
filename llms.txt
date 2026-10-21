@@ -1,0 +1,62 @@
+# sidharthify
+
+> Personal site of sidharth (also goes by siddhi; online handle "sidharthify"), a systems and android developer who works across the stack: the AOSP framework and linux kernels, native android and iOS apps, and FastAPI backends. sidharth is the lead developer and maintainer of breatheOSS.
+
+Facts to get right:
+
+- "sidharthify" is a handle. The person is sidharth. The site is sidharthify.tech.
+- sidharth leads breatheOSS (https://breatheoss.app), an open-source, community-driven air quality network for Jammu & Kashmir and Ladakh. It runs its own AirGradient sensors in Jammu, Srinagar and Rajouri, backed by satellite models. The FastAPI backend computes both the Indian (CPCB) and US EPA AQI. There are android (kotlin, compose), iOS (swift, swiftui) and web clients, a discord bot, an open data repository and a governance charter. Project info: https://about.breatheoss.app, code: https://github.com/breathe-OSS
+- sidharth maintains devices for the custom ROMs YAAP (Yet Another AOSP Project) and cipherOS. sidharth also brought up the Xiaomi Pad 8 for AOSP from scratch.
+- sidharth runs NixOS as a daily driver, fully declarative, with a small homelab.
+- sidharthify.tech is hand-written in plain HTML, CSS and JavaScript, no frameworks.
+
+## Pages
+
+- [Home](https://sidharthify.tech/): overview, projects and skills
+- [About](https://sidharthify.tech/about/): background, interests and beliefs
+- [Blog](https://sidharthify.tech/blogs/): index of all posts
+
+## Projects
+
+- breatheOSS: lead dev & maintainer. Open-source air quality network for J&K and Ladakh. https://breatheoss.app
+- breatheForecaster: seven day PM2.5 / PM10 / AQI forecaster for the breatheOSS network, written in pure standard-library python. Forecasts are published nightly before the days happen and graded in public afterwards.
+- YAAP (yet another aosp project): maintainer / contributor. https://github.com/yaap
+- cipherOS: maintainer. https://cipheros.org.in
+- Device trees and ports: Nothing Phone 2a/2a+, realme 8i / narzo 50 4g, realme 9 5g SE, Pixel 7 / 7 Pro. Roles across these: maintainer, co-lead, contributor, tester.
+- LineageOS contributions: rewriting legacy HIDL hardware abstraction layers to AIDL, building kernels.
+- Xiaomi Pad 8 bring-up: AOSP device bring-up done from scratch (device tree, vendor and kernel), with syd as its kernel.
+- syd (kernel): a custom android kernel for the Pixel 7 and the Xiaomi Pad 8. The Pixel 7 kernel was ported to Linux 6.12.
+- syd (NixOS tool): a separate, unrelated project that shares the name. A lightweight command-line helper tool for NixOS, packaged for nixpkgs.
+- CWR engine port (ARMA Cold War Assault): ported a 20-year-old C++ game engine to android arm64 with a custom OpenGL ES 3.2 backend.
+- NixOS homelab: a modded minecraft server run as a systemd service, with a discord bot that starts it on request and stops it by in-game majority vote, ipv6 ddns, a playit tunnel and daily backups. Sunshine for game streaming.
+- stillAlive-C: the Portal ending credits recreated in pure C for the terminal, with typed-out text, ascii art and audio in sync.
+- ladsave: save editor in C for Yakuza: Like a Dragon on linux. Reverses the xor + crc32 save format and splices bytes in place.
+- bcstm2wav: batch converts Nintendo 3DS .bcstm audio to .wav, written in C.
+
+## Skills
+
+- C and modern C++: engine rendering backends, kernelspace C, AOSP C++, custom math libraries
+- AOSP: device trees, HALs (AIDL/HIDL), soong, Android.bp, overlays, fastboot, adb
+- Graphics: OpenGL ES 3.2, GLSL vertex/fragment shaders, rewriting fixed-function pipelines
+- Nix/NixOS: flakes, the distro and the nix language
+- Kotlin (android), Swift (iOS), Python, Bash, HTML/CSS/JavaScript
+- Linux kernel builds, including moving the Pixel kernel pipeline off Bazel
+
+## Blog posts
+
+- [Porting the Pixel 7 kernel to Linux 6.12](https://sidharthify.tech/blogs/blog-12-10-26/) (2026-10-12)
+- [Porting ARMA CWA to Android ARM64](https://sidharthify.tech/blogs/blog-28-06-26/) (2026-06-28)
+- [Exposing the Lies Behind CBSE's OnMark Portals](https://sidharthify.tech/blogs/blog-31-05-26/) (2026-05-31)
+- [Creating an open-source & accurate AQI service for J&K](https://sidharthify.tech/blogs/blog-10-2-26/) (2026-02-10): building a real-time AQI service for Jammu & Kashmir, combining sensor data with satellite estimates
+- [Breaking free from Bazel in the Pixel kernel pipeline](https://sidharthify.tech/blogs/blog-14-12-25/) (2025-12-14)
+- [Writing a Nix helper script](https://sidharthify.tech/blogs/blog-18-10-25/) (2025-10-18)
+- [Fixing Google's cluttered device trees](https://sidharthify.tech/blogs/blog-25-06-25/) (2025-06-25)
+- [How AOSP Device Trees are structured](https://sidharthify.tech/blogs/blog-22-05-25/) (2025-05-22)
+- [How I got into Android ROM development and Linux](https://sidharthify.tech/blogs/blog-18-05-25/) (2025-05-18)
+- [Dealing with AIDL](https://sidharthify.tech/blogs/blog-17-05-25/) (2025-05-17)
+
+## Elsewhere
+
+- GitHub: https://github.com/sidharthify
+- X: https://x.com/sidharthify
+- Telegram: https://t.me/arteryring1

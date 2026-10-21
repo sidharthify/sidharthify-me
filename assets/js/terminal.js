@@ -155,10 +155,12 @@
     ["yaap (yet another aosp project)", "maintainer / contributor"],
     ["cipherOS", "maintainer"],
     ["device trees & ports", "nothing phone 2a/2a+, realme 8i / narzo 50 4g, realme 9 5g SE, pixel 7 / 7 pro — maintainer, co-lead, contributor, tester"],
+    ["xiaomi pad 8 bring-up", "aosp device bring-up from scratch: device tree, vendor and kernel, with syd as its kernel"],
+    ["syd (kernel)", "my custom android kernel for the pixel 7 (ported to linux 6.12) and the xiaomi pad 8"],
     ["lineageos contributions", "rewriting legacy hidl hardware abstraction layers to aidl, building kernels"],
     ["nixos + homelab", "a modded minecraft server run as a systemd service, with a discord bot that starts it on request and stops it by in-game majority vote, ipv6 ddns, a playit tunnel and daily backups. sunshine for game streaming"],
     ["cwr engine port (arma cwa)", "ported a 20-year-old game engine to android arm64 with a custom opengl es 3.2 backend"],
-    ["syd", "lightweight command-line tool for nixOS"],
+    ["syd (nixos)", "lightweight command-line tool for nixOS. unrelated to the syd kernel, just the same name"],
     ["stillAlive-C", "the portal ending credits recreated in pure c for the terminal: typed-out text, ascii art and audio in sync, scaled to any window at 4:3"],
     ["ladsave", "save editor in c for yakuza: like a dragon on linux. reverses the xor + crc32 save format and splices bytes in place so the rest of the save stays untouched"],
     ["bcstm2wav", "batch converts nintendo 3ds .bcstm audio to .wav, written in c"],
@@ -177,8 +179,8 @@
   ];
 
   const SPECS = [
-    ["aosp framework", "yaap & cipherOS maintainer · device bring-up · HALs"],
-    ["low level", "syd, my pixel 7 kernel · a 20-year-old c++ engine ported to arm64"],
+    ["aosp framework", "yaap & cipherOS maintainer · device bring-up, including the xiaomi pad 8 from scratch · HALs"],
+    ["low level", "syd, my pixel 7 and xiaomi pad 8 kernel · a 20-year-old c++ engine ported to arm64"],
     ["linux", "nixOS daily, fully declarative · kernel and rom build tooling"],
     ["app development", "breathe for android (kotlin, compose) and iOS (swift, swiftui)"],
     ["ui", "material 3 and swiftui clients, plus this whole website, no frameworks"],

@@ -10,6 +10,42 @@
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="canonical" href="https://sidharthify.tech/" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://sidharthify.tech/#website",
+        "url": "https://sidharthify.tech/",
+        "name": "sidharthify",
+        "author": { "@id": "https://sidharthify.tech/#person" }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://sidharthify.tech/#person",
+        "name": "sidharth",
+        "alternateName": ["sidharthify", "siddhi"],
+        "url": "https://sidharthify.tech/",
+        "jobTitle": "Systems & Android Developer",
+        "description": "Systems and android developer working on the AOSP framework, linux kernels, native android and iOS apps and FastAPI backends. Lead developer of breatheOSS.",
+        "knowsAbout": ["AOSP", "Android", "Linux kernel", "NixOS", "C", "C++", "Kotlin", "Swift", "OpenGL ES", "FastAPI", "Air quality monitoring"],
+        "worksFor": {
+          "@type": "Organization",
+          "name": "breatheOSS",
+          "url": "https://breatheoss.app",
+          "sameAs": ["https://about.breatheoss.app", "https://github.com/breathe-OSS"]
+        },
+        "sameAs": [
+          "https://github.com/sidharthify",
+          "https://x.com/sidharthify",
+          "https://t.me/arteryring1"
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body data-cwd="~" data-root="">
@@ -54,8 +90,8 @@
           <h1 class="intro-head"><span class="intro-name">sidharth!</span> full-stack systems &amp; android developer</h1>
           <p class="intro-lede">i work across the whole stack, from the AOSP framework and linux kernels up to the native apps and UI people use, with FastAPI backends and scripts in between.</p>
           <dl class="spec">
-            <dt>aosp framework</dt><dd>yaap &amp; cipherOS maintainer · device bring-up · understanding of the build system · HALs</dd>
-            <dt>low level</dt><dd>syd, my pixel 7 kernel · a 20-year-old c++ engine ported to arm64 · hands on experience with MediaTek BROM exploits · contributions to low-level repos</dd>
+            <dt>aosp framework</dt><dd>yaap &amp; cipherOS maintainer · device bring-up, including the xiaomi pad 8 from scratch · understanding of the build system · HALs</dd>
+            <dt>low level</dt><dd>syd, my pixel 7 and xiaomi pad 8 kernel · a 20-year-old c++ engine ported to arm64 · hands on experience with MediaTek BROM exploits · contributions to low-level repos</dd>
             <dt>linux</dt><dd>nixOS daily, fully declarative · kernel and rom build tooling</dd>
             <dt>app development</dt><dd>breathe for android (kotlin, compose) and iOS (swift, swiftui)</dd>
             <dt>ui</dt><dd>material 3 and swiftui clients, plus this whole website, no frameworks</dd>
@@ -126,10 +162,12 @@
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">yaap (yet another aosp project)</div><div class="row-sub">maintainer / contributor</div></div></li>
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">cipherOS</div><div class="row-sub">maintainer</div></div></li>
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">device trees &amp; ports</div><div class="row-sub">nothing phone 2a/2a+, realme 8i / narzo 50 4g, realme 9 5g SE, pixel 7 / 7 pro — maintainer, co-lead, contributor, tester</div></div></li>
+            <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">xiaomi pad 8 bring-up</div><div class="row-sub">aosp device bring-up from scratch: device tree, vendor and kernel, with syd as its kernel</div></div></li>
+            <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">syd (kernel)</div><div class="row-sub">my custom android kernel for the pixel 7 (ported to linux 6.12) and the xiaomi pad 8</div></div></li>
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">lineageos contributions</div><div class="row-sub">rewriting legacy hidl hardware abstraction layers to aidl, building kernels</div></div></li>
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">nixos + homelab</div><div class="row-sub">a modded minecraft server run as a systemd service, with a discord bot that starts it on request and stops it by in-game majority vote, ipv6 ddns, a playit tunnel and daily backups. sunshine for game streaming</div></div></li>
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">cwr engine port (arma cwa)</div><div class="row-sub">ported a 20-year-old game engine to android arm64 with a custom opengl es 3.2 backend</div></div></li>
-            <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">syd</div><div class="row-sub">lightweight command-line tool for nixOS</div></div></li>
+            <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">syd (nixos)</div><div class="row-sub">lightweight command-line tool for nixOS. unrelated to the syd kernel, just the same name</div></div></li>
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">stillAlive-C</div><div class="row-sub">the portal ending credits recreated in pure c for the terminal: typed-out text, ascii art and audio in sync, scaled to any window at 4:3</div></div></li>
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">ladsave</div><div class="row-sub">save editor in c for yakuza: like a dragon on linux. reverses the xor + crc32 save format and splices bytes in place so the rest of the save stays untouched</div></div></li>
             <li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">bcstm2wav</div><div class="row-sub">batch converts nintendo 3ds .bcstm audio to .wav, written in c</div></div></li>
