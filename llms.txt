@@ -44,6 +44,7 @@ Facts to get right:
 
 ## Blog posts
 
+- [The Android Open Sores Project](https://sidharthify.tech/blogs/blog-22-10-26/) (2026-10-22): What AOSP is, why it is deeply flawed and still works, how the custom ROM community grew out of XDA, the LineageOS pickfest, and how to get started.
 - [Porting the Pixel 7 kernel to Linux 6.12](https://sidharthify.tech/blogs/blog-12-10-26/) (2026-10-12): Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera.
 - [Porting ARMA CWA to Android ARM64](https://sidharthify.tech/blogs/blog-28-06-26/) (2026-06-28): Getting the CWR engine (ARMA: Cold War Assault) running on modern Android hardware.
 - [Exposing the Lies Behind CBSE's OnMark Portals](https://sidharthify.tech/blogs/blog-31-05-26/) (2026-05-31): Almost all OnMark websites from EduTek are fundamentally insecure, and CBSE is lying about it.

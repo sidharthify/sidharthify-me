@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- gen:meta -->
+  <title>The Android Open Sores Project • sidharthify</title>
+  <meta name="description" content="What AOSP is, why it is deeply flawed and still works, how the custom ROM community grew out of XDA, the LineageOS pickfest, and how to get started." />
+  <link rel="canonical" href="https://sidharthify.tech/blogs/blog-22-10-26/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Android Open Sores Project" />
+  <meta property="og:description" content="What AOSP is, why it is deeply flawed and still works, how the custom ROM community grew out of XDA, the LineageOS pickfest, and how to get started." />
+  <meta property="og:url" content="https://sidharthify.tech/blogs/blog-22-10-26/" />
+  <meta property="og:site_name" content="sidharthify" />
+  <meta property="article:published_time" content="2026-10-22" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The Android Open Sores Project" />
+  <meta name="twitter:description" content="What AOSP is, why it is deeply flawed and still works, how the custom ROM community grew out of XDA, the LineageOS pickfest, and how to get started." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The Android Open Sores Project",
+    "description": "What AOSP is, why it is deeply flawed and still works, how the custom ROM community grew out of XDA, the LineageOS pickfest, and how to get started.",
+    "datePublished": "2026-10-22",
+    "url": "https://sidharthify.tech/blogs/blog-22-10-26/",
+    "keywords": [
+      "Android",
+      "AOSP",
+      "Community",
+      "ROMs"
+    ],
+    "author": {
+      "@id": "https://sidharthify.tech/#person"
+    },
+    "isPartOf": {
+      "@id": "https://sidharthify.tech/blogs/#blog"
+    }
+  }
+  </script>
+  <!-- /gen:meta -->
+  <meta name="theme-color" content="#11111b" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="../../assets/css/blog.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@catppuccin/highlightjs@1.0.1/css/catppuccin-mocha.css" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
+</head>
+
+<body data-cwd="~/blog/android-open-sores" data-root="../../">
+  <div class="wallpaper" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="panel">
+    <div class="panel-left">
+      <a class="panel-brand" href="../../">sidharthify</a>
+      <ul class="workspaces">
+        <li><a href="../../"><span class="ws-num">1</span>home</a></li>
+        <li><a href="../../about/"><span class="ws-num">2</span>about</a></li>
+        <li><a aria-current="page" href="../"><span class="ws-num">3</span>blog</a></li>
+      </ul>
+    </div>
+    <div class="panel-center"><span>&copy; 2026 &middot; <a href="https://github.com/sidharthify" target="_blank" rel="noopener">sidharthify</a> &middot; powered by <a href="https://www.catppuccin.com/" target="_blank" rel="noopener">catppuccin</a></span></div>
+    <div class="panel-right">
+      <span class="panel-swatches" aria-hidden="true">
+        <i class="sw-red"></i><i class="sw-yellow"></i><i class="sw-green"></i><i class="sw-blue"></i><i class="sw-mauve"></i>
+      </span>
+      <span class="panel-clock"></span>
+    </div>
+  </header>
+  <main id="main" class="desktop desktop--wide desktop-surface">
+    <section class="terminal window">
+      <div class="term-titlebar">
+        <span class="term-dots" aria-hidden="true"><i class="dot-red"></i><i class="dot-yellow"></i><i class="dot-green"></i></span>
+        <span class="term-title"><b>sidharthify@nixos</b>: ~/blog/android-open-sores</span>
+        <span></span>
+      </div>
+      <div class="term-body">
+        <div class="prompt"><span class="p-loc">sidharthify@nixos</span> <span class="p-path">~/blog/android-open-sores</span> <span class="p-sym">$</span> <span class="p-cmd">nvim <span class="arg">android-open-sores.md</span></span></div>
+        <div class="blog-layout">
+    <article>
+      <header>
+        <h1>The Android Open Sores Project</h1>
+        <div class="post-meta">
+          <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg> 22/10/26</span>
+          <span class="meta-sep">·</span>
+          <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg> 15,050 words</span>
+          <span class="meta-sep">·</span>
+          <span class="meta-item"><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg> 72 min read</span>
+        </div>
+        <div class="post-tags">
+          <span class="tag">Android</span>
+          <span class="tag">AOSP</span>
+          <span class="tag">Community</span>
+          <span class="tag">ROMs</span>
+        </div>
+      </header>
+
+      <p>
+        A little over a year ago, back when I was still pretty new to writing blogs, I wrote a post called
+        <a href="../blog-22-05-25/" class="blog-link">How AOSP Device Trees are structured</a>. It was short. It
+        listed the makefiles in a device tree, said roughly what each one did, and that was about it. It wasn't
+        wrong, but reading it now, it feels like describing a car by listing the names of its parts.
+      </p>
+
+      <p>
+        Since then I've maintained more devices, ported a kernel to a version Google never shipped for my phone,
+        brought up a tablet from absolutely nothing, argued with Soong more times than I'd like to admit, and spent
+        a frankly unhealthy amount of time in Telegram groups. I've also gotten a bit better at writing. So this is
+        the follow-up I wish I'd written back then.
+      </p>
+
+      <p>
+        Fair warning, this one is long, and the tutorial-ish part only shows up near the end. Most of it is about AOSP as a
+        piece of software, the people who build custom ROMs on top of it, how that whole scene started, what it
+        looks like today, and all the stuff nobody tells you when you join it. Some of it is technical, and a fair bit of it is me complaining. If you only care about how to get started, skip to
+        <a href="#so-what-do-we-do" class="blog-link">So, what do we do?</a>.
+      </p>
+
+      <h1>What even is AOSP?</h1>
+
+      <p>
+        I figure most of you reading this already know what AOSP is. If you're on this blog, you've probably
+        flashed a ROM or two, or at least heard the word "Lineage" thrown around. But this post is going to get
+        into the weeds, and the weeds only make sense if we agree on what the ground looks like. So, a quick history lesson first.
+      </p>
+
+      <h2>A camera OS, of all things</h2>
+
+      <p>
+        Android didn't start at Google. Android Inc. was founded in 2003 in Palo Alto by Andy Rubin, Rich Miner,
+        Nick Sears and Chris White. The funny part is what it was originally for - digital cameras. Rubin has said
+        in talks that the first pitch to investors was an operating system for cameras that could sync photos to
+        the cloud. The camera market turned out to be way too small to bother with, so they pivoted to phones,
+        where the competition at the time was Symbian and Windows Mobile.
+      </p>
+
+      <p>
+        Google bought Android Inc. in 2005, reportedly for around 50 million dollars. Nobody outside knew much about it for a while. The early prototype, codenamed
+        "Sooner", looked a lot like a BlackBerry - a small screen and a physical keyboard. Then in January 2007, Apple
+        showed the iPhone, and the plan changed. The device that eventually shipped had a touchscreen, plus a slide out keyboard.
+      </p>
+
+      <p>
+        In November 2007, Google announced the Open Handset Alliance, a group of phone makers, carriers and chip
+        companies that agreed to build on Android. A year later, in October 2008, the first Android phone went on
+        sale - the HTC Dream, sold by T-Mobile as the G1. And right around the same time, Google pushed the source
+        code out to the public. That release is what we call the Android Open Source Project, or AOSP.
+      </p>
+
+      <h2>Open source, with an asterisk</h2>
+
+      <p>
+        Most of AOSP is licensed under the Apache 2.0 license. That choice was very deliberate. Apache lets anyone
+        take the code, change it, and ship it without publishing their changes. For phone makers, that was the
+        whole selling point. Samsung could take Android, slap their own UI on it, and keep all of that closed.
+      </p>
+
+      <p>
+        The exception is the Linux kernel, which is GPLv2. Any company that ships a phone with a modified Linux
+        kernel is legally required to publish that kernel's source. In practice, many of them are slow about it,
+        some publish something that doesn't match what's on the phone, and some just don't bother until someone
+        complains loudly enough. Keep that in mind, it'll come back later.
+      </p>
+
+      <p>
+        There's another asterisk too. The Android on your phone is AOSP plus a lot more. On top of AOSP, almost every phone
+        sold outside China ships Google Mobile Services (GMS) - the Play Store, Play Services, Gmail, Maps, and so on.
+        Those are proprietary, and phone makers have to sign an agreement with Google to ship them. Over the years, much of what feels like "Android" has moved from AOSP into Play Services. Push notifications and location, for example, both live in a closed app now. AOSP also used to
+        ship its own apps for things like the calendar, music and the keyboard. Those were slowly left to rot while
+        Google's closed versions on the Play Store kept getting new features.
+      </p>
+
+      <p>
+        Google has also kept parts of AOSP to itself before. Android 3.0 Honeycomb, the tablet release from 2011,
+        never had its source released on its own. Google said it wasn't ready for phones and didn't want people
+        putting it on them. The code only came out later that year, folded into Android 4.0. So Google deciding what we get, and when, goes back almost to the start.
+      </p>
+
+      <h2>So what is AOSP, then?</h2>
+
+      <p>
+        Put simply, AOSP is the source code for the base Android operating system, without any of Google's
+        proprietary apps and services. It has the Linux kernel interface, the system libraries, the runtime that
+        runs apps (ART), the framework that apps talk to, and a set of basic system apps like Settings, the
+        launcher and the dialer. If you build it as is, you get a working, very plain Android that boots on
+        Google's emulator and, until recently, on Google's own Pixel phones.
+      </p>
+
+      <p>
+        Every Android phone you've ever used started from this code. Samsung's One UI and Xiaomi's HyperOS are both AOSP with things added, removed and changed. And every custom ROM you've
+        ever flashed is the same thing, made by people who mostly don't get paid for it. That's the part this post is about.
+      </p>
+
+      <p>
+        One more bit of trivia, because I like it. Android versions used to have public dessert names - Cupcake,
+        Donut, Eclair, all the way up to Pie. Google dropped the public names with Android 10, but the desserts
+        never went away internally. Android 13 was Tiramisu, 14 was Upside Down Cake, 15 was Vanilla Ice
+        Cream, and 16 was Baklava. You'll still see these letters everywhere in the source, in branch names and in
+        build IDs.
+      </p>
+
+      <h1>Its architecture</h1>
+
+      <p>
+        This section is about how AOSP is put together. I'll save the complaining for later, it has its own section.
+      </p>
+
+      <h2>One checkout, a thousand repositories</h2>
+
+      <p>
+        The first thing you notice about AOSP is the size. A full checkout is well over a hundred gigabytes, and
+        once you build it, you can easily double that. It behaves like one giant monorepo, but it's over a thousand separate git repositories, glued together by a tool Google wrote called <code>repo</code>.
+      </p>
+
+      <p>
+        <code>repo</code> reads a file called a manifest, which is just an XML list of every git repository, which
+        branch or tag to check out, and where in the tree to put it. When you run <code>repo sync</code>, it goes
+        through that list and clones or updates every single one. A trimmed manifest looks something like this:
+      </p>
+
+      <pre data-filename="default.xml"><code class="language-xml">&lt;manifest&gt;
+  &lt;remote name="aosp" fetch=".." review="https://android-review.googlesource.com/" /&gt;
+  &lt;default revision="refs/tags/android-16.0.0_r1" remote="aosp" sync-j="4" /&gt;
+
+  &lt;project path="build/make" name="platform/build" /&gt;
+  &lt;project path="build/soong" name="platform/build/soong" /&gt;
+  &lt;project path="frameworks/base" name="platform/frameworks/base" /&gt;
+  &lt;project path="packages/apps/Settings" name="platform/packages/apps/Settings" /&gt;
+  &lt;project path="system/core" name="platform/system/core" /&gt;
+  &lt;!-- ...and about a thousand more --&gt;
+&lt;/manifest&gt;</code></pre>
+
+      <p>
+        Every ROM has its own manifest. A ROM is, at the most basic level, a manifest that points some of those
+        thousand paths at its own forks instead of Google's repositories. If a ROM changes something in Settings,
+        its manifest points <code>packages/apps/Settings</code> at the ROM's fork of Settings. The rest stays
+        Google's. Device maintainers add their own repositories on top of that with a "local manifest", which is
+        how your device's trees end up in the checkout.
+      </p>
+
+      <h2>The tree, from top to bottom</h2>
+
+      <p>
+        After a sync, the top of the tree looks like this (trimmed, but not by much):
+      </p>
+
+      <pre data-filename="terminal"><code class="language-plaintext">art/          the Android Runtime, which runs app code
+bionic/       Android's own C library
+bootable/     recovery and bootloader-related bits
+build/        the build system (make, soong, release configs)
+device/       device trees, one folder per vendor and device
+external/     third-party projects (openssl, llvm bits, zlib, ...)
+frameworks/   the Android framework, including frameworks/base
+hardware/     HAL interfaces and some implementations
+kernel/       kernel prebuilts and configs
+packages/     system apps, providers, mainline modules
+prebuilts/    compilers, toolchains, SDKs
+system/       init, core daemons, libraries
+vendor/       vendor blobs and ROM-specific stuff</code></pre>
+
+      <p>
+        If you think of Android as layers, it goes roughly like this, from the bottom up:
+      </p>
+
+      <ul>
+        <li>The Linux kernel, with Android's own additions (Binder, for one).</li>
+        <li>
+          The HALs (Hardware Abstraction Layers), which are the code that knows how to talk to a specific piece of
+          hardware - the camera, the fingerprint sensor, the audio chip, and so on.
+        </li>
+        <li>
+          Native system code - <code>init</code>, <code>bionic</code>, <code>servicemanager</code>,
+          SurfaceFlinger (which draws everything you see) and a pile of daemons.
+        </li>
+        <li>ART, the runtime that runs the Java and Kotlin code apps are written in.</li>
+        <li>The framework, which is the <code>android.*</code> API every app uses, plus the services behind it.</li>
+        <li>System apps - SystemUI, Settings, the launcher, and friends.</li>
+      </ul>
+
+      <p>
+        These layers talk to each other mostly through Binder, Android's IPC (inter-process communication)
+        mechanism. When an app asks for your location, it sends a Binder call to a service running in another process, which does the actual work and sends the
+        answer back. Almost everything in Android works this way.
+      </p>
+
+      <h2>frameworks/base</h2>
+
+      <p>
+        If AOSP has a heart, it's <code>frameworks/base</code>. This one repository holds the public Android API
+        that apps are built against, along with <code>system_server</code>, the process that runs most of the
+        system services - ActivityManager (which decides what runs and what gets killed), WindowManager,
+        PackageManager, PowerManager, and dozens more. It also holds the framework's resources, including a
+        massive file called <code>config.xml</code> with hundreds of settings a device can override. And for some
+        reason, it holds SystemUI too, which is the status bar, the quick settings, the notification shade, the lock
+        screen and the volume dialog. All of it, in one repository.
+      </p>
+
+      <p>
+        Devices change framework behaviour mostly through overlays. An overlay is a small package that replaces
+        values in the framework's resources at runtime. If your phone has a notch, the size of that notch and where
+        the status bar should avoid it are set in an overlay from the device tree. Screen corner radius, the
+        brightness curve, whether the device has a notification LED, all overlays.
+      </p>
+
+      <h2>Treble, HALs and the vendor split</h2>
+
+      <p>
+        Before Android 8.0, the whole OS was one blob. The HALs written by the chip maker and the phone maker lived
+        right next to Google's code, and they were tied to a specific Android version. If you wanted to update a
+        phone to a new Android version, you needed the chip maker to give the phone maker new HALs, and the phone
+        maker to integrate them, and the carrier to approve it. You can guess how often that happened.
+      </p>
+
+      <p>
+        Android 8.0 brought Project Treble, which split the system in two. The <code>system</code> partition holds
+        Google's OS. The <code>vendor</code> partition holds the chip maker's and phone maker's code, the HALs and
+        the drivers. The two talk through defined, versioned interfaces. At first those interfaces were written in
+        HIDL, and since Android 11, HALs have been moving to stable AIDL (which is the thing I rewrote the PowerShare
+        HAL to in <a href="../blog-17-05-25/" class="blog-link">one of my first posts</a>). In theory, you can now
+        update <code>system</code> without touching <code>vendor</code>. That's also what makes GSIs (Generic System
+        Images) possible - one system image that boots on any Treble device.
+      </p>
+
+      <p>
+        To make sure both halves agree, every device carries VINTF manifests and compatibility matrices - files that
+        say "the vendor provides these HALs at these versions" and "the system needs these HALs at these versions".
+        If they don't match, the build fails, or the phone refuses to boot. I ran into this in the
+        <a href="../blog-12-10-26/" class="blog-link">6.12 kernel post</a>, where turning off Rust in the kernel broke
+        a check that the framework matrix required.
+      </p>
+
+      <p>
+        Since then, the split has gotten more fine-grained. A modern phone has a whole list of partitions -
+        <code>system</code>, <code>system_ext</code>, <code>product</code>, <code>vendor</code>, <code>odm</code>,
+        <code>vendor_dlkm</code> and <code>system_dlkm</code> for kernel modules, and <code>boot</code>,
+        <code>init_boot</code> and <code>vendor_boot</code> for the kernel and ramdisks. Each one has rules about
+        what's allowed to live in it and what it's allowed to depend on.
+      </p>
+
+      <h2>The build system</h2>
+
+      <p>
+        Building AOSP goes through a few layers of its own. Originally, everything was GNU Make - every module had an
+        <code>Android.mk</code>, and the whole build was one gigantic Makefile. Make got way too slow for a project
+        this size, so Google wrote Kati, a Make clone that reads the makefiles and spits out a Ninja file instead
+        of building anything itself. Then, starting with Android 7.0, they started replacing makefiles with Soong.
+      </p>
+
+      <p>
+        Soong is written in Go. Its module files are called <code>Android.bp</code>, and they're written in a
+        format called Blueprint that looks a bit like JSON. A module definition looks like this:
+      </p>
+
+      <pre data-filename="Android.bp"><code class="language-json">cc_binary {
+    name: "my_daemon",
+    srcs: ["main.cpp"],
+    shared_libs: ["libbase", "liblog"],
+    vendor: true,
+}</code></pre>
+
+      <p>
+        Today, both systems run at the same time. Soong handles the <code>Android.bp</code> files, Kati handles
+        whatever <code>Android.mk</code> files and product makefiles are left, and both feed into Ninja, which does
+        the actual building. Product configuration, the part that says what goes into a build for a given device,
+        is still mostly written in Make.
+      </p>
+
+      <p>
+        To build, you run three commands. You've seen them if you've ever built anything:
+      </p>
+
+      <pre data-filename="terminal"><code class="language-bash">source build/envsetup.sh
+lunch aosp_cf_x86_64_phone-trunk_staging-userdebug
+m</code></pre>
+
+      <p>
+        <code>envsetup.sh</code> loads a bunch of shell functions. <code>lunch</code> picks what you're building,
+        and that weird string has three parts now - the product (<code>aosp_cf_x86_64_phone</code>, which is the
+        Cuttlefish emulator), the release config (<code>trunk_staging</code>, which decides which feature flags are
+        on), and the variant. The variant is one of <code>user</code> (what ships on retail phones),
+        <code>userdebug</code> (like user, but with root and debugging available) or <code>eng</code> (everything on,
+        for development). Then <code>m</code> builds everything.
+      </p>
+
+      <h2>How it all boots</h2>
+
+      <p>
+        One more piece of the architecture, because it explains many of the bugs you'll run into later - what
+        actually happens between pressing the power button and seeing the lock screen.
+      </p>
+
+      <ul>
+        <li>
+          The chip's boot ROM runs first, then the bootloader (or a chain of them). On most phones this is all
+          closed-source code from the chip maker and the phone maker. The bootloader checks the boot images, picks
+          a slot (A or B), and loads the kernel and the ramdisks.
+        </li>
+        <li>
+          The kernel starts, initializes the hardware it needs, and runs <code>init</code> from the ramdisk. This is
+          "first stage init". Its job is to load the kernel modules needed to reach storage, set up dm-verity, and
+          mount the real partitions.
+        </li>
+        <li>
+          Then <code>init</code> switches to the real system partition and runs as "second stage init". It loads
+          the SELinux policy, reads all the <code>.rc</code> files from every partition, sets system properties, and
+          starts services in stages - the HALs, <code>servicemanager</code>, <code>vold</code> (which decrypts
+          <code>/data</code>), SurfaceFlinger, and so on.
+        </li>
+        <li>
+          Zygote starts. Zygote is a process that loads ART and preloads the framework classes, and every app on
+          the phone is forked from it. That's why apps start fast - most of the framework is already in memory.
+        </li>
+        <li>
+          Zygote forks <code>system_server</code>, which starts all the system services. When they're ready,
+          SystemUI and the launcher start, the boot animation ends, and you see the lock screen.
+        </li>
+      </ul>
+
+      <p>
+        Much of device bring-up is figuring out which of these steps fails. If you never see the boot animation,
+        it's usually the kernel or first stage init. If the boot animation loops forever, it's usually something in
+        second stage init, a HAL crashing, or <code>system_server</code> dying. If it boots and then reboots to
+        recovery, it's often <code>vold</code> failing to decrypt <code>/data</code>.
+      </p>
+
+      <p>
+        Wrapped around all of this is Android Verified Boot (AVB). Every important partition is hashed, and those
+        hashes are signed into a small image called <code>vbmeta</code>. On a locked bootloader, the phone refuses to
+        boot anything that doesn't match. On an unlocked one, it boots anyway and shows you that orange warning
+        screen. The key that signed <code>vbmeta</code> is still checked for some things even when unlocked, though, which bit me hard
+        during the 6.12 port.
+      </p>
+
+      <h2>How Google takes (and doesn't take) contributions</h2>
+
+      <p>
+        Since AOSP is open source, you can technically contribute to it. Google's code review lives on a Gerrit
+        server at <a href="https://android-review.googlesource.com/" class="blog-link">android-review.googlesource.com</a>.
+        You sign a contributor agreement, push your change, and wait for someone at Google to review it. Every commit
+        gets a <code>Change-Id</code> line, which is how Gerrit tracks a change through new versions of the same
+        patch. Almost every ROM uses the same Gerrit-and-Change-Id setup, so you'll see these lines everywhere.
+      </p>
+
+      <p>
+        In practice, getting things into AOSP from the outside is slow, and for big changes, close to impossible.
+        Small fixes do get merged. But Google's roadmap is decided internally, and the people reviewing your change
+        are busy with that roadmap. That's one big reason the community does its work downstream, in ROMs and in
+        LineageOS, instead of upstream.
+      </p>
+
+      <p>
+        Releases show up as git tags, like <code>android-16.0.0_r1</code>. On top of those, Google publishes the
+        Android Security Bulletin every month, listing the security fixes that went into that month's patch level.
+        That "security patch level" date in your phone's settings comes from there, and keeping it current is one of
+        the main things a well-maintained ROM does.
+      </p>
+
+      <h2>Device trees, vendor trees and kernels</h2>
+
+      <p>
+        Finally, the part my old post was about. For AOSP to build for a specific phone, it needs to know about
+        that phone. That knowledge lives in three places:
+      </p>
+
+      <ul>
+        <li>
+          The device tree, in <code>device/&lt;oem&gt;/&lt;codename&gt;</code>. This is the configuration - product
+          makefiles, board configuration, overlays, SELinux policy, init scripts, and any HALs written by the
+          community.
+        </li>
+        <li>
+          The vendor tree, in <code>vendor/&lt;oem&gt;/&lt;codename&gt;</code>. These are the proprietary files
+          (blobs) pulled from the stock firmware - closed-source HALs, firmware for the modem and Wi-Fi, camera
+          libraries, and so on.
+        </li>
+        <li>
+          The kernel, either as source in <code>kernel/&lt;oem&gt;/&lt;chip or codename&gt;</code>, or as a prebuilt
+          image and modules dropped into the device tree.
+        </li>
+      </ul>
+
+      <p>
+        I'm keeping this short on purpose, because I'm going to walk through a real set of trees in detail later on. For now, just know that these three things are what a "device maintainer" mostly
+        maintains. Everything else comes from the ROM.
+      </p>
+
+      <p>
+        Oh, and one small thing that confuses everyone at first - an AOSP "device tree" and a Linux "device tree" are
+        two completely different things that happen to share a name. The Linux one is a description of the hardware
+        (in <code>.dts</code> files compiled to <code>.dtb</code>) that the kernel reads at boot to know what's on
+        the board. The AOSP one is a folder full of makefiles. When someone in a group says "the device tree is
+        broken", it's worth asking which one they mean.
+      </p>
+
+      <h1>The XDA days</h1>
+
+      <p>
+        I wasn't around for most of this. I flashed my first ROMs as a kid and only really got into the scene in
+        2021 with my realme 8i (I wrote about that <a href="../blog-18-05-25/" class="blog-link">here</a>). But you
+        can't explain the community without explaining where it came from, and most of it came from one forum.
+      </p>
+
+      <h2>Before Android</h2>
+
+      <p>
+        XDA Developers started in the early 2000s, years before Android existed. The name comes from the O2 XDA, a
+        Windows Mobile PDA-phone made by HTC. People on the forum figured out how to modify the firmware on these
+        devices, strip out the junk carriers put in, and add things that were missing. They called this "cooking"
+        ROMs, and the people who did it were "chefs". Many of the words we still use come from there. "ROM" itself
+        is technically wrong for what we flash today, since none of it is read-only memory anymore, but the name
+        stuck from those days and never left.
+      </p>
+
+      <p>
+        So when the first Android phone showed up in 2008, there was already a big group of people who were used to
+        taking phones apart in software. HTC made the G1, and HTC phones were what these people had been modding
+        for years.
+      </p>
+
+      <h2>The G1 and the root shell bug</h2>
+
+      <p>
+        The story of how the G1 got rooted is one of my favourite bits of Android history. In November 2008, a few
+        weeks after launch, someone noticed that the phone was running a root shell in the background, hooked up to
+        the keyboard. Anything you typed, anywhere, also got sent to that shell. Type "reboot" into a text message,
+        and the phone would reboot. That was it. That was the exploit.
+      </p>
+
+      <p>
+        Google patched it pretty quickly, but by then people had already used it to get root and flash modified
+        firmware. A developer named JesusFreke put out modified builds of the G1's firmware with root and some
+        extra features. Then a developer named Steve Kondik, who went by Cyanogen online, started putting out his
+        own builds based on that work. Those became CyanogenMod, the custom ROM that pretty much defined what a
+        custom ROM was for the next eight years.
+      </p>
+
+      <p>
+        Fun fact, in 2009, Google sent Cyanogen a cease and desist letter, because his builds included Google's
+        proprietary apps like the Market (what the Play Store was called back then) and Gmail. CyanogenMod stopped
+        bundling them, and the community started distributing them separately as a flashable zip. That's where
+        "GApps" packages come from, and the reason you still flash them separately (or pick a "GApps build") today.
+      </p>
+
+      <h2>What XDA looked like</h2>
+
+      <p>
+        For about a decade, if you wanted a custom ROM, you went to XDA. Every device had its own section, and
+        every ROM for that device had its own thread. The first post of a thread followed a pretty standard
+        template - a screenshot or two, a feature list, a list of known bugs, download links, the kernel source link
+        (sometimes), and installation steps. And usually a disclaimer, the most famous version of which goes
+        something like this, "I am not responsible for bricked devices, dead SD cards, thermonuclear war, or you getting
+        fired because the alarm app failed." People copy-pasted that into their threads for years. You will still
+        find it in recovery and kernel threads today.
+      </p>
+
+      <p>
+        Below the first post, there were hundreds of pages of replies. Bug reports, people asking for ETAs, people
+        asking how to flash, people reporting bugs that were already listed in the first post, and every few pages,
+        a useful reply from someone who knew what was going on. There was a "Thanks" button on every post,
+        and the thanks count next to a username was a big deal. It was the closest thing the scene had to
+        reputation.
+      </p>
+
+      <p>
+        The tools people still use came out of this time too. ClockworkMod Recovery, by Koushik Dutta, made
+        flashing zips something you could do without a computer. TWRP, by Team Win, replaced it with a touch UI
+        and became the standard for years. Chainfire's SuperSU was how you rooted, until topjohnwu's Magisk came
+        along and did it without touching the system partition at all. Each of these started as a forum thread.
+      </p>
+
+      <h2>The big ROMs</h2>
+
+      <p>
+        CyanogenMod was the giant, but it was never alone. Around 2011 and 2012, a whole wave of ROMs showed up, and
+        many of the names still mean something to people who were around:
+      </p>
+
+      <ul>
+        <li>
+          AOKP, the Android Open Kang Project. Yes, the name is a joke about kanging, which I'll explain in a bit.
+          It was famous for its customization options, which at the time was the whole point of a custom ROM.
+        </li>
+        <li>
+          Paranoid Android, which came up with ideas Google and other OEMs later borrowed, like the PIE gesture
+          controls and floating notification bubbles called Halo.
+        </li>
+        <li>MIUI, which started as a custom ROM before Xiaomi was even selling phones.</li>
+        <li>
+          OmniROM, started in 2013 by developers who were unhappy with Cyanogen turning into a company.
+        </li>
+        <li>SlimROMs, Resurrection Remix, Dirty Unicorns, and many more.</li>
+      </ul>
+
+      <p>
+        That Cyanogen company is its own story. In 2013, Steve Kondik and others founded Cyanogen Inc. and took
+        investment money. The company shipped Cyanogen OS on a few phones, most famously the OnePlus One, and at
+        one point its CEO talked about "taking Android away from Google". It didn't go well. By the end of 2016,
+        Cyanogen Inc. shut down its services and the infrastructure behind CyanogenMod. The community forked the
+        project and renamed it LineageOS, which was announced on Christmas Eve 2016. LineageOS is still the biggest
+        and most important custom ROM, and it'll come up often in this post.
+      </p>
+
+      <h2>From forums to Telegram</h2>
+
+      <p>
+        Over the second half of the 2010s, much of the community moved off XDA. Device communities started living
+        on Telegram instead, especially for phones popular in India and Southeast Asia, which is where a big part of
+        the scene is today. ROM threads on XDA still exist, but for many devices, the real discussion, the
+        testing, and the releases all happen in Telegram groups and channels. Builds get uploaded to SourceForge or
+        a ROM's own server, the changelog gets posted in a channel, and the support group gets flooded with people
+        asking if Netflix works.
+      </p>
+
+      <p>
+        That's the world I joined in 2021. A friend on Telegram (whose name I've embarrassingly forgotten) taught me
+        how to build a recovery from source, and I was hooked. I've never been much of an XDA person. I'm a
+        Telegram-groups-at-3-AM person. But the culture, the words, the thread templates and the disclaimer jokes all
+        came over from XDA, and you can still see it everywhere.
+      </p>
+
+      <h1>The deeply flawed operating system</h1>
+
+      <p>
+        Now for the complaining.
+      </p>
+
+      <p>
+        I want to be clear about something first - I love AOSP. I've spent hundreds of hours inside it, and I'll
+        spend hundreds more. But you can love something and still see that it's held together with duct tape. If
+        you've only ever used Android, it probably looks polished from the outside. Once you've built it, ported
+        it, and debugged it on a phone it was never meant for, you start seeing the duct tape everywhere.
+      </p>
+
+      <h2>Soong</h2>
+
+      <p>
+        Let's start with the build system, since it's the first thing you'll fight with.
+      </p>
+
+      <p>
+        As I said earlier, AOSP currently runs two build systems at once. Soong reads <code>Android.bp</code>, Kati
+        reads whatever makefiles are left, and their output gets stitched together into one huge Ninja file. Google
+        has been migrating off Make since Android 7.0, which came out in 2016. It's been ten years. The product
+        configuration, which is the one part every device tree touches, is still Make.
+      </p>
+
+      <p>
+        And it's slow. Before Ninja builds a single file, Soong and Kati have to read every build file in the tree
+        and generate the build graph. On a clean tree, that step alone can take several minutes, and it eats a ton
+        of memory. Google's own docs recommend 64 GB of RAM for building. If you change a single
+        <code>Android.bp</code>, the analysis runs again. If you change a product makefile, it runs again. A lot of
+        your time building AOSP is spent watching a percentage counter while nothing is being compiled.
+      </p>
+
+      <p>
+        Blueprint was designed on purpose to be a plain data format, with no real conditionals or loops. Soong's
+        own README says it pretty directly:
+      </p>
+
+      <pre data-filename="build/soong/README.md"><code class="language-markdown">Soong deliberately does not support most conditionals in Android.bp files.  We
+suggest removing most conditionals from the build.</code></pre>
+
+      <p>
+        Which is a nice idea, right up until you have an actual phone. Real devices need conditionals all the time
+        ("build this file only on this board", "add this flag only if that feature is on"). So Soong grew a
+        workaround, and this is the example from that same README:
+      </p>
+
+      <pre data-filename="Android.bp"><code class="language-json">soong_config_module_type {
+    name: "acme_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "acme",
+    variables: ["board"],
+    bool_variables: ["feature"],
+    list_variables: ["impl"],
+    value_variables: ["width"],
+    properties: ["cflags", "srcs"],
+}
+
+soong_config_string_variable {
+    name: "board",
+    values: ["soc_a", "soc_b", "soc_c"],
+}</code></pre>
+
+      <p>
+        And then the values get set from a makefile:
+      </p>
+
+      <pre data-filename="BoardConfig.mk"><code class="language-makefile">$(call soong_config_set,acme,board,soc_a)
+$(call soong_config_set,acme,feature,true)
+$(call soong_config_set,acme,impl,foo.cpp bar.cpp)
+$(call soong_config_set,acme,width,200)</code></pre>
+
+      <p>
+        Look at what's happening here. To get one "if" into a build file, you declare a brand new module type that
+        wraps an existing module type, declare a namespace, declare the variables in four different flavours (string,
+        bool, list and value, and each one behaves differently), list which properties the variables are allowed to
+        touch, set the values from Make, and then, if you want to use it in another file, import the module type with
+        yet another module, <code>soong_config_module_type_import</code>. The README spends about a hundred lines
+        explaining all of this, including a <code>conditions_default</code> rule that works differently for each of
+        the four variable kinds. All of that, because the build files weren't supposed to have conditionals.
+      </p>
+
+      <p>
+        And this is the old way. The same README now says to use <code>select()</code> statements instead, which
+        were added later and are basically conditionals with extra steps. So today, a device tree can have
+        Make conditionals, <code>soong_config</code> variables and <code>select()</code> statements, all doing the
+        same job in three different syntaxes, sometimes in the same tree. If none of them fit, you write a Go plugin
+        that gets compiled into Soong itself.
+      </p>
+
+      <p>
+        Then there's the Bazel thing. Around 2020, Google announced that the platform build would move to Bazel,
+        their open-source build system. Parts of the tree started getting <code>BUILD.bazel</code> files, and the
+        kernel build moved to Bazel through something called Kleaf. Then, in late 2023, Google dropped the plan for
+        the platform build. So now the Android platform is built with Soong and Make, and the kernel that runs
+        under it is built with Bazel. If you look at the kernel tree for my Xiaomi Pad 8, you'll find
+        <code>BUILD.bazel</code> and a pile of <code>.bzl</code> files sitting right next to the regular kernel
+        <code>Makefile</code>. I wrote a <a href="../blog-14-12-25/" class="blog-link">whole post</a> about ripping Bazel out of the Pixel kernel build.
+      </p>
+
+      <p>
+        Finally, there are the <code>BUILD_BROKEN_*</code> flags. Over time, the build got stricter about what it
+        allows. Instead of fixing every device, Google added flags that turn the checks off. Here's the actual list,
+        straight from <code>build/make/core/board_config.mk</code> on Android 16 QPR2:
+      </p>
+
+      <pre data-filename="build/make/core/board_config.mk"><code class="language-makefile">_build_broken_var_list := \
+  BUILD_BROKEN_CLANG_PROPERTY \
+  BUILD_BROKEN_CLANG_ASFLAGS \
+  BUILD_BROKEN_CLANG_CFLAGS \
+  BUILD_BROKEN_DEPFILE \
+  BUILD_BROKEN_DUP_RULES \
+  BUILD_BROKEN_DUP_SYSPROP \
+  BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES \
+  BUILD_BROKEN_ENFORCE_SYSPROP_OWNER \
+  BUILD_BROKEN_INPUT_DIR_MODULES \
+  BUILD_BROKEN_MISSING_REQUIRED_MODULES \
+  BUILD_BROKEN_OUTSIDE_INCLUDE_DIRS \
+  BUILD_BROKEN_PREBUILT_ELF_FILES \
+  BUILD_BROKEN_TREBLE_SYSPROP_NEVERALLOW \
+  BUILD_BROKEN_USES_NETWORK \
+  BUILD_BROKEN_VENDOR_PROPERTY_NAMESPACE \
+  BUILD_BROKEN_VINTF_PRODUCT_COPY_FILES \
+  BUILD_BROKEN_INCORRECT_PARTITION_IMAGES \
+  BUILD_BROKEN_DONT_CHECK_SYSTEMSDK \
+
+_build_broken_var_list += \
+  $(foreach m,$(AVAILABLE_BUILD_MODULE_TYPES) \
+              $(DEFAULT_WARNING_BUILD_MODULE_TYPES) \
+              $(DEFAULT_ERROR_BUILD_MODULE_TYPES), \
+    BUILD_BROKEN_USES_$(m))</code></pre>
+
+      <p>
+        Eighteen named escape hatches, and then that <code>foreach</code> at the bottom generates one more for every
+        old-style module type, so you can keep using a makefile feature after it's been banned. Some of them are worth reading slowly. <code>BUILD_BROKEN_USES_NETWORK</code> lets build steps access the network.
+        <code>BUILD_BROKEN_TREBLE_SYSPROP_NEVERALLOW</code> turns off a Treble rule about which side is allowed to touch which system
+        properties, the rule that's supposed to keep the system and vendor sides apart.
+      </p>
+
+      <p>
+        Open almost any device tree's <code>BoardConfig.mk</code>, and you'll find a few of these near the top. Mine
+        has these two:
+      </p>
+
+      <pre data-filename="BoardConfig.mk"><code class="language-makefile">BUILD_BROKEN_DUP_RULES := true
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true</code></pre>
+
+      <p>
+        They're there because the blobs and makefiles I depend on need them, and fixing that properly would mean
+        rewriting things I don't own. Every device tree in the scene has some of these. The build system has an
+        official way of saying "yes, I know this is broken, build it anyway", and everyone uses it.
+      </p>
+
+      <h2>Device trees as a concept</h2>
+
+      <p>
+        Now for something people don't talk about enough - the idea of a device tree itself is kind of bad.
+      </p>
+
+      <p>
+        Think about what a device tree actually is. It's a folder where, for each phone, someone writes by hand -
+        which partitions exist and how big they are, what the kernel command line is, which HALs to build, which
+        HALs come from blobs, which SELinux rules the vendor code needs, which init scripts to run, which framework
+        values to overlay, which system properties to set, and which files to copy where. It's configuration, build
+        instructions, security policy, and sometimes actual C++ code, all mixed together in one folder.
+      </p>
+
+      <p>
+        None of this is standardized in any useful way. There's no schema. Every ROM wants its product makefile
+        named differently (<code>lineage_codename.mk</code>, <code>aosp_codename.mk</code>,
+        <code>yaap_codename.mk</code>, and so on) and inheriting different files. Most of the knowledge in a device
+        tree comes from copying another device tree that worked, which came from another device tree that worked.
+        Comments that made sense for a phone from 2019 end up in trees for a tablet from 2026. And when Google
+        changes something in the build, every tree in the world breaks in a slightly different way.
+      </p>
+
+      <p>
+        Then there are the blobs. A device tree comes with a list of proprietary files to pull from the stock
+        firmware. The tree for my Pad 8 lists almost 2,800 of them. Those blobs were built against a specific
+        version of Android, by the vendor, for the vendor's own system image. When we put them under a different
+        system image, they sometimes look for functions that don't exist anymore, or exist with a different
+        signature. So we write shims - tiny libraries that pretend to be the old function and forward the call to
+        the new one. Or we patch the binary directly, with a hex editor, which is about as elegant as it sounds.
+      </p>
+
+      <p>
+        Treble was supposed to make all of this go away, and to be fair, it helped a lot. But the interface between
+        system and vendor was never as clean as the diagrams say. Vendor code still reaches across it in ways it
+        isn't supposed to, and when it does, it's the community that cleans up the mess.
+      </p>
+
+      <h2>frameworks/base</h2>
+
+      <p>
+        I said earlier that <code>frameworks/base</code> is the heart of AOSP. It's also the single worst repository
+        to work in, and this time I've got receipts. Everything below is from the
+        <code>android16-qpr2-release</code> branch, the newest public source at the time of writing.
+      </p>
+
+      <p>
+        Start with the sizes. <code>ActivityManagerService.java</code> is 19,921 lines long. One file.
+        <code>WindowManagerService.java</code> is 10,983 lines, and <code>PackageManagerService.java</code> is 8,318.
+        These aren't generated files. People edit them by hand, every release, and every ROM that touches app or
+        window behaviour carries patches against them.
+      </p>
+
+      <h2>SystemServer and the 2,000-line method</h2>
+
+      <p>
+        <code>system_server</code> is basically one giant process running almost every system service, and the
+        services get started from a file called <code>SystemServer.java</code>. Most of them are started in a single
+        method, <code>startOtherServices()</code>. That one method is 2,065 lines long. It calls
+        <code>t.traceBegin()</code> 260 times. Here's a small piece of it:
+      </p>
+
+      <pre data-filename="services/java/com/android/server/SystemServer.java"><code class="language-java">            // The AccountManager must come before the ContentService
+            t.traceBegin("StartAccountManagerService");
+            mSystemServiceManager.startService(AccountManagerService.Lifecycle.class);
+            t.traceEnd();
+
+            t.traceBegin("StartContentService");
+            mSystemServiceManager.startService(ContentService.Lifecycle.class);
+            t.traceEnd();
+
+            t.traceBegin("InstallSystemProviders");
+            mActivityManagerService.getContentProviderHelper().installSystemProviders();
+            // Device configuration used to be part of System providers
+            mSystemServiceManager.startService(UPDATABLE_DEVICE_CONFIG_SERVICE_CLASS);
+            // Now that SettingsProvider is ready, reactivate SQLiteCompatibilityWalFlags
+            SQLiteCompatibilityWalFlags.reset();
+            t.traceEnd();
+
+            // Records errors and logs, for example wtf()
+            // Currently this service indirectly depends on SettingsProvider so do this after
+            // InstallSystemProviders.
+            t.traceBegin("StartDropBoxManager");
+            mSystemServiceManager.startService(DropBoxManagerService.class);
+            t.traceEnd();</code></pre>
+
+      <p>
+        Read the comments. "The AccountManager must come before the ContentService." "Currently this service
+        indirectly depends on SettingsProvider so do this after InstallSystemProviders." The order these services
+        start in matters, a lot, and the only place that order is written down is in comments, in a 2,000-line
+        method. Nothing checks it. If you move one block up a few lines in your ROM (and ROMs do add their own
+        services in here), the build is perfectly happy, and the phone either fails to boot or breaks in some
+        subtle way three services later.
+      </p>
+
+      <p>
+        And then there's how failures are handled. Here's another block from the same method:
+      </p>
+
+      <pre data-filename="services/java/com/android/server/SystemServer.java"><code class="language-java">                t.traceBegin("StartStorageManagerService");
+                try {
+                    /*
+                     * NotificationManagerService is dependant on StorageManagerService,
+                     * (for media / usb notifications) so we must start StorageManagerService first.
+                     */
+                    mSystemServiceManager.startService(StorageManagerService.Lifecycle.class);
+                    storageManager = IStorageManager.Stub.asInterface(
+                            ServiceManager.getService("mount"));
+                } catch (Throwable e) {
+                    reportWtf("starting StorageManagerService", e);
+                }
+                t.traceEnd();</code></pre>
+
+      <p>
+        Another ordering rule hidden in a comment, but look at the <code>catch</code>. It catches
+        <code>Throwable</code>, which is everything, logs it with <code>reportWtf()</code> (yes, it's really called
+        that), and keeps going. There are 66 of these <code>catch (Throwable)</code> blocks in <code>startOtherServices()</code> alone. So if a
+        service fails to start, the system doesn't stop. It boots without it, and then something else crashes later
+        when it tries to use the service that isn't there. When you're bringing up a device, that means the crash
+        you're staring at is often not the real problem. The real problem is a <code>wtf</code> line, way further up
+        in the log, that nobody noticed.
+      </p>
+
+      <p>
+        And if a service does crash after boot, it takes down <code>system_server</code>, which restarts the whole
+        Android userspace. That's the "soft reboot" you've probably seen - the boot animation comes back, but the
+        phone didn't restart. One null pointer in one service, and the whole UI goes down with it.
+      </p>
+
+      <h2>SystemUI and the 105-parameter constructor</h2>
+
+      <p>
+        SystemUI used to have a class called <code>StatusBar.java</code>, which had grown into a "god object" that
+        did almost everything. Google split it up and renamed what was left to <code>CentralSurfacesImpl</code>.
+        Here's the start of its constructor:
+      </p>
+
+      <pre data-filename="packages/SystemUI/.../phone/CentralSurfacesImpl.java"><code class="language-java">    /**
+     * Public constructor for CentralSurfaces.
+     *
+     * CentralSurfaces is considered optional, and therefore can not be marked as @Inject directly.
+     * Instead, an @Provide method is included. See {@link StatusBarPhoneModule}.
+     */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    @Inject
+    public CentralSurfacesImpl(
+            Context context,
+            NotificationsController notificationsController,
+            FragmentService fragmentService,
+            LightBarController lightBarController,
+            AutoHideController autoHideController,
+            StatusBarInitializer statusBarInitializer,
+            StatusBarWindowControllerStore statusBarWindowControllerStore,
+            PerDisplayRepository&lt;SystemUIDisplaySubcomponent&gt; perDisplaySubcomponentRepository,
+            StatusBarModeRepositoryStore statusBarModeRepository,
+            KeyguardUpdateMonitor keyguardUpdateMonitor,
+            StatusBarSignalPolicy statusBarSignalPolicy,
+            PulseExpansionHandler pulseExpansionHandler,
+            ...
+            Lazy&lt;AssistManager&gt; assistManagerLazy,
+            // TODO: b/374267505 - Decouple the config change needed for shade window classes from
+            //  the one for other windows.
+            ConfigurationController configurationController,
+            NotificationShadeWindowController notificationShadeWindowController,
+            Lazy&lt;NotificationShadeWindowViewController&gt; notificationShadeWindowViewControllerLazy,
+            TopUiController topUiController,
+            NotificationStackScrollLayoutController notificationStackScrollLayoutController,
+            // Lazys due to b/298099682.
+            Lazy&lt;NotificationPresenter&gt; notificationPresenterLazy,
+            Lazy&lt;NotificationActivityStarter&gt; notificationActivityStarterLazy,
+            ...
+            QuickAccessWalletController walletController,
+            WindowManager windowManager,
+            WindowManagerProvider windowManagerProvider
+    ) {</code></pre>
+
+      <p>
+        First, look at the comment on top. It says this class "can not be marked as @Inject directly". The very next
+        annotation is <code>@Inject</code>. The comment and the code it describes disagree with each other, right
+        there, two lines apart. That happens a lot in old code, and it's exactly why you can't trust comments in
+        AOSP without checking.
+      </p>
+
+      <p>
+        Then the parameters. That constructor takes 105 of them. I counted twice. The parameter list alone is about 110 lines, and the
+        body that follows is another 144 lines, 106 of which are just <code>mSomething = something;</code>. Even after the
+        "split", this one class still depends on 105 other things. SystemUI uses Dagger, a dependency injection
+        framework, so nobody calls this constructor by hand. Dagger generates the code that builds all 105 objects
+        and passes them in. That's the only reason it's possible to call at all.
+      </p>
+
+      <p>
+        Now look at the comments in the middle. "Lazys due to b/298099682." That's a reference to a bug in Google's
+        internal tracker, and most of those you can't open from outside Google. So the reason some of these
+        dependencies are lazy is written down, just somewhere you can't read. This happens all over AOSP. If you're a
+        ROM developer trying to understand why something is the way it is, you'll hit <code>b/</code> numbers
+        constantly, and they're almost always a dead end.
+      </p>
+
+      <p>
+        This is the class most status bar and lock screen customizations end up touching. Keep that in mind for the
+        customization section later.
+      </p>
+
+      <h2>config.xml</h2>
+
+      <p>
+        Then there's <code>core/res/res/values/config.xml</code>, the file devices overlay to change framework
+        behaviour. It's 7,759 lines long, with 1,527 resource entries. It starts with this note:
+      </p>
+
+      <pre data-filename="core/res/res/values/config.xml"><code class="language-xml">     NOTE: The naming convention is "config_camelCaseValue". Some legacy
+     entries do not follow the convention, but all new entries should. --&gt;</code></pre>
+
+      <p>
+        90 of the entries don't follow it. The word "deprecated" shows up 34 times. Here's one of the deprecated ones:
+      </p>
+
+      <pre data-filename="core/res/res/values/config.xml"><code class="language-xml">    &lt;!-- Flag indicating that an outbound call must have a call capable phone account
+         that has declared it can process the call's handle.
+         @deprecated This configuration is no longer used as having it false is actually a bug.
+         This controlled which phone accounts we would consider using when finding call capable
+         phone accounts for an outgoing call.  When false we will consider any call capable phone
+         account even if the URI scheme doesn't match the outgoing call address.  That is wrong as
+         dialing a sip: scheme call and trying to use a tel: scheme phone account is not going to
+         work.  As such we now ALWAYS require the URI scheme to match when choosing call capable
+         phone accounts. --&gt;
+    &lt;bool name="config_requireCallCapableAccountForHandle"&gt;false&lt;/bool&gt;</code></pre>
+
+      <p>
+        Read that carefully. The comment says the setting is no longer used, and that having it set to
+        <code>false</code> "is actually a bug". The default value, right below the comment, is <code>false</code>. It's
+        still in the file. If you're writing a device overlay and searching <code>config.xml</code> for the right
+        option to set, entries like this will mislead you. There's also this one:
+      </p>
+
+      <pre data-filename="core/res/res/values/config.xml"><code class="language-xml">    &lt;!-- @deprecated No longer used. --&gt;
+    &lt;integer name="status_bar_notification_info_maxnum"&gt;999&lt;/integer&gt;</code></pre>
+
+      <p>
+        No longer used, still there, and it doesn't follow the naming convention either. For any entry that isn't
+        clearly documented, the only way to know what it does, or whether it does anything at all, is to search the
+        code for where it's read. That's what <a href="https://cs.android.com/" class="blog-link">cs.android.com</a>
+        is for, and you'll use it a lot.
+      </p>
+
+      <h2>Feature flags everywhere</h2>
+
+      <p>
+        Android has been through so many redesigns that many classes carry layers from every era. Since Android moved
+        to its trunk-stable model, the newest layer is feature flags. New behaviour gets written next to the old
+        behaviour, and a flag picks between them. Here's a method from <code>WindowManagerService</code>:
+      </p>
+
+      <pre data-filename="services/core/java/com/android/server/wm/WindowManagerService.java"><code class="language-java">            if (android.view.inputmethod.Flags.disableImeRestoreOnActivityCreate()) {
+                if (imeTargetWindow.isRequestedVisible(WindowInsets.Type.ime())) {
+                    return true;
+                }
+            } else {
+                if (imeTargetWindow.mActivityRecord != null
+                        &amp;&amp; imeTargetWindow.mActivityRecord.mLastImeShown) {
+                    return true;
+                }
+            }
+            final TaskSnapshot snapshot;
+            if (Flags.reduceTaskSnapshotMemoryUsage()) {
+                snapshot = mTaskSnapshotController.getSnapshot(imeTargetWindowTask.mTaskId,
+                        TaskSnapshotManager.RESOLUTION_ANY);
+            } else {
+                snapshot = mTaskSnapshotController.getSnapshot(imeTargetWindowTask.mTaskId,
+                        false /* isLowResolution */);
+            }
+            return snapshot != null &amp;&amp; snapshot.hasImeSurface();</code></pre>
+
+      <p>
+        This is from <code>shouldRestoreImeVisibility()</code>, which decides whether the keyboard should come back
+        when you return to an app. Two flags, from two different flag packages, one right after the other. That's
+        four possible versions of this one method, and which one runs on your build depends on the release config
+        you picked in <code>lunch</code>. <code>WindowManagerService.java</code> has 29 of these flag checks,
+        <code>ActivityManagerService.java</code> has 42. When you pick a commit from another ROM that was written
+        with a flag on, and your build has it off, the code compiles fine and then does the old thing.
+      </p>
+
+      <h2>What vendors do to it</h2>
+
+      <p>
+        Then there are the vendors.
+      </p>
+
+      <p>
+        Qualcomm doesn't ship Google's AOSP. They ship their own fork, published on CodeLinaro (which used to be the
+        Code Aurora Forum, or CAF), with their own patches to the framework, the HALs, the media stack, the display
+        stack, and the kernel. Phone makers then take Qualcomm's fork and add their own changes on top, often hundreds of them. MediaTek does the same thing, except they mostly don't publish the source at all, so MediaTek
+        devices are built almost entirely around blobs.
+      </p>
+
+      <p>
+        Each phone maker adds their own HALs too. The Xiaomi Pad 8 has Xiaomi-specific interfaces for display
+        features, charging, touch features, and something called <code>hypsys</code>. Nothing in AOSP knows about
+        them. Some of Xiaomi's apps and services expect them, and some of Xiaomi's blobs won't behave right without
+        them. In the device tree, you either write a replacement, stub it, or work around it.
+      </p>
+
+      <p>
+        Kernel source is a whole other fight. As I said earlier, the GPL says companies have to publish the kernel
+        source they ship. Some do it on time. Some publish months late. Some publish a tree that doesn't build, or
+        doesn't match what's on the phone, or is missing half the drivers because they "live in modules". And some
+        publish nothing until someone files enough complaints. If you've ever seen a device community stuck on a
+        prebuilt stock kernel for a year, this is usually why.
+      </p>
+
+      <h2>Why it still works</h2>
+
+      <p>
+        After all that, you might wonder how anything works at all. It does, though, and there are real reasons for it.
+      </p>
+
+      <p>
+        Google runs huge compatibility test suites. CTS (the Compatibility Test Suite) checks that the framework
+        behaves the way the API says it does, and VTS (the Vendor Test Suite) checks that the vendor side follows
+        the HAL interfaces. A phone can't ship with Google's apps unless it passes them. That's a strong reason for
+        vendors to keep the interfaces honest, even when the code behind them is a mess.
+      </p>
+
+      <p>
+        Treble and the stable AIDL interfaces mean that, most of the time, you can boot a new Android version
+        on old vendor blobs. GKI (Generic Kernel Image), which Google introduced around Android 11 and 12, did the
+        same for the kernel - one core kernel per Android version, with vendor stuff pushed out into modules. That's
+        what made it possible for me to drop a 6.12 core under the Pixel 7's vendor modules at all.
+      </p>
+
+      <p>
+        And there are many people working on it. Google's Android team, every chip maker, every phone maker, and
+        then us, the community, testing it on devices nobody else cares about anymore. AOSP survives being messy
+        because there are thousands of people constantly holding it together.
+      </p>
+
+      <h1>Custom ROMs</h1>
+
+      <p>
+        So what is a custom ROM, in all of this? It's an Android build made by someone other than the phone maker,
+        usually a small team of volunteers, built from AOSP (or from another ROM), plus device trees for the phones
+        it supports.
+      </p>
+
+      <p>
+        A ROM project generally does two kinds of work. The first is the ROM itself - its manifest, its forks of
+        AOSP repositories, its features, its branding, its OTA updater, its build scripts and its infrastructure. The
+        second is device support, which is mostly done by device maintainers. A maintainer owns one or a few
+        devices for that ROM. They keep the trees building, test every release on their own phone, fix the bugs that
+        are specific to that device, and push the builds out. A ROM with fifty supported devices usually has
+        something like fifty maintainers, most of whom have never met.
+      </p>
+
+      <p>
+        Most ROMs have an "official" and "unofficial" split. An official build is one the ROM team has approved -
+        the maintainer applied, their trees were reviewed (to some degree), and the builds go out through the ROM's
+        own updater and download page. An unofficial build is anyone building the ROM for any device and uploading
+        it themselves. Many maintainers start unofficial, prove they can keep a device working for a few
+        months, and then apply to go official.
+      </p>
+
+      <p>
+        None of this is paid, by the way. A few big projects take donations to cover servers, and some maintainers
+        have donation links, but almost everyone does this in their free time, on their own hardware. Building a
+        ROM takes a beefy machine, and many maintainers build on servers someone else lends them, or on cloud
+        instances they pay for themselves. Most of the phones these ROMs run on were bought by the maintainers with
+        their own money, specifically to work on them.
+      </p>
+
+      <p>
+        Why do people want custom ROMs in the first place? It's changed over the years. Back in the XDA days, it
+        was features - stock Android was missing a lot, and ROMs added it. Today, stock Android has most of the
+        basics, so the reasons are more like these. Phones get two or three years of updates from their maker and
+        then nothing, and a ROM can keep them going for years after that. Stock software from some makers is full
+        of ads and bloat, and a ROM is clean. Some people want privacy and no Google at all. And some people, like
+        me, just like knowing exactly what's running on their phone and being able to change it.
+      </p>
+
+      <h2>What a ROM actually adds</h2>
+
+      <p>
+        If AOSP already boots, what does a ROM team spend its time on? More than you'd think. A typical ROM carries:
+      </p>
+
+      <ul>
+        <li>
+          Hardware support that AOSP doesn't ship. Qualcomm's HALs and display, media and audio code, shared HALs
+          for things like fingerprint sensors, the blob extraction tools, and the build system changes needed to
+          build all of it. For Lineage-based ROMs, most of this comes from Lineage.
+        </li>
+        <li>
+          An updater. Stock AOSP can install OTA updates, but it has nothing to tell it where to find them. Every ROM
+          has its own updater app, plus a server or a JSON file in a GitHub repository listing the latest build for
+          each device.
+        </li>
+        <li>
+          Its own recovery, or support for one, so people can install and update the ROM.
+        </li>
+        <li>
+          Features and settings. This is the part users see, and the part I'll complain about later.
+        </li>
+        <li>
+          Infrastructure. Build servers, download mirrors, websites, the Gerrit or GitHub org, the Telegram channels,
+          the bots that post new builds. For bigger ROMs, this is a lot of work, and it's almost always done by one
+          or two people.
+        </li>
+      </ul>
+
+      <h2>The kinds of ROMs</h2>
+
+      <p>
+        Roughly speaking, ROMs fall into a few families, and it helps to know which is which:
+      </p>
+
+      <ul>
+        <li>
+          LineageOS itself, and the many ROMs built on top of it. Stable, broad device support, and plenty of shared code.
+        </li>
+        <li>
+          AOSP-based ROMs that aren't Lineage forks. They start from Google's source and pull in only the parts of
+          Lineage they need. Usually closer to how a Pixel looks and behaves.
+        </li>
+        <li>
+          Privacy and security focused projects, like GrapheneOS, CalyxOS and /e/OS. GrapheneOS in particular is
+          very strict about which devices it supports (only Pixels), because it needs certain hardware security
+          features and timely firmware updates to deliver what it promises. These projects work quite differently
+          from the rest of the scene, and they tend to keep their distance from it.
+        </li>
+        <li>
+          ROMs built around bringing Google's Pixel features and apps to other phones. These are popular, because many people want a Pixel-like phone without buying a Pixel.
+        </li>
+      </ul>
+
+      <p>
+        Most ROMs also come in two flavours - "vanilla" builds with no Google apps, and "GApps" builds that include
+        them. Remember that cease and desist letter from 2009? That's the reason GApps have to be handled separately
+        at all.
+      </p>
+
+      <h1>What makes this community unique</h1>
+
+      <p>
+        I've been in a few open-source communities - Linux, NixOS, some smaller projects. The custom ROM scene works differently from all of them.
+      </p>
+
+      <h2>It's organized around phones</h2>
+
+      <p>
+        Most open-source projects are organized around the software. You want to work on the Linux kernel, you
+        send patches to the kernel's mailing lists. You want to work on NixOS, you open pull requests on nixpkgs.
+      </p>
+
+      <p>
+        The ROM scene is organized around devices. Your first group is usually the group for your phone. "realme 8i development", "Pixel 7 series", "Nothing Phone 2a". Everyone in that group owns the same
+        phone. The maintainers in it might work on five different ROMs, but they share one device tree between them,
+        because there's only one phone and there are only so many people who know how to keep it working. So the people you work with every day are the people who own the same hardware as you.
+      </p>
+
+      <p>
+        This also means a device's community lives and dies with the device. When a phone gets old and people move
+        on, the group goes quiet, the trees stop getting updated, and everyone scatters to whatever phone they bought
+        next.
+      </p>
+
+      <h2>It's young</h2>
+
+      <p>
+        A huge number of people in this scene are young. Teenagers, students, people who flashed their first ROM
+        because their parents gave them an old phone and it was too slow. I started fiddling with this stuff as a
+        kid and got serious about it in my teens. That's completely normal here. In most open-source projects, the
+        people doing the core work have jobs and years of experience. In ROM development, plenty of very skilled
+        maintainers are still in school.
+      </p>
+
+      <p>
+        That has good sides and bad sides. The good side is that this is one of the best places in the world to
+        learn systems programming for free. You can go from "how do I flash this" to "I wrote a HAL and got it
+        merged into LineageOS" in a year, if you're curious enough. The bad side is that young communities can get
+        dramatic. I'll get to that.
+      </p>
+
+      <h2>It's global, and it runs on budget phones</h2>
+
+      <p>
+        The scene is spread all over the world, but if you hang around long enough, you'll notice that a big chunk of
+        it is from India, Indonesia, Vietnam, Brazil and nearby. These are places where people buy affordable phones from Xiaomi, realme, POCO and Samsung, keep them for years, and
+        want them to keep working long after the official updates stop. A ROM is a way to get a better phone without
+        buying one. And many of the people who started out flashing ROMs to make their budget phone faster ended
+        up becoming the developers.
+      </p>
+
+      <p>
+        It also means the scene runs across time zones. A maintainer in Brazil, a tester in
+        Indonesia, someone fixing the kernel in India, and a reviewer in Europe, all in the same group, and someone
+        is always awake. I'm writing this from Jammu, for what it's worth.
+      </p>
+
+      <h2>The test bench is your daily phone</h2>
+
+      <p>
+        Most software developers test in a VM or on a spare machine. In ROM development, the device you test on is
+        very often the phone you use every day. If your build breaks the modem, you can't make calls. If it breaks
+        the fingerprint sensor, you're typing your PIN all day. If it doesn't boot, you're spending your evening
+        reflashing stock firmware.
+      </p>
+
+      <p>
+        It also means testing depends on volunteers in the group. When a maintainer only has one variant of a phone,
+        someone with the other variant has to test it. "Can someone with the Pro test this build?" is one of the
+        most common messages in any device group.
+      </p>
+
+      <h2>It runs on Telegram</h2>
+
+      <p>
+        Linux does its development over email. Most big projects use GitHub or GitLab. The ROM scene mostly runs on
+        Telegram - groups for discussion, channels for releases, bots that post builds, and private groups for
+        maintainers. Code lives on GitHub and Gerrit, but most of the decisions and history live in chat.
+      </p>
+
+      <p>
+        That's great for speed. You can ask a question at 2 AM and someone in another country will answer it in five
+        minutes. It's terrible for keeping knowledge around. A fix that someone explained in a group three years ago
+        is effectively gone if you don't know which group it was in. Much of what people know about bringing up devices was
+        learned from messages that are now buried under thousands of newer ones.
+      </p>
+
+      <h2>The rules nobody writes down</h2>
+
+      <p>
+        And then there's the culture, which every group mostly shares. A few things you'll learn quickly:
+      </p>
+
+      <ul>
+        <li>
+          Never ask for ETAs. "When is the next update?" will get you a warning in most groups, and a ban in some.
+          The answer is always "when it's ready".
+        </li>
+        <li>
+          Logs or it didn't happen. "My Wi-Fi doesn't work" isn't enough. Send a logcat, a dmesg, or at least the exact steps to reproduce it.
+        </li>
+        <li>
+          Read the pinned messages before asking. They usually answer your question.
+        </li>
+        <li>
+          Don't report bugs on a build you've modified, or with a random kernel or Magisk module installed, without
+          saying so. People will figure it out, and they won't be happy.
+        </li>
+        <li>
+          Credit people. If you used someone's work, say so. This one is a big deal, and it's the subject of the
+          next section.
+        </li>
+      </ul>
+
+      <p>
+        What I love about this community, even with all its flaws, is how much people are willing to help. Total
+        strangers spent hours explaining things to me when I was clueless. Maintainers keep devices alive for years after the manufacturer forgot they
+        existed, just because people are still using them.
+      </p>
+
+      <h1>The LineageOS pickfest</h1>
+
+      <p>
+        This section is about the drama.
+      </p>
+
+      <h2>Every ROM is a Lineage fork</h2>
+
+      <p>
+        If you look at the source of most custom ROMs today, you'll notice something - many of them are LineageOS
+        underneath. They fork LineageOS's repositories, keep the Lineage SDK, Lineage's hardware support and
+        Lineage's device tree conventions, and add their own features and branding on top. Some are open about it.
+        Some put "based on AOSP" on their website and say nothing more.
+      </p>
+
+      <p>
+        There's nothing wrong with this. LineageOS is the best-maintained base out there, it supports a
+        huge number of devices, and its hardware support (things like <code>hardware/qcom-caf</code> for Qualcomm's
+        HALs) is what most device trees are written against anyway. Building on Lineage means your ROM inherits all of that work.
+      </p>
+
+      <p>
+        The problem is what many of these forks do next.
+      </p>
+
+      <h2>Picks and kangs</h2>
+
+      <p>
+        Two words you'll hear constantly. A "pick" is a cherry-pick - taking a commit from one git repository and
+        applying it on top of yours with <code>git cherry-pick</code>. That's normal, and it's how almost all ROM
+        development happens. If done properly, the commit keeps its original author, and you can see exactly where
+        it came from.
+      </p>
+
+      <p>
+        A "kang" is when you take someone's work and pass it off as yours. Change the author, squash it into a
+        commit that says "add new features", rename things so nobody recognizes them, or just copy the files over
+        without any credit. The word has been around since the early days; back then, unofficial CyanogenMod builds
+        were even labeled "KANG" in their version string. Today, "kanger" is one of the worst things you can call
+        someone in the scene.
+      </p>
+
+      <p>
+        A lot of ROMs are built almost entirely out of picks. Take LineageOS, then pick a status bar feature from one
+        ROM, a lockscreen clock from another, a gesture from a third, some "performance tweaks" from a fourth. Repeat
+        a few hundred times. The result is a ROM with a giant feature list and a git history that's basically a list
+        of other people's work. Done with proper credit, that's fine, if a bit lazy. Done without credit, it's a kang,
+        and that's where things get ugly.
+      </p>
+
+      <h2>The fights</h2>
+
+      <p>
+        And they do get ugly. If you spend enough time in this scene, you'll see it - a developer notices their
+        feature in another ROM with their name stripped off, posts screenshots of the commits side by side in their
+        channel, and the other side claims they wrote it independently, or that it's "just a few lines", or that the
+        original was kanged too. Within a day, there are callout posts in a few channels and someone threatening to make their repositories private.
+      </p>
+
+      <p>
+        Sometimes repositories do get made private, or a license gets added to stop forks. Sometimes a maintainer
+        quits a ROM and takes their devices to a different one, and the original ROM loses half its device list
+        overnight. Sometimes a ROM gets dropped from a device group entirely. And sometimes the fight is
+        about who removed a copyright header from a 200-line Java file.
+      </p>
+
+      <p>
+        I'm not going to name anyone here. Partly because naming people is what starts these fights,
+        and partly because it's not important who. The pattern is always the same. Remember what I said
+        about the community being young? That's a big part of it. Many of these projects are run by teenagers who care deeply about their work and about getting credit for it, and who don't yet have the experience to handle
+        conflict calmly. I'm not saying that to look down on anyone. But when
+        you add hundreds of ROMs all picking from each other, all with their own egos and their own Telegram channels, you get a lot of drama.
+      </p>
+
+      <p>
+        The fix is boring - keep authorship when you pick, link to where you got things, and if you're not sure, ask.
+        Most developers are happy to have their work used if they're credited. Almost every fight I've seen started
+        because someone skipped that step.
+      </p>
+
+      <h1>Why is customization bad... exactly?</h1>
+
+      <p>
+        Now, I've been talking a lot of trash about "feature-packed" ROMs, so let me be fair about it. Being able to change how your phone looks and works is one of the best things about custom ROMs. What I don't like is how most ROMs go about it.
+      </p>
+
+      <h2>Thousands of picks on the worst repositories</h2>
+
+      <p>
+        Remember <code>frameworks/base</code> and SystemUI from earlier? Big, old, tangled, and changed by Google every
+        single release. That's where almost every customization goes. Status bar tweaks, quick settings
+        changes, lockscreen clocks, notification styles, volume panel themes, gesture changes - all of that is
+        SystemUI or the framework.
+      </p>
+
+      <p>
+        A feature-heavy ROM ends up with hundreds, sometimes thousands, of commits on top of these two. Each one was
+        written against a specific version of the code. Every time Google releases a new version (now twice a year
+        with source, more on that later), the ROM has to rebase all of them onto the new code. Most conflict. Some
+        apply cleanly but break something without anyone noticing. Some depend on each other in ways nobody
+        documented, because they were picked from three different ROMs.
+      </p>
+
+      <p>
+        And because SystemUI is so tangled, a change to the status bar can break the lock screen. A small tweak to how notifications are drawn
+        can make the whole UI stutter. The more picks you stack on the framework, the more the stability of the ROM
+        depends on things nobody fully understands, including the people who maintain it.
+      </p>
+
+      <p>
+        This is why feature-packed ROMs are often the buggiest ones, and why they're usually the slowest to update
+        to a new Android version. It's also why many of them die after a year or two. The team that picked all those
+        features doesn't know the code well enough to move them forward, so when the big rebase comes,
+        they're stuck.
+      </p>
+
+      <h2>What that looks like in practice</h2>
+
+      <p>
+        Here's a made-up but very typical example. Say you want an option to move the status bar clock to the
+        center.
+      </p>
+
+      <p>
+        The pickfest way is to find a ROM that has it and pick its commit. That commit touches a dozen files in
+        SystemUI - the status bar layout XML, the clock view, the class that decides what icons go where, the code
+        that hides the clock on the lock screen, the code that animates it when the notification shade opens, and
+        a settings key in <code>frameworks/base</code>. It was written against that ROM's version of SystemUI, which
+        already had forty other status bar changes picked into it. So it doesn't apply cleanly on yours, and you fix
+        the conflicts by guessing. It works. Mostly. Except the clock now overlaps the camera cutout on one device,
+        and disappears after unlocking on another.
+      </p>
+
+      <p>
+        Next Android version, Google rewrites half of the status bar. Your commit, and the forty
+        others it was secretly depending on, all conflict at once. Now you need to understand the new status bar
+        code, the old one, and what the original author was trying to do, all at the same time.
+      </p>
+
+      <p>
+        The better way is to keep the change as small and as isolated as possible. Add one setting. Read it in one
+        place. Change the layout in one place, and leave the rest of SystemUI alone. Put the settings UI in your own
+        Settings fork, or better, your own app. When the next version comes, you have one small change to port,
+        and you know exactly what it does because you wrote it.
+      </p>
+
+      <p>
+        Multiply that by a few hundred features, and you can see why
+        some ROMs take a week to move to a new Android version and some take six months, or never make it.
+      </p>
+
+      <h2>If you're going to fork a ROM (please don't)</h2>
+
+      <p>
+        My honest advice - don't make your own ROM. There are already way too many, and the scene needs more people
+        maintaining devices and fixing real bugs much more than it needs another ROM with a new logo. If you want to
+        add features, contribute them to a ROM that already exists.
+      </p>
+
+      <p>
+        But I know some of you will do it anyway. So if you're going to, here's what I'd aim for:
+      </p>
+
+      <ul>
+        <li>
+          Keep your diff small. Every commit on top of AOSP or Lineage is a commit you'll have to rebase forever.
+          Before adding a feature, ask whether it's worth carrying it through the next five Android versions.
+        </li>
+        <li>
+          Stay away from <code>frameworks/base</code> when you can. If a feature can be an app, an overlay, a
+          separate package, or a setting in your own repository, do it that way instead of patching the framework.
+        </li>
+        <li>
+          Write your own features instead of picking them. If you do pick, understand what you picked, and keep the
+          original author.
+        </li>
+        <li>
+          Keep each change in its own commit with a real commit message. "Squash all of my stuff into one commit" is
+          how you end up unable to figure out which change broke the lockscreen.
+        </li>
+        <li>
+          Track upstream closely. Merge every new release tag and security patch as soon as it's out, so the gap
+          never gets big enough to scare you.
+        </li>
+        <li>
+          Care about stability more than features. People stick with a ROM that never crashes on them.
+        </li>
+      </ul>
+
+      <h1 id="so-what-do-we-do">So, what do we do?</h1>
+
+      <p>
+        Finally, the useful part. If you've read all of that and you still want to get into this, welcome. Here's how I'd go about it if I were starting today.
+      </p>
+
+      <h2>Pick the right device</h2>
+
+      <p>
+        Your device decides almost everything about how your first year goes. If you pick a phone with no
+        community, you'll be doing everything alone, with nobody to ask. If you pick one with an active
+        community, you'll have working trees to learn from and people who've already hit the bugs you're about to
+        hit.
+      </p>
+
+      <p>
+        Some things to look for:
+      </p>
+
+      <ul>
+        <li>
+          The bootloader can be unlocked, officially, without waiting weeks or begging anyone. Pixels are the
+          easiest. OnePlus and Motorola are usually fine. Xiaomi has made unlocking harder every year. Some phones,
+          like most carrier-locked phones in the US and anything Huawei made after 2018, can't be unlocked at all.
+        </li>
+        <li>
+          The phone has a Qualcomm chip, if you can help it. Qualcomm publishes a lot of its source, and most of the
+          community's hardware support is written for it. MediaTek phones can absolutely be done (my first was one),
+          but you'll be working around a lot more blobs.
+        </li>
+        <li>
+          It's supported by LineageOS, or at least has well-maintained unofficial trees on GitHub. Check the
+          <a href="https://wiki.lineageos.org/devices/" class="blog-link">LineageOS device list</a> first. If your
+          phone is on it, you're in a great spot.
+        </li>
+        <li>
+          It has an active Telegram group where people build things. A group that's only people asking for
+          builds doesn't count.
+        </li>
+      </ul>
+
+      <p>
+        If you're buying a phone specifically for this, a used Pixel from two or three generations ago is hard to
+        beat. They're cheap, the bootloader unlocks with one command, and every ROM supports them.
+      </p>
+
+      <h2>Set up somewhere to build</h2>
+
+      <p>
+        You need a Linux machine. AOSP doesn't build on Windows or macOS (WSL can work, but it's painful). You'll
+        want at least 32 GB of RAM, though more helps, and around 400 GB of free space on an SSD. A hard
+        drive will technically work. You'll just grow old waiting.
+      </p>
+
+      <p>
+        If you don't have a machine like that, don't let it stop you. Plenty of people in the scene build on servers.
+        Some rent cheap cloud machines by the hour, and plenty of maintainers share their build servers with people
+        who are learning, if you ask nicely and don't abuse it. I built my first recovery on an 8 GB laptop. It was
+        slow, but it worked.
+      </p>
+
+      <h2>Build something that already works</h2>
+
+      <p>
+        Your first goal is to build a ROM for your phone from source, using trees that
+        already exist, and boot it. LineageOS has a build guide for every officially supported device on its wiki,
+        and it walks you through all of it - installing the tools, syncing the source, extracting the blobs, and
+        building.
+      </p>
+
+      <p>
+        When that boots, you've got a working setup and a baseline that you know is good. Every change you make
+        from here on, you can compare against it. Then start small. Change an overlay value and see what happens. Break something on purpose and figure out how to read the logs that tell you what broke.
+      </p>
+
+      <h2>Learn to read logs</h2>
+
+      <p>
+        This is the most useful skill in all of this. Almost every problem you'll ever fix starts with a
+        log. The ones you'll use the most:
+      </p>
+
+      <ul>
+        <li>
+          <code>adb logcat</code>, the log for Android userspace. <code>adb logcat -b all</code> gets you every
+          buffer, including crash and event logs.
+        </li>
+        <li><code>adb shell dmesg</code>, the kernel log. Driver problems show up here.</li>
+        <li>
+          SELinux denials, which show up in both as lines with <code>avc: denied</code>. When a HAL or daemon fails
+          for no clear reason, check these first.
+        </li>
+        <li>
+          Tombstones in <code>/data/tombstones</code>, which are the crash reports for native processes. They have
+          a backtrace, which tells you exactly which function crashed.
+        </li>
+      </ul>
+
+      <p>
+        If the phone doesn't boot far enough for adb, things get harder, and you start getting creative. My
+        <a href="../blog-12-10-26/" class="blog-link">6.12 post</a> is mostly about that, if you want to see how
+        creative it can get.
+      </p>
+
+      <p>
+        One warning about SELinux - you'll see guides that say to run <code>audit2allow</code> on your denials and
+        paste the output into your sepolicy. Please don't do that blindly. It allows exactly what was denied, which is
+        often way too much, and it hides the real problem. Understand why something was denied before you allow it.
+      </p>
+
+      <h2>Read the docs and the code</h2>
+
+      <p>
+        Google's documentation for the platform lives at
+        <a href="https://source.android.com/" class="blog-link">source.android.com</a>. That's different from
+        developer.android.com, which is for app developers. source.android.com has guides for the build system,
+        HALs, partitions, SELinux, the boot process, and a lot more. It's not perfect, and some pages are out of
+        date, but it's the closest thing to an official manual. Read the sections on architecture and on the
+        build system at least once.
+      </p>
+
+      <p>
+        For the code itself, use <a href="https://cs.android.com/" class="blog-link">cs.android.com</a>, Android
+        Code Search. It indexes all of AOSP, lets you jump between definitions and references like an IDE, and shows
+        you the history of any file. When you find a <code>config.xml</code> value with a useless comment, this is
+        where you search for where it's read. You don't even need the source
+        checked out locally to use it.
+      </p>
+
+      <p>
+        Also read code reviews. LineageOS does all of its reviews in public on its
+        <a href="https://review.lineageos.org/" class="blog-link">Gerrit</a>. Reading what reviewers ask for, and how
+        people fix it, teaches you more about writing proper changes than any guide.
+      </p>
+
+      <p>
+        And learn git properly. Commit and push is the easy part. Learn <code>cherry-pick</code>, <code>rebase</code>,
+        <code>log</code>, <code>blame</code>, <code>bisect</code>, and resolving conflicts. All of ROM development is
+        git, and the people who are good at git move way faster.
+      </p>
+
+      <h2>Your first real contribution</h2>
+
+      <p>
+        Once you can build and debug, look for something small to fix on your own device. A broken overlay value, a
+        missing SELinux rule, a HAL that still uses HIDL, a config file that's out of date compared to stock. Fix it in
+        the trees, and send it to whoever maintains them. If the device is on LineageOS, send it to Lineage's Gerrit.
+      </p>
+
+      <p>
+        That's how I started. My first real contribution was rewriting LineageOS's PowerShare HAL from HIDL to
+        AIDL, which I wrote <a href="../blog-17-05-25/" class="blog-link">a post</a> about. It was small, and I had no idea
+        what I was doing when I started. That's fine. Everyone starts there.
+      </p>
+
+      <h2>Stay out of the pickfest</h2>
+
+      <p>
+        When you start out, it's tempting to judge ROMs by their feature lists, and to want to make your own
+        as soon as you can build one. Try not to. Some advice I wish someone had given me:
+      </p>
+
+      <ul>
+        <li>
+          Judge a ROM by its git history. Clean commits with real authors and real messages are a good sign. One
+          giant "initial commit" with everything squashed in is a bad one.
+        </li>
+        <li>
+          Don't get involved in drama. You'll see callout posts and arguments in channels. Read them if you want,
+          but don't take sides in public. You don't need enemies before you've written your first commit.
+        </li>
+        <li>
+          Credit everything you use, from day one. It costs nothing and it'll save you from ever being called a
+          kanger.
+        </li>
+      </ul>
+
+      <h2>Things nobody tells you</h2>
+
+      <p>
+        A grab bag of stuff I had to learn the hard way, or watched other people learn the hard way. None of it is in
+        any official guide.
+      </p>
+
+      <ul>
+        <li>
+          Back up your phone's unique partitions before you flash anything. Every phone has partitions that hold
+          data specific to that unit - calibration, Wi-Fi and Bluetooth MAC addresses, and on phones with a modem,
+          the IMEI. Names vary (<code>persist</code>, <code>modemst1</code>, <code>modemst2</code>,
+          <code>fsg</code>, <code>efs</code>, and so on). If one of those gets wiped or corrupted, there's no
+          download link to get it back. People have lost their IMEI this way.
+        </li>
+        <li>
+          Your blobs and your firmware have to match. The vendor blobs you build with expect a certain version of the
+          firmware (modem, DSPs, bootloader) on the phone. If someone installs your ROM on top of a much older or
+          newer stock firmware, things break in weird ways. Most maintainers list which stock version to be on, for this reason.
+        </li>
+        <li>
+          Watch out for anti-rollback. Some phone makers, Xiaomi and OnePlus included, have used rollback protection
+          that refuses to boot older firmware once newer firmware has been installed. Flash an old stock package on
+          a phone like that, and you can brick it. Read your device group's pins before you downgrade anything.
+        </li>
+        <li>
+          Signing keys matter more than you think. Builds signed with AOSP's public test keys work fine, but anyone
+          can sign anything with those keys. If you release builds, sign them with your own keys and keep those
+          keys safe. If you lose them or change them, your users can't update without wiping, and features tied to
+          the key (like the keystore, as I found out) stop working with existing data.
+        </li>
+        <li>
+          Some apps won't work, and you can't fix that. Google's Play Integrity checks whether a phone is running
+          certified, locked software. A custom ROM isn't, so some banking apps, payment apps and games will refuse to
+          run. There are workarounds, and an endless cat-and-mouse game around them, but you can't fix it properly
+          from the ROM side. Be upfront with your users about it.
+        </li>
+        <li>
+          Booting is the easy part. The things people actually notice are the ones you don't see in the first five
+          minutes - battery drain because the phone never enters deep sleep, a camera that crashes
+          in one specific mode, calls that drop on one carrier, the alarm not ringing when the phone's been idle all
+          night. Use the build for a few days before you release it.
+        </li>
+        <li>
+          Clean flash when in doubt. A "dirty flash" means installing a new build over the old one without wiping
+          data. It's usually fine for updates of the same ROM. It's usually not fine when switching ROMs, or across
+          Android versions. Plenty of bug reports come from people who dirty flashed when they shouldn't have.
+        </li>
+        <li>
+          Use <code>ccache</code>. It caches compiled objects between builds, so rebuilding after a small change is
+          much faster. It costs some disk space, and it's worth it.
+        </li>
+        <li>
+          Burnout is real. Maintaining a device means every bug is your problem, and nobody pays you for it. It's fine to take a break, or to drop a device. Lots of good maintainers quit entirely
+          because they never took one.
+        </li>
+      </ul>
+
+      <h2>Which ROM should you start with?</h2>
+
+      <p>
+        This is where I'll get a bit opinionated.
+      </p>
+
+      <p>
+        LineageOS is the safe choice. It has proper code review, written standards for device trees, documentation,
+        and a huge pool of existing devices to learn from. Their requirements for official devices are strict, which
+        is annoying when you're trying to get something merged, but that strictness is why their trees are
+        good to learn from. If you're unsure, start with Lineage.
+      </p>
+
+      <p>
+        Pure AOSP, straight from Google, is torture. AOSP only supports Google's emulator and, until Android 16,
+        Pixels. Everything Lineage gives you for free (the Qualcomm hardware support, the blob extraction tools, the
+        shared HALs, the helper scripts) doesn't exist. You'll have to bring all of it yourself. It's a great
+        exercise later, if you want to understand what a device needs, but it's a terrible place to start.
+      </p>
+
+      <p>
+        The best learning, in my experience, comes from ROMs that are built on AOSP directly, rather than forked from
+        LineageOS. YAAP, which I maintain the Pixel 7 series for, is one of them. These ROMs take AOSP as the base and
+        bring in only the pieces of Lineage they need, like the Qualcomm hardware repositories. Because they don't
+        inherit everything, you can see the seams - you'll notice what Lineage normally does for you, and you'll have
+        to understand it to make your device work.
+      </p>
+
+      <h1>Device trees, vendor trees and kernel trees</h1>
+
+      <p>
+        Last year's post was the theory. This year, let's look at a real device. I'm going to use my
+        <a href="https://github.com/xiaomi-pad-8-development" class="blog-link">Xiaomi Pad 8 trees</a>, since I wrote them from scratch and know every line of them. The Pad 8's codename is
+        <code>yupei</code>.
+      </p>
+
+      <p>
+        The organization has these repositories:
+      </p>
+
+      <pre data-filename="xiaomi-pad-8-development"><code class="language-plaintext">android_device_xiaomi_yupei          the device tree
+android_device_xiaomi_yupei-kernel   prebuilt kernel, dtbs and modules
+android_vendor_xiaomi_yupei          vendor blobs (on GitLab, more on that below)
+android_kernel_xiaomi_yupei          kernel source (syd)
+android_hardware_qcom_thermal        a fork of one shared repository the device needs</code></pre>
+
+      <p>
+        In a ROM checkout, they end up in <code>device/xiaomi/yupei</code>,
+        <code>device/xiaomi/yupei-kernel</code>, <code>vendor/xiaomi/yupei</code> and
+        <code>kernel/xiaomi/yupei</code> and the thermal fork in place of the shared repository it replaces, all through a local manifest.
+      </p>
+
+      <h2>The device tree</h2>
+
+      <p>
+        Here's the top level of the device tree:
+      </p>
+
+      <pre data-filename="device/xiaomi/yupei"><code class="language-plaintext">Android.bp
+AndroidProducts.mk
+BoardConfig.mk
+aidl/
+board-info.txt
+configs/
+custom_yupei.mk
+device.mk
+extract-files.py
+interfaces/
+overlay/
+power/
+properties/
+proprietary-files.txt
+rootdir/
+sepolicy/
+setup-makefiles.py</code></pre>
+
+      <p>
+        Let's go through it in the order the build system reads it.
+      </p>
+
+      <h2>AndroidProducts.mk and the product makefile</h2>
+
+      <p>
+        <code>AndroidProducts.mk</code> is the entry point. When you run <code>lunch</code>, the build system goes
+        through every <code>AndroidProducts.mk</code> in <code>device/</code> to find out which products exist. Mine
+        is just this:
+      </p>
+
+      <pre data-filename="AndroidProducts.mk"><code class="language-makefile">PRODUCT_MAKEFILES := \
+    $(LOCAL_DIR)/custom_yupei.mk</code></pre>
+
+      <p>
+        That points to <code>custom_yupei.mk</code>, the product makefile. The <code>custom_</code> prefix is a
+        placeholder - each ROM wants its own prefix here, so when building for a specific ROM, it gets renamed to
+        <code>lineage_yupei.mk</code> or <code>yaap_yupei.mk</code> or whatever that ROM expects. This is one of
+        those non-standard things I complained about earlier.
+      </p>
+
+      <p>
+        The product makefile is short, and mostly a chain of inherits:
+      </p>
+
+      <pre data-filename="custom_yupei.mk"><code class="language-makefile">$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
+
+$(call inherit-product, vendor/custom/config/common_full_tablet_wifionly.mk)
+TARGET_SCREEN_WIDTH := 2136
+
+$(call inherit-product, device/xiaomi/yupei/device.mk)
+
+PRODUCT_NAME := custom_yupei
+PRODUCT_DEVICE := yupei
+PRODUCT_MANUFACTURER := Xiaomi
+PRODUCT_BRAND := Xiaomi
+PRODUCT_MODEL := 25097RP43C</code></pre>
+
+      <p>
+        From the top, the device is 64-bit only (no 32-bit apps, which newer chips can't run anyway), it gets AOSP's
+        full base product, then the ROM's common config for a Wi-Fi-only tablet (there's no modem in this one), and
+        then my own <code>device.mk</code>. The <code>PRODUCT_*</code> lines name the product and describe the
+        device, and that model number is what Xiaomi calls the Pad 8 internally.
+      </p>
+
+      <p>
+        Below that, there's a block that sets the build fingerprint and description to the stock Xiaomi firmware's
+        values:
+      </p>
+
+      <pre data-filename="custom_yupei.mk"><code class="language-makefile">PRODUCT_BUILD_PROP_OVERRIDES += \
+    BuildDesc="yupei_global-user 15 AQ3A.250226.002 OS3.0.303.0.WPZINXM release-keys" \
+    BuildFingerprint=Xiaomi/yupei_global/yupei:15/AQ3A.250226.002/OS3.0.303.0.WPZINXM:user/release-keys</code></pre>
+
+      <p>
+        Apps and services sometimes look at the fingerprint to decide what kind of device they're running on, and
+        using the stock one makes the tablet look like what it is - a retail Xiaomi Pad 8. Almost every device tree
+        has this.
+      </p>
+
+      <h2>BoardConfig.mk</h2>
+
+      <p>
+        If the product makefile says what goes into the build, <code>BoardConfig.mk</code> describes the hardware
+        and how the images are put together. Here are a few parts of mine:
+      </p>
+
+      <pre data-filename="BoardConfig.mk"><code class="language-makefile">BUILD_BROKEN_DUP_RULES := true
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
+
+# A/B
+AB_OTA_UPDATER := true
+AB_OTA_PARTITIONS := \
+    boot \
+    dtbo \
+    init_boot \
+    odm \
+    product \
+    recovery \
+    system \
+    system_dlkm \
+    system_ext \
+    vbmeta \
+    vbmeta_system \
+    vendor \
+    vendor_boot \
+    vendor_dlkm
+
+# Architecture
+TARGET_ARCH := arm64
+TARGET_ARCH_VARIANT := armv8-a-branchprot
+TARGET_CPU_ABI := arm64-v8a
+TARGET_CPU_VARIANT := generic
+TARGET_CPU_VARIANT_RUNTIME := oryon</code></pre>
+
+      <p>
+        Those two <code>BUILD_BROKEN</code> lines are the ones I showed earlier. Then the list of partitions that
+        exist in both an A and a B slot. This tablet uses A/B updates, so every one of these partitions exists twice,
+        and an update gets written to the slot you're not currently running. Compare that list to the partitions I
+        described in the architecture section, and you'll see almost all of them here.
+      </p>
+
+      <p>
+        The architecture block tells the compiler what CPU to target. <code>armv8-a-branchprot</code> turns on
+        branch protection (PAC and BTI, which make some kinds of exploits harder). <code>oryon</code> is the name of
+        Qualcomm's own CPU cores, and it's what the runtime uses to tune itself for the chip.
+      </p>
+
+      <p>
+        The rest of <code>BoardConfig.mk</code> is a long list of flags for audio, the bootloader, the kernel command
+        line, partition sizes, SELinux policy directories, the VINTF manifests and so on. A lot of it came from
+        reading the stock firmware - its partition table, its build properties, and its <code>vendor</code> image.
+      </p>
+
+      <h2>device.mk</h2>
+
+      <p>
+        <code>device.mk</code> is the biggest file in the tree, and it's where you say what gets built and installed
+        for this device. It starts with more inherits:
+      </p>
+
+      <pre data-filename="device.mk"><code class="language-makefile">$(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
+$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
+$(call inherit-product, packages/modules/Virtualization/apex/product_packages.mk)
+$(call inherit-product, hardware/qcom-caf/common/common.mk)
+
+BOARD_SHIPPING_API_LEVEL := 202404
+PRODUCT_SHIPPING_API_LEVEL := 35</code></pre>
+
+      <p>
+        These pull in AOSP's standard config for a modern device - the generic ramdisk, emulated storage, Virtual A/B
+        updates with a vendor ramdisk, the memory settings for ART, pKVM virtualization, and the common Qualcomm
+        hardware config from <code>hardware/qcom-caf</code>. The two API levels say which Android version the device
+        shipped with (35 is Android 15) and which vendor API level the vendor side was built for. The build uses
+        those to decide which compatibility rules apply.
+      </p>
+
+      <p>
+        After that, it's mostly <code>PRODUCT_PACKAGES</code> - the list of modules to build and install. Here's
+        part of the audio section:
+      </p>
+
+      <pre data-filename="device.mk"><code class="language-makefile">PRODUCT_PACKAGES += \
+    android.hardware.audio.core-V2-ndk.vendor \
+    android.hardware.audio.core.sounddose-V1-ndk.vendor \
+    audiohalservice.qti \
+    libagm_compress_plugin \
+    libagm_mixer_plugin \
+    libagm_pcm_plugin \
+    qti-audio-types-aidl-V1-ndk.vendor</code></pre>
+
+      <p>
+        Some of these are AOSP's AIDL audio interfaces, some come from Qualcomm's open-source audio code, and
+        <code>audiohalservice.qti</code> is the service that runs Qualcomm's audio HAL. Every subsystem has a section
+        like this - audio, Bluetooth, camera, display, graphics, health, power, sensors,
+        thermal, Wi-Fi.
+      </p>
+
+      <h2>Android.bp</h2>
+
+      <p>
+        The tree's <code>Android.bp</code> starts with a Soong namespace:
+      </p>
+
+      <pre data-filename="Android.bp"><code class="language-json">soong_namespace {
+    imports: [
+        "hardware/google/interfaces",
+        "hardware/google/pixel/pixelstats",
+        "hardware/google/pixel/power-libperfmgr",
+        "hardware/lineage/interfaces/power-libperfmgr",
+        "hardware/qcom-caf/common/libqti-perfd-client",
+        "hardware/xiaomi"
+    ],
+}</code></pre>
+
+      <p>
+        Namespaces let different devices define modules with the same names without clashing, and
+        <code>imports</code> says which other namespaces this tree can see. Notice that a Xiaomi tablet imports Google's Pixel power HAL here. libperfmgr, Google's power HAL from the Pixels, is open source and
+        config-driven, so many non-Pixel trees use it. You give it a JSON file describing which CPU and GPU knobs
+        to turn for things like app launches, touches and scrolling, and it does the rest. The
+        <code>power/</code> folder in my tree has a small <code>PowerModeExtension.cpp</code>, which is the hook
+        libperfmgr gives devices for their own power modes.
+      </p>
+
+      <p>
+        Below the namespace, there are a few <code>install_symlink</code> modules for Wi-Fi:
+      </p>
+
+      <pre data-filename="Android.bp"><code class="language-json">install_symlink {
+    name: "firmware_wlan_mac.bin_symlink",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/wcn7750/wlan_mac.bin",
+    symlink_target: "/mnt/vendor/persist/wlan/wlan_mac.bin",
+}</code></pre>
+
+      <p>
+        The Wi-Fi driver looks for its MAC address file in the vendor firmware folder. The real file lives on the
+        <code>persist</code> partition, which is unique to each device and survives factory resets. So the build
+        puts a symlink in the firmware folder that points to the real file. Without it, the Wi-Fi either doesn't
+        come up or comes up with a random MAC address every boot. A lot of a device tree is small details like this, and you only learn them by copying them from stock or by debugging them for a day.
+      </p>
+
+      <h2>board-info.txt</h2>
+
+      <p>
+        This one is a single line:
+      </p>
+
+      <pre data-filename="board-info.txt"><code class="language-plaintext">require board=sun|yupei</code></pre>
+
+      <p>
+        When you flash a full image package with fastboot, it checks this against what the bootloader reports, and
+        refuses to flash if they don't match. <code>sun</code> is the name of the Qualcomm platform, and
+        <code>yupei</code> is the device. It's a small safety net to keep you from flashing the wrong images onto
+        the wrong device.
+      </p>
+
+      <h2>The folders</h2>
+
+      <ul>
+        <li>
+          <code>overlay/</code> has <code>FrameworkOverlayYupei</code> and <code>WifiOverlayYupei</code> - the
+          framework and Wi-Fi config values this device needs. The display's rounded corners, the brightness range,
+          supported Wi-Fi features, things like that.
+        </li>
+        <li>
+          <code>sepolicy/</code> is split into <code>private</code>, <code>public</code> and <code>vendor</code>,
+          which matches where each policy ends up - rules only the system side sees, types that both sides can see,
+          and rules for vendor processes.
+        </li>
+        <li>
+          <code>rootdir/</code> has init scripts (<code>.rc</code> files) and shell scripts that run during boot.
+          This is where things like setting permissions on device nodes or starting vendor services happen.
+        </li>
+        <li>
+          <code>configs/</code> has config files for audio, media codecs, power, Wi-Fi, the file system
+          permissions (<code>config.fs</code>) and the HIDL manifests that some blobs still need.
+        </li>
+        <li>
+          <code>interfaces/</code> and <code>aidl/</code> hold Xiaomi's own HAL interfaces -
+          <code>displayfeature</code>, <code>hypsys</code>, <code>micharge</code> and <code>touchfeature</code>.
+          These are the Xiaomi-specific interfaces I mentioned in the vendors section. The blobs expect them to be
+          declared, so the tree declares them.
+        </li>
+        <li>
+          <code>properties/</code> has <code>.prop</code> files for each partition (<code>odm</code>,
+          <code>product</code>, <code>system</code>, <code>system_ext</code> and <code>vendor</code>), which end up as
+          system properties on the device.
+        </li>
+      </ul>
+
+      <h2>Blobs, proprietary-files.txt and the extract scripts</h2>
+
+      <p>
+        Now for the part that connects the device tree to the vendor tree. <code>proprietary-files.txt</code> is a
+        list of every proprietary file the device needs from the stock firmware. For the Pad 8, it's 2,795 lines
+        long. It starts like this:
+      </p>
+
+      <pre data-filename="proprietary-files.txt"><code class="language-plaintext"># ACDB
+vendor/etc/acdbdata/haptics_data/click.pcm
+vendor/etc/acdbdata/haptics_data/double_click.pcm
+vendor/etc/acdbdata/haptics_data/heavy_click.pcm
+vendor/etc/acdbdata/haptics_data/pop.pcm
+...</code></pre>
+
+      <p>
+        ACDB is Qualcomm's audio calibration database. Those first lines are the sound files the vibration motor
+        plays for clicks and taps. Below them come thousands more - camera libraries, firmware for the DSPs and the
+        Wi-Fi chip, closed-source HALs, configuration files, and so on. Every one of those had to be found and checked. Finding out which blobs a device needs is a big part of bringing it up. Miss one, and
+        something doesn't work, usually with no error that tells you what's missing.
+      </p>
+
+      <p>
+        <code>extract-files.py</code> reads that list, pulls each file from a stock firmware dump (or from a device
+        connected over adb), and puts it in the vendor tree. <code>setup-makefiles.py</code> then generates the
+        build files for the vendor tree from the same list. Both are built on LineageOS's extract-utils, which is
+        another one of those things every tree depends on, Lineage-based or not.
+      </p>
+
+      <h2>The vendor tree</h2>
+
+      <p>
+        The vendor tree, then, is generated. You never edit it by hand. It's a copy of the blobs, plus generated
+        <code>Android.bp</code> and makefiles that declare each blob as a prebuilt module and copy it into the right
+        partition.
+      </p>
+
+      <p>
+        The Pad 8's vendor tree is too big for GitHub, which has limits on file sizes. So the GitHub repository just
+        has a README pointing to the real one on GitLab. That's pretty common for modern devices. Their blobs keep
+        growing, especially camera and AI libraries, and some single files are hundreds of megabytes.
+      </p>
+
+      <h2>The kernel</h2>
+
+      <p>
+        There are two kernel repositories. <code>android_kernel_xiaomi_yupei</code> is the source - syd, my kernel,
+        also running on the Pixel 7. It's based on the Android Common Kernel, and you can tell straight away. The
+        README at the top is Google's guide for sending patches to ACK, and the root of the tree has those
+        <code>BUILD.bazel</code> and <code>.bzl</code> files I complained about earlier.
+      </p>
+
+      <p>
+        The other one, <code>android_device_xiaomi_yupei-kernel</code>, holds the built kernel. It's what the ROM
+        build actually uses:
+      </p>
+
+      <pre data-filename="device/xiaomi/yupei-kernel"><code class="language-plaintext">Image             the kernel itself
+dtb/              compiled Linux device trees for the board
+dtbo.img          device tree overlays
+kernel-headers/   headers for userspace code that talks to drivers
+modules/
+  vendor_boot/    modules loaded in first stage init
+  vendor_dlkm/    the rest of the vendor modules
+  system_dlkm/    GKI modules from the common kernel</code></pre>
+
+      <p>
+        Remember the two meanings of "device tree"? <code>dtb/</code> is the Linux kind. It tells the kernel what
+        hardware is on the board, and the bootloader picks the right one at boot.
+      </p>
+
+      <p>
+        The modules are split by when and where they load. The ones in <code>vendor_boot</code> get loaded in first
+        stage init, from the ramdisk, before any real partition is mounted. That means anything needed to mount the
+        partitions (like the storage driver) has to be there. The rest load later from <code>vendor_dlkm</code> once
+        it's mounted. <code>system_dlkm</code> holds modules that belong to the GKI core itself. All together, it's
+        429 kernel modules.
+      </p>
+
+      <p>
+        There are two ways of shipping a kernel with a ROM. You can build it inline, where the ROM build compiles the
+        kernel source as part of <code>m</code>. Or you can build it separately and drop the results in as
+        prebuilts, which is what I do here. These prebuilts are built with
+        <a href="https://github.com/sidharthify/auto" class="blog-link">auto</a>, the same script I use for the Pixel.
+        On GKI-era devices, prebuilts are common, since the kernel build has its own toolchains and its own idea of
+        how modules get split up, and it's easier to keep that separate from the ROM build.
+      </p>
+
+      <h2>Putting it together</h2>
+
+      <p>
+        So when you run <code>lunch custom_yupei-userdebug</code> and <code>m</code>, this is roughly what happens.
+        The build system finds my <code>AndroidProducts.mk</code>, reads <code>custom_yupei.mk</code>, which pulls in
+        <code>device.mk</code> and everything it inherits. It reads <code>BoardConfig.mk</code> to learn about the
+        hardware and the partitions. Soong reads the <code>Android.bp</code> files in my tree, the vendor tree and
+        the rest of the source. The vendor tree's generated makefiles copy the blobs into place. The prebuilt kernel,
+        dtbs and modules go into the boot images and the dlkm partitions. And at the end, you get a set of images
+        you can flash.
+      </p>
+
+      <p>
+        Bringing up a device from scratch means writing every one of those files, for a device nobody has written
+        them for before. For the Pad 8, that meant dumping the stock firmware, reading its partition table and
+        properties and init scripts, working out which blobs matter, and then booting, failing, reading logs and
+        fixing things, over and over.
+      </p>
+
+      <h1>The state of AOSP today</h1>
+
+      <p>
+        So where does all of this stand, in late 2026? It depends on which part you look at. AOSP as an
+        open project is in the worst shape it's ever been in. AOSP as a piece of software is in the best shape it's
+        ever been in. Both are true at once.
+      </p>
+
+      <h2>The closing</h2>
+
+      <p>
+        Let me go through what's happened in the last couple of years, in order.
+      </p>
+
+      <p>
+        In March 2025, Google confirmed it was moving all Android development to its internal branches. A few parts
+        of Android, like the Bluetooth stack, used to be developed in the open, in public AOSP repositories, and
+        you could watch changes land as they happened. That stopped. From then on, the code would show up publicly
+        only when a release came out. Google's reason was that keeping the public and internal branches in sync was
+        a lot of work and caused merge conflicts, which, to be fair, I believe. But it means nobody outside Google
+        sees anything until it's finished.
+      </p>
+
+      <p>
+        Then Android 16 came out in June 2025, and the source dropped without the Pixel device trees. For years,
+        Google had published full device trees for its own phones, which made Pixels the easiest devices in the
+        world to build for. With Android 16, they were just gone. The kernel source came out too, but with its
+        history squashed into a single commit, so you couldn't see what changed or why. Projects that are built
+        almost entirely around Pixels, like GrapheneOS and CalyxOS, took the hardest hit. Google's VP of the Android platform posted that "AOSP is NOT going away", and so far, that's true.
+      </p>
+
+      <p>
+        I was one of the people who had to deal with that directly. My Pixel 7 trees were based on Google's, so when
+        Google stopped publishing them, I took the Android 15 trees and cleaned them up so they could live on their
+        own. I wrote <a href="../blog-25-06-25/" class="blog-link">a short post</a> about it at the time. LineageOS
+        did the same for their Pixel trees with Lineage 23.0. From then on, Pixels became like any other device -
+        community-maintained trees, with every new release figured out from the blobs.
+      </p>
+
+      <p>
+        Then, at the start of 2026, Google announced that AOSP source would only be released twice a year - a major
+        release in Q2 and a minor one in Q4. Android itself still gets four updates a year on Pixels, but only two
+        of them come with source. Security patches still come out through their own branch, so that part didn't
+        change. For ROMs, though, it means waiting longer between source drops, and more changes landing at once
+        when they do.
+      </p>
+
+      <p>
+        And then there's developer verification. Starting September 30, 2026, certified Android devices in Brazil,
+        Indonesia, Singapore and Thailand won't install apps from developers who haven't registered with Google and
+        verified their identity. That includes sideloaded APKs and apps from stores like F-Droid. It's supposed to
+        go global in 2027. There's an "advanced" install flow and adb for unverified apps, but the default path is
+        getting closed off. It only applies to certified devices, the ones with Google's apps, so ROMs that don't
+        ship GMS aren't affected directly. But for many people, the first step towards custom ROMs was sideloading
+        something on stock, and that step is getting harder.
+      </p>
+
+      <p>
+        On top of all that, phone makers keep making bootloaders harder to unlock. Xiaomi's process gets more
+        restrictive every year, and other big brands have been moving in the same direction. Fewer unlockable phones
+        means fewer people getting into this, and fewer people means fewer maintainers.
+      </p>
+
+      <h2>And yet, it's improving</h2>
+
+      <p>
+        While all of that was happening, the actual software kept getting better, and much of it makes our lives easier.
+      </p>
+
+      <p>
+        GKI has made kernels way more consistent. Every device on the same Android version runs the same core
+        kernel, with the vendor stuff in modules. That's how I could put a 6.12 core under the Pixel 7's vendor
+        modules at all. A few years ago, a port like that would've meant porting every vendor change to the core
+        kernel by hand.
+      </p>
+
+      <p>
+        HALs have mostly moved to stable AIDL, and HIDL is on its way out. AIDL interfaces are versioned properly,
+        and they're much easier to write and to implement than HIDL ever was. The first thing I ever got merged
+        into LineageOS was moving a HAL from HIDL to AIDL, and the AIDL version was a lot nicer to work with.
+      </p>
+
+      <p>
+        Rust is in the platform and in the kernel now. Newer parts of Android, like parts of the Bluetooth stack and
+        the virtualization framework, are written in Rust, and on the 6.12 common kernel, even ashmem is. That's a pain when your build server doesn't have the right rustc, but it means fewer memory
+        safety bugs in the code we all ship.
+      </p>
+
+      <p>
+        The build is slowly getting cleaner. Old makefile features keep getting deprecated, more of the tree is
+        Blueprint, and trunk-stable with its release configs means features are controlled by flags instead of
+        living in separate branches for months. Cuttlefish, Google's virtual device, is good enough now that you can test most framework changes without touching a phone.
+      </p>
+
+      <p>
+        And the community side is in decent shape too. LineageOS is still going strong. Device trees today are much
+        more uniform than they were five years ago, mostly thanks to Lineage's standards and tools.
+      </p>
+
+      <h2>So, is AOSP dying?</h2>
+
+      <p>
+        Partly. The "open" part of the Android Open Source Project is shrinking. Google shares less, and less often. Every one of those changes made our work harder, and I don't think they're done.
+        But the source still comes out, and nothing Google has done so far stops a
+        determined person from building Android for a phone Google never cared about. I did that this year, with a
+        tablet, from nothing.
+      </p>
+
+      <p>
+        If AOSP ever does stop being released, the community will be in real trouble. It hasn't happened yet.
+      </p>
+
+      <h1>Ending notes</h1>
+
+      <p>
+        If you made it all the way here, thank you. This was a lot.
+      </p>
+
+      <p>
+        I wrote this because, a year ago, I wrote a post that explained what files are in a device tree, and I
+        realized that's the least interesting thing about any of this. The interesting part is the people - a messy,
+        generous bunch of mostly unpaid volunteers who keep millions of phones alive on software that's held together
+        with tape. And most of what they know isn't written down anywhere.
+      </p>
+
+      <p>
+        If you want to get into it, start small. Get a phone with a good community, unlock it, build LineageOS for
+        it, and break something. Then figure out how to fix it. That's all any of us did.
+      </p>
+
+      <p>
+        And if you get stuck, you know where to find me. I'm on
+        <a href="https://t.me/arteryring1" class="blog-link">Telegram</a>. Thank you for reading!
+      </p>
+
+    </article>
+
+    <aside class="toc" aria-label="Table of Contents">
+      <!-- TOC will be auto-generated by toc.js -->
+    </aside>
+          </div>
+        <div class="cmd">
+          <div class="cmd-output"></div>
+          <div class="cmd-line">
+            <span class="p-loc">sidharthify@nixos</span>
+            <span class="p-path">~/blog/android-open-sores</span>
+            <span class="p-sym">$</span>
+            <input class="cmd-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="terminal command input" />
+          </div>
+          <div class="cmd-hint">type <kbd>help</kbd> or just click. try <kbd>cd ..</kbd>, <kbd>cd ~</kbd>.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="../../assets/js/content.js"></script>
+  <script src="../../assets/js/nixfs.js"></script>
+  <script src="../../assets/js/terminal.js"></script>
+  <script src="../../assets/js/desktop.js"></script>
+  <script src="../../assets/js/toc.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js"></script>
+  <script src="../../assets/js/hljs-init.js"></script>
+</body>
+
+</html>

@@ -1,6 +1,22 @@
 {
   "posts": [
     {
+      "dir": "blog-22-10-26",
+      "slug": "android-open-sores",
+      "title": "The Android Open Sores Project",
+      "date": "2026-10-22",
+      "desc": "A year after my device trees post: AOSP, its history and flaws, the custom ROM community, and how to get into it.",
+      "summary": "What AOSP is, why it is deeply flawed and still works, how the custom ROM community grew out of XDA, the LineageOS pickfest, and how to get started.",
+      "tags": [
+        "Android",
+        "AOSP",
+        "Community",
+        "ROMs"
+      ],
+      "size": "9.8k",
+      "read": 72
+    },
+    {
       "dir": "blog-12-10-26",
       "slug": "pixel-kernel-612",
       "title": "Porting the Pixel 7 kernel to Linux 6.12",
