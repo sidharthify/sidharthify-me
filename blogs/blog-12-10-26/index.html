@@ -4,22 +4,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Porting the Pixel 7 kernel to Linux 6.12 • 12/10/26 • sidharthify</title>
+  <!-- gen:meta -->
+  <title>Porting the Pixel 7 kernel to Linux 6.12 • sidharthify</title>
+  <meta name="description" content="Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera." />
+  <link rel="canonical" href="https://sidharthify.tech/blogs/blog-12-10-26/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Porting the Pixel 7 kernel to Linux 6.12" />
+  <meta property="og:description" content="Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera." />
+  <meta property="og:url" content="https://sidharthify.tech/blogs/blog-12-10-26/" />
+  <meta property="og:site_name" content="sidharthify" />
+  <meta property="article:published_time" content="2026-10-12" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Porting the Pixel 7 kernel to Linux 6.12" />
+  <meta name="twitter:description" content="Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Porting the Pixel 7 kernel to Linux 6.12",
+    "description": "Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera.",
+    "datePublished": "2026-10-12",
+    "url": "https://sidharthify.tech/blogs/blog-12-10-26/",
+    "keywords": [
+      "Android",
+      "Kernel",
+      "Pixel",
+      "6.12"
+    ],
+    "author": {
+      "@id": "https://sidharthify.tech/#person"
+    },
+    "isPartOf": {
+      "@id": "https://sidharthify.tech/blogs/#blog"
+    }
+  }
+  </script>
+  <!-- /gen:meta -->
   <meta name="theme-color" content="#11111b" />
   <link rel="stylesheet" href="../../assets/css/style.css" />
   <link rel="stylesheet" href="../../assets/css/blog.css" />
   <link rel="stylesheet" href="https://unpkg.com/@catppuccin/highlightjs@1.0.1/css/catppuccin-mocha.css" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="Porting the Pixel 7 kernel to Linux 6.12" />
-  <meta property="og:description"
-    content="Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera." />
-  <meta property="og:url" content="https://sidharthify.tech/blogs/blog-12-10-26/" />
-  <meta property="og:site_name" content="sidharthify" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Porting the Pixel 7 kernel to Linux 6.12" />
-  <meta name="twitter:description"
-    content="Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera." />
 </head>
 
 <body data-cwd="~/blog/pixel-kernel-612" data-root="../../">
@@ -1296,6 +1321,7 @@ int exynos_usbdrd_s2mpu_manual_control(bool on)
       </div>
     </section>
   </main>
+  <script src="../../assets/js/content.js"></script>
   <script src="../../assets/js/nixfs.js"></script>
   <script src="../../assets/js/terminal.js"></script>
   <script src="../../assets/js/desktop.js"></script>

@@ -20,6 +20,8 @@
     },
   };
 
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
   const TERM_SVG =
     '<svg viewBox="0 0 48 48" aria-hidden="true">' +
     '<rect x="4" y="7" width="40" height="34" rx="5" fill="#181825" stroke="#45475a"></rect>' +
@@ -71,44 +73,15 @@
   const DOCS = {
     "projects.md": {
       heading: "# things i've worked on",
-      items: [
-        ["breatheOSS", "lead dev & maintainer. an open-source, community-driven air quality network for Jammu & Kashmir and Ladakh: our own AirGradient sensors in jammu, srinagar and rajouri backed by satellite models, a FastAPI backend computing indian (CPCB) and US EPA AQI, android, iOS and web clients, a discord bot, an open data repository and a governance charter. breatheoss.app"],
-        ["breatheForecaster", "seven day PM2.5 / PM10 / AQI forecaster for the breatheOSS network, pure standard-library python. forecasts are published nightly before the days happen and graded in public afterwards"],
-        ["yaap (yet another aosp project)", "maintainer / contributor"],
-        ["cipherOS", "maintainer"],
-        ["device trees & ports", "nothing phone 2a/2a+, realme 8i / narzo 50 4g, realme 9 5g SE, pixel 7 / 7 pro — maintainer, co-lead, contributor, tester"],
-        ["xiaomi pad 8 bring-up", "aosp device bring-up from scratch: device tree, vendor and kernel, with syd as its kernel"],
-        ["syd (kernel)", "my custom android kernel for the pixel 7 (ported to linux 6.12) and the xiaomi pad 8"],
-        ["lineageos contributions", "rewriting legacy hidl hardware abstraction layers to aidl, building kernels"],
-        ["nixos + homelab", "a modded minecraft server run as a systemd service, with a discord bot that starts it on request and stops it by in-game majority vote, ipv6 ddns, a playit tunnel and daily backups. sunshine for game streaming"],
-        ["cwr engine port (arma cwa)", "ported a 20-year-old game engine to android arm64 with a custom opengl es 3.2 backend"],
-        ["syd (nixos)", "lightweight command-line tool for nixOS. unrelated to the syd kernel, just the same name"],
-        ["stillAlive-C", "the portal ending credits recreated in pure c for the terminal: typed-out text, ascii art and audio in sync, scaled to any window at 4:3"],
-        ["ladsave", "save editor in c for yakuza: like a dragon on linux. reverses the xor + crc32 save format and splices bytes in place so the rest of the save stays untouched"],
-        ["bcstm2wav", "batch converts nintendo 3ds .bcstm audio to .wav, written in c"],
-      ],
+      items: window.SITE.projects,
     },
     "skills.md": {
       heading: "# a collection of my skills",
-      items: [
-        ["c & modern c++", "engine rendering backends, kernelspace c, aosp c++, custom math libraries"],
-        ["python and bash", "file manipulation and some scripting"],
-        ["graphics programming & glsl", "opengl es 3.2, custom vertex/fragment shaders, rewriting fixed-function pipelines"],
-        ["git", "general knowledge and familiarity"],
-        ["linux", "general commandline knowledge"],
-        ["aosp", "device trees, HALs (aidl/hidl), soong, android.bp, overlays, fastboot, adb"],
-        ["nix/nixOS", "flakes, the distro and the nix language itself"],
-        ["css/html/javascript", "enough to make this website, and contributions to yaaprom.org. no frameworks"],
-        ["kotlin", "android frameworks"],
-      ],
+      items: window.SITE.skills,
     },
   };
 
-  const SOCIALS = [
-    ["github", "https://github.com/sidharthify", "fa-github"],
-    ["telegram", "https://t.me/arteryring1", "fa-telegram"],
-    ["twitter / x", "https://x.com/sidharthify", "fa-x-twitter"],
-  ];
+  const SOCIALS = window.SITE.socials;
 
   const DOC_SVG =
     '<svg viewBox="0 0 48 48" aria-hidden="true">' +
@@ -688,7 +661,7 @@
       return;
     }
     const rows = doc.items
-      .map(([t, s]) => '<li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">' + t + '</div><div class="row-sub">' + s + "</div></div></li>")
+      .map(([t, s]) => '<li class="row"><span class="dot" aria-hidden="true"></span><div><div class="row-title">' + esc(t) + '</div><div class="row-sub">' + esc(s) + "</div></div></li>")
       .join("");
     const el = document.createElement("section");
     el.className = "window docviewer";
@@ -731,7 +704,7 @@
       return;
     }
     const items = SOCIALS
-      .map(([label, href, ic]) => '<a class="soc-item" href="' + href + '" target="_blank" rel="noopener"><span class="soc-ic"><i class="fa-brands ' + ic + '"></i></span><span class="soc-label">' + label + "</span></a>")
+      .map(([label, href, ic]) => '<a class="soc-item" href="' + esc(href) + '" target="_blank" rel="noopener"><span class="soc-ic"><i class="fa-brands ' + ic + '"></i></span><span class="soc-label">' + esc(label) + "</span></a>")
       .join("");
     const el = document.createElement("section");
     el.className = "window socialswin";
@@ -958,7 +931,7 @@
       items.forEach((x, i) => {
         const li = document.createElement("li");
         li.className = "launcher-item" + (i === 0 ? " sel" : "");
-        li.innerHTML = '<span class="li-label">' + x.label + '</span><span class="li-sub">' + x.sub + "</span>";
+        li.innerHTML = '<span class="li-label">' + esc(x.label) + '</span><span class="li-sub">' + esc(x.sub) + "</span>";
         li.addEventListener("click", () => run(x));
         list.appendChild(li);
       });

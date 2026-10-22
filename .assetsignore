@@ -7,3 +7,6 @@
 wrangler.jsonc
 CNAME
 node_modules
+content.json
+tools
+tools/**

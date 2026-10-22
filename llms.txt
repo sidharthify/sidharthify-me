@@ -44,16 +44,16 @@ Facts to get right:
 
 ## Blog posts
 
-- [Porting the Pixel 7 kernel to Linux 6.12](https://sidharthify.tech/blogs/blog-12-10-26/) (2026-10-12)
-- [Porting ARMA CWA to Android ARM64](https://sidharthify.tech/blogs/blog-28-06-26/) (2026-06-28)
-- [Exposing the Lies Behind CBSE's OnMark Portals](https://sidharthify.tech/blogs/blog-31-05-26/) (2026-05-31)
-- [Creating an open-source & accurate AQI service for J&K](https://sidharthify.tech/blogs/blog-10-2-26/) (2026-02-10): building a real-time AQI service for Jammu & Kashmir, combining sensor data with satellite estimates
-- [Breaking free from Bazel in the Pixel kernel pipeline](https://sidharthify.tech/blogs/blog-14-12-25/) (2025-12-14)
-- [Writing a Nix helper script](https://sidharthify.tech/blogs/blog-18-10-25/) (2025-10-18)
-- [Fixing Google's cluttered device trees](https://sidharthify.tech/blogs/blog-25-06-25/) (2025-06-25)
-- [How AOSP Device Trees are structured](https://sidharthify.tech/blogs/blog-22-05-25/) (2025-05-22)
-- [How I got into Android ROM development and Linux](https://sidharthify.tech/blogs/blog-18-05-25/) (2025-05-18)
-- [Dealing with AIDL](https://sidharthify.tech/blogs/blog-17-05-25/) (2025-05-17)
+- [Porting the Pixel 7 kernel to Linux 6.12](https://sidharthify.tech/blogs/blog-12-10-26/) (2026-10-12): Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera.
+- [Porting ARMA CWA to Android ARM64](https://sidharthify.tech/blogs/blog-28-06-26/) (2026-06-28): Getting the CWR engine (ARMA: Cold War Assault) running on modern Android hardware.
+- [Exposing the Lies Behind CBSE's OnMark Portals](https://sidharthify.tech/blogs/blog-31-05-26/) (2026-05-31): Almost all OnMark websites from EduTek are fundamentally insecure, and CBSE is lying about it.
+- [Creating an open-source & accurate AQI service for J&K](https://sidharthify.tech/blogs/blog-10-2-26/) (2026-02-10): A deep dive into how I built a community initiative to provide accurate air quality data for Jammu & Kashmir.
+- [Breaking free from Bazel in the Pixel kernel pipeline](https://sidharthify.tech/blogs/blog-14-12-25/) (2025-12-14): Rebuilding the Pixel kernel pipeline without Bazel, and understanding GKI, DLKM, VINTF, and Android's implicit kernel contracts.
+- [Writing a Nix helper script](https://sidharthify.tech/blogs/blog-18-10-25/) (2025-10-18): A lightweight Python CLI tool for managing NixOS packages declaratively, born from a random Thursday evening.
+- [Fixing Google's cluttered device trees](https://sidharthify.tech/blogs/blog-25-06-25/) (2025-06-25): Cleaning up Google's messy device tree structure for Pixel phones in AOSP.
+- [How AOSP Device Trees are structured](https://sidharthify.tech/blogs/blog-22-05-25/) (2025-05-22): A breakdown of how AOSP device trees are laid out: makefiles, configs, overlays, and sepolicy.
+- [How I got into Android ROM development and Linux](https://sidharthify.tech/blogs/blog-18-05-25/) (2025-05-18): A personal account of diving into Android Open Source development for the first time.
+- [Dealing with AIDL](https://sidharthify.tech/blogs/blog-17-05-25/) (2025-05-17): Rewriting the PowerShare HAL from HIDL to AIDL and contributing it upstream to LineageOS.
 
 ## Elsewhere
 

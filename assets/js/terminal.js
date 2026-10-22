@@ -15,17 +15,9 @@
     window.dispatchEvent(new CustomEvent("sidh-open-music"));
   }
 
-  const BLOGS = {
-    "porting-arma-cwa": "blogs/blog-28-06-26/",
-    "cbse-onmark": "blogs/blog-31-05-26/",
-    "aqi-service-jk": "blogs/blog-10-2-26/",
-    "pixel-kernel-bazel": "blogs/blog-14-12-25/",
-    "nix-helper-script": "blogs/blog-18-10-25/",
-    "device-trees-cleanup": "blogs/blog-25-06-25/",
-    "aosp-device-trees": "blogs/blog-22-05-25/",
-    "getting-into-aosp": "blogs/blog-18-05-25/",
-    "dealing-with-aidl": "blogs/blog-17-05-25/",
-  };
+  const SITE = window.SITE;
+  const BLOGS = {};
+  SITE.posts.forEach((p) => (BLOGS[p.slug] = "blogs/" + p.dir + "/"));
   Object.keys(BLOGS).forEach((s) => (ROUTE["~/blog/" + s] = BLOGS[s]));
 
   function expand(p) {
@@ -149,34 +141,9 @@
     });
   }
 
-  const PROJECTS = [
-    ["breatheOSS", "lead dev & maintainer. an open-source, community-driven air quality network for Jammu & Kashmir and Ladakh: our own AirGradient sensors in jammu, srinagar and rajouri backed by satellite models, a FastAPI backend computing indian (CPCB) and US EPA AQI, android, iOS and web clients, a discord bot, an open data repository and a governance charter. breatheoss.app"],
-    ["breatheForecaster", "seven day PM2.5 / PM10 / AQI forecaster for the breatheOSS network, pure standard-library python. forecasts are published nightly before the days happen and graded in public afterwards"],
-    ["yaap (yet another aosp project)", "maintainer / contributor"],
-    ["cipherOS", "maintainer"],
-    ["device trees & ports", "nothing phone 2a/2a+, realme 8i / narzo 50 4g, realme 9 5g SE, pixel 7 / 7 pro — maintainer, co-lead, contributor, tester"],
-    ["xiaomi pad 8 bring-up", "aosp device bring-up from scratch: device tree, vendor and kernel, with syd as its kernel"],
-    ["syd (kernel)", "my custom android kernel for the pixel 7 (ported to linux 6.12) and the xiaomi pad 8"],
-    ["lineageos contributions", "rewriting legacy hidl hardware abstraction layers to aidl, building kernels"],
-    ["nixos + homelab", "a modded minecraft server run as a systemd service, with a discord bot that starts it on request and stops it by in-game majority vote, ipv6 ddns, a playit tunnel and daily backups. sunshine for game streaming"],
-    ["cwr engine port (arma cwa)", "ported a 20-year-old game engine to android arm64 with a custom opengl es 3.2 backend"],
-    ["syd (nixos)", "lightweight command-line tool for nixOS. unrelated to the syd kernel, just the same name"],
-    ["stillAlive-C", "the portal ending credits recreated in pure c for the terminal: typed-out text, ascii art and audio in sync, scaled to any window at 4:3"],
-    ["ladsave", "save editor in c for yakuza: like a dragon on linux. reverses the xor + crc32 save format and splices bytes in place so the rest of the save stays untouched"],
-    ["bcstm2wav", "batch converts nintendo 3ds .bcstm audio to .wav, written in c"],
-  ];
+  const PROJECTS = SITE.projects;
 
-  const SKILLS = [
-    ["c & modern c++", "engine rendering backends, kernelspace c, aosp c++, custom math libraries"],
-    ["python and bash", "file manipulation and some scripting"],
-    ["graphics programming & glsl", "opengl es 3.2, custom vertex/fragment shaders, rewriting fixed-function pipelines"],
-    ["git", "general knowledge and familiarity"],
-    ["linux", "general commandline knowledge"],
-    ["aosp", "device trees, HALs (aidl/hidl), soong, android.bp, overlays, fastboot, adb"],
-    ["nix/nixOS", "flakes, the distro and the nix language itself"],
-    ["css/html/javascript", "enough to make this website, and contributions to yaaprom.org. no frameworks"],
-    ["kotlin", "android frameworks"],
-  ];
+  const SKILLS = SITE.skills;
 
   const SPECS = [
     ["aosp framework", "yaap & cipherOS maintainer · device bring-up, including the xiaomi pad 8 from scratch · HALs"],
@@ -188,11 +155,7 @@
     ["scripting", "bash and python: rom and kernel build scripts, syd for nixpkgs"],
   ];
 
-  const SOCIALS = [
-    ["github", "https://github.com/sidharthify"],
-    ["telegram", "https://t.me/arteryring1"],
-    ["twitter / x", "https://x.com/sidharthify"],
-  ];
+  const SOCIALS = SITE.socials;
 
   const ABOUT = [
     "i like low level systems and embedded programming.",

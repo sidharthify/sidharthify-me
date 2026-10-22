@@ -1,0 +1,266 @@
+{
+  "posts": [
+    {
+      "dir": "blog-12-10-26",
+      "slug": "pixel-kernel-612",
+      "title": "Porting the Pixel 7 kernel to Linux 6.12",
+      "date": "2026-10-12",
+      "desc": "The journey of porting the Pixel 7's 6.1 kernel to Linux 6.12",
+      "summary": "Moving my gs201 kernel from 6.1 to 6.12, and the twelve bugs between a crash on the Google logo and a working camera.",
+      "tags": [
+        "Android",
+        "Kernel",
+        "Pixel",
+        "6.12"
+      ],
+      "size": "4.5k",
+      "read": 30
+    },
+    {
+      "dir": "blog-28-06-26",
+      "slug": "porting-arma-cwa",
+      "title": "Porting ARMA CWA to Android ARM64",
+      "date": "2026-06-28",
+      "desc": "The saga of getting the CWR engine (ARMA: Cold War Assault) running on modern Android hardware.",
+      "summary": "Getting the CWR engine (ARMA: Cold War Assault) running on modern Android hardware.",
+      "tags": [
+        "Android",
+        "Port",
+        "ARMA",
+        "CWR"
+      ],
+      "size": "4.5k",
+      "read": 25
+    },
+    {
+      "dir": "blog-31-05-26",
+      "slug": "cbse-onmark",
+      "title": "Exposing the Lies Behind CBSE's OnMark Portals",
+      "date": "2026-05-31",
+      "desc": "How we exposed critical vulnerabilities in India's education portals.",
+      "summary": "Almost all OnMark websites from EduTek are fundamentally insecure, and CBSE is lying about it.",
+      "tags": [
+        "Security",
+        "CBSE",
+        "Vulnerability"
+      ],
+      "size": "2.4k",
+      "read": 10
+    },
+    {
+      "dir": "blog-10-2-26",
+      "slug": "aqi-service-jk",
+      "title": "Creating an open-source & accurate AQI service for J&K",
+      "date": "2026-02-10",
+      "desc": "Building a real-time AQI service for Jammu & Kashmir, combining sensor data with satellite estimates.",
+      "summary": "A deep dive into how I built a community initiative to provide accurate air quality data for Jammu & Kashmir.",
+      "tags": [
+        "AQI",
+        "OpenSource",
+        "Android",
+        "Python"
+      ],
+      "size": "3.8k",
+      "read": 19
+    },
+    {
+      "dir": "blog-14-12-25",
+      "slug": "pixel-kernel-bazel",
+      "title": "Breaking free from Bazel in the Pixel kernel pipeline",
+      "date": "2025-12-14",
+      "desc": "Ripping out Google's Bazel/Kleaf build system and replacing it with a raw Makefile-driven kernel pipeline.",
+      "summary": "Rebuilding the Pixel kernel pipeline without Bazel, and understanding GKI, DLKM, VINTF, and Android's implicit kernel contracts.",
+      "tags": [
+        "Android",
+        "Kernel",
+        "Pixel",
+        "Bazel"
+      ],
+      "size": "5.5k",
+      "read": 28
+    },
+    {
+      "dir": "blog-18-10-25",
+      "slug": "nix-helper-script",
+      "title": "Writing a Nix helper script",
+      "date": "2025-10-18",
+      "desc": "A lightweight Python CLI tool for managing NixOS packages declaratively, born from a random Thursday evening.",
+      "tags": [
+        "Linux",
+        "Nix",
+        "Scripting"
+      ],
+      "size": "2.1k",
+      "read": 11
+    },
+    {
+      "dir": "blog-25-06-25",
+      "slug": "device-trees-cleanup",
+      "title": "Fixing Google's cluttered device trees",
+      "date": "2025-06-25",
+      "desc": "Cleaning up Google's messy device tree structure for Pixel phones in AOSP.",
+      "tags": [
+        "Android",
+        "AOSP",
+        "Google"
+      ],
+      "size": "350",
+      "read": 2
+    },
+    {
+      "dir": "blog-22-05-25",
+      "slug": "aosp-device-trees",
+      "title": "How AOSP Device Trees are structured",
+      "date": "2025-05-22",
+      "desc": "A breakdown of how AOSP device trees are laid out: makefiles, configs, overlays, and sepolicy.",
+      "tags": [
+        "Android",
+        "AOSP",
+        "DeviceTrees"
+      ],
+      "size": "1.4k",
+      "read": 7
+    },
+    {
+      "dir": "blog-18-05-25",
+      "slug": "getting-into-aosp",
+      "title": "How I got into Android ROM development and Linux",
+      "date": "2025-05-18",
+      "desc": "A personal account of diving into Android Open Source development for the first time.",
+      "tags": [
+        "Linux",
+        "Android",
+        "Personal"
+      ],
+      "size": "850",
+      "read": 4
+    },
+    {
+      "dir": "blog-17-05-25",
+      "slug": "dealing-with-aidl",
+      "title": "Dealing with AIDL",
+      "date": "2025-05-17",
+      "desc": "Rewriting the PowerShare HAL from HIDL to AIDL and contributing it upstream to LineageOS.",
+      "tags": [
+        "Android",
+        "AIDL",
+        "AOSP"
+      ],
+      "size": "1.1k",
+      "read": 6
+    }
+  ],
+  "projects": [
+    {
+      "title": "breatheOSS",
+      "desc": "lead dev & maintainer. an open-source, community-driven air quality network for Jammu & Kashmir and Ladakh: our own AirGradient sensors in jammu, srinagar and rajouri backed by satellite models, a FastAPI backend computing indian (CPCB) and US EPA AQI, android, iOS and web clients, a discord bot, an open data repository and a governance charter. breatheoss.app"
+    },
+    {
+      "title": "breatheForecaster",
+      "desc": "seven day PM2.5 / PM10 / AQI forecaster for the breatheOSS network, pure standard-library python. forecasts are published nightly before the days happen and graded in public afterwards"
+    },
+    {
+      "title": "yaap (yet another aosp project)",
+      "desc": "maintainer / contributor"
+    },
+    {
+      "title": "cipherOS",
+      "desc": "maintainer"
+    },
+    {
+      "title": "device trees & ports",
+      "desc": "nothing phone 2a/2a+, realme 8i / narzo 50 4g, realme 9 5g SE, pixel 7 / 7 pro — maintainer, co-lead, contributor, tester"
+    },
+    {
+      "title": "xiaomi pad 8 bring-up",
+      "desc": "aosp device bring-up from scratch: device tree, vendor and kernel, with syd as its kernel"
+    },
+    {
+      "title": "syd (kernel)",
+      "desc": "my custom android kernel for the pixel 7 (ported to linux 6.12) and the xiaomi pad 8"
+    },
+    {
+      "title": "lineageos contributions",
+      "desc": "rewriting legacy hidl hardware abstraction layers to aidl, building kernels"
+    },
+    {
+      "title": "nixos + homelab",
+      "desc": "a modded minecraft server run as a systemd service, with a discord bot that starts it on request and stops it by in-game majority vote, ipv6 ddns, a playit tunnel and daily backups. sunshine for game streaming"
+    },
+    {
+      "title": "cwr engine port (arma cwa)",
+      "desc": "ported a 20-year-old game engine to android arm64 with a custom opengl es 3.2 backend"
+    },
+    {
+      "title": "syd (nixos)",
+      "desc": "lightweight command-line tool for nixOS. unrelated to the syd kernel, just the same name"
+    },
+    {
+      "title": "stillAlive-C",
+      "desc": "the portal ending credits recreated in pure c for the terminal: typed-out text, ascii art and audio in sync, scaled to any window at 4:3"
+    },
+    {
+      "title": "ladsave",
+      "desc": "save editor in c for yakuza: like a dragon on linux. reverses the xor + crc32 save format and splices bytes in place so the rest of the save stays untouched"
+    },
+    {
+      "title": "bcstm2wav",
+      "desc": "batch converts nintendo 3ds .bcstm audio to .wav, written in c"
+    }
+  ],
+  "skills": [
+    {
+      "title": "c & modern c++",
+      "desc": "engine rendering backends, kernelspace c, aosp c++, custom math libraries"
+    },
+    {
+      "title": "python and bash",
+      "desc": "file manipulation and some scripting"
+    },
+    {
+      "title": "graphics programming & glsl",
+      "desc": "opengl es 3.2, custom vertex/fragment shaders, rewriting fixed-function pipelines"
+    },
+    {
+      "title": "git",
+      "desc": "general knowledge and familiarity"
+    },
+    {
+      "title": "linux",
+      "desc": "general commandline knowledge"
+    },
+    {
+      "title": "aosp",
+      "desc": "device trees, HALs (aidl/hidl), soong, android.bp, overlays, fastboot, adb"
+    },
+    {
+      "title": "nix/nixOS",
+      "desc": "flakes, the distro and the nix language itself"
+    },
+    {
+      "title": "css/html/javascript",
+      "desc": "enough to make this website, and contributions to yaaprom.org. no frameworks"
+    },
+    {
+      "title": "kotlin",
+      "desc": "android frameworks"
+    }
+  ],
+  "socials": [
+    {
+      "label": "github",
+      "href": "https://github.com/sidharthify",
+      "icon": "fa-github"
+    },
+    {
+      "label": "telegram",
+      "href": "https://t.me/arteryring1",
+      "icon": "fa-telegram"
+    },
+    {
+      "label": "twitter / x",
+      "href": "https://x.com/sidharthify",
+      "icon": "fa-x-twitter"
+    }
+  ]
+}
