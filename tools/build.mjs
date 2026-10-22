@@ -66,21 +66,40 @@ function postMeta(p) {
   ].join("\n");
 }
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 function lsRow(p) {
+  const [, m, d] = p.date.split("-").map(Number);
   return [
-    '<a href="' + p.dir + '/" class="ls-row">',
-    '  <span class="ls-perms">drwxr-xr-x</span>',
-    '  <span class="ls-size">' + esc(p.size) + "</span>",
-    '  <span class="ls-date">' + p.date + "</span>",
-    '  <span class="ls-name">',
-    '    <span class="ls-dir">' + esc(p.slug) + "</span>",
+    '<a href="' + p.dir + '/" class="ls-row" title="' + esc(p.desc) + '">',
+    '  <span class="ls-main">',
     '    <span class="ls-title">' + esc(p.title) + "</span>",
-    '    <span class="ls-desc">' + esc(p.desc) + "</span>",
-    '    <span class="ls-tags">' + p.tags.map((t) => '<span class="t">#' + esc(t) + "</span>").join(" ") + "</span>",
+    '    <span class="ls-meta">' + p.read + " min read</span>",
     "  </span>",
-    '  <span class="ls-meta">' + p.read + " min read</span>",
+    '  <time class="ls-date" datetime="' + p.date + '">' + MONTHS[m - 1] + " " + d + "</time>",
     "</a>",
   ].join("\n");
+}
+
+function lsYears(list) {
+  const years = [];
+  for (const p of list) {
+    const y = p.date.slice(0, 4);
+    if (!years.length || years[years.length - 1].year !== y) years.push({ year: y, posts: [] });
+    years[years.length - 1].posts.push(p);
+  }
+  return years
+    .map((g) =>
+      [
+        '<section class="ls-year" aria-labelledby="y' + g.year + '">',
+        '  <h2 class="ls-year-label" id="y' + g.year + '">' + g.year + "</h2>",
+        '  <div class="ls-year-posts">',
+        g.posts.map((p) => lsRow(p).replace(/^/gm, "    ")).join("\n"),
+        "  </div>",
+        "</section>",
+      ].join("\n")
+    )
+    .join("\n\n");
 }
 
 function rows(items) {
@@ -114,7 +133,7 @@ fill(
     })),
   })
 );
-fill("blogs/index.html", "ls", ['<div class="ls-total">total ' + posts.length + "</div>", ...posts.map(lsRow)].join("\n\n"));
+fill("blogs/index.html", "ls", ['<div class="ls-total">total ' + posts.length + "</div>", lsYears(posts)].join("\n\n"));
 
 fill("index.html", "projects", rows(content.projects));
 fill("index.html", "skills", rows(content.skills));
