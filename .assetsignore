@@ -10,3 +10,7 @@ node_modules
 content.json
 tools
 tools/**
+worker
+worker/**
+migrations
+migrations/**

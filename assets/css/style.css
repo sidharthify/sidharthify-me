@@ -639,6 +639,12 @@ body {
   justify-self: end;
 }
 
+.ls-views {
+  display: block;
+  text-align: right;
+  opacity: .85;
+}
+
 /* ============================================================
    interactive command bar (hybrid)
    ============================================================ */
@@ -1445,6 +1451,14 @@ body {
 
   .ls-perms,
   .ls-size { display: none; }
+
+  .ls-views {
+    display: inline;
+  }
+
+  .ls-views::before {
+    content: " · ";
+  }
 
   .ls-meta {
     justify-self: start;
