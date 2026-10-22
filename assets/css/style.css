@@ -1448,6 +1448,15 @@ body {
     padding-bottom: 0;
   }
 
+  .terminal,
+  .whoami-win {
+    overflow: clip;
+  }
+
+  .window > .term-body {
+    overflow: visible;
+  }
+
   .taskbar {
     display: none;
   }

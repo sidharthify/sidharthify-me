@@ -192,6 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (h.getBoundingClientRect().top <= line) current = h;
             else break;
         }
+        const scroller = root || document.scrollingElement;
+        const atBottom = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 4;
+        const last = headings[headings.length - 1];
+        if (atBottom && last && last.getBoundingClientRect().top < (root ? root.getBoundingClientRect().bottom : window.innerHeight)) {
+            current = last;
+        }
         setActive(current ? current.id : null);
 
         const rect = article.getBoundingClientRect();
