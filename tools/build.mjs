@@ -1,4 +1,5 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -178,5 +179,26 @@ write(
     }) +
     ";\n"
 );
+
+const hashOf = (p) => createHash("sha256").update(readFileSync(join(ROOT, p))).digest("hex").slice(0, 8);
+const assetRe = /((?:\.\.\/|\/)*assets\/(?:css|js)\/[\w.-]+\.(?:css|js))(?:\?v=[0-9a-f]+)?"/g;
+
+function htmlFiles(dir) {
+  return readdirSync(join(ROOT, dir)).flatMap((name) => {
+    const rel = dir ? dir + "/" + name : name;
+    if (/^(\.|node_modules|tools|worker|migrations)/.test(name)) return [];
+    if (statSync(join(ROOT, rel)).isDirectory()) return htmlFiles(rel);
+    return rel.endsWith(".html") ? [rel] : [];
+  });
+}
+
+for (const file of htmlFiles("")) {
+  const src = read(file);
+  const out = src.replace(assetRe, (m, ref) => {
+    const path = ref.replace(/^(?:\.\.\/|\/)+/, "");
+    return ref + "?v=" + hashOf(path) + '"';
+  });
+  if (out !== src) write(file, out);
+}
 
 console.log("built " + posts.length + " posts");
