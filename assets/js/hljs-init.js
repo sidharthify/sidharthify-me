@@ -17,6 +17,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (lang) block.classList.add(lang[1]);
     });
 
+    document.querySelectorAll('pre > code').forEach(function (block) {
+        if (block.children.length) return;
+        var lines = block.textContent.replace(/\s+$/, '').split('\n');
+        var indent = lines.reduce(function (min, line) {
+            if (!line.trim()) return min;
+            var n = line.match(/^[ \t]*/)[0].length;
+            return Math.min(min, n);
+        }, Infinity);
+        if (indent > 0 && indent !== Infinity) {
+            block.textContent = lines.map(function (line) { return line.slice(indent); }).join('\n');
+        }
+    });
+
     // Run highlight.js
     hljs.highlightAll();
 
