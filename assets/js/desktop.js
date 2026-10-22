@@ -451,6 +451,13 @@
     launch.innerHTML = TERM_SVG;
     launch.addEventListener("click", () => { if (termWin) restore(termWin); });
     taskbar.querySelector(".tb-left").appendChild(launch);
+    const hint = document.createElement("button");
+    hint.className = "tb-hint";
+    hint.title = "open the launcher";
+    const mod = /Mac|iPhone|iPad/.test(navigator.platform || "") ? "⌘" : "ctrl";
+    hint.innerHTML = "<kbd>" + mod + "</kbd><kbd>space</kbd><span>launcher</span>";
+    hint.addEventListener("click", (e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent("sidh-open-launcher")); });
+    taskbar.appendChild(hint);
   }
 
   function fmt(s) {
@@ -704,7 +711,7 @@
       return;
     }
     const items = SOCIALS
-      .map(([label, href, ic]) => '<a class="soc-item" href="' + esc(href) + '" target="_blank" rel="noopener"><span class="soc-ic"><i class="fa-brands ' + ic + '"></i></span><span class="soc-label">' + esc(label) + "</span></a>")
+      .map(([label, href, ic]) => '<a class="soc-item" href="' + esc(href) + '" target="_blank" rel="noopener"><span class="soc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + esc(ic) + '"/></svg></span><span class="soc-label">' + esc(label) + "</span></a>")
       .join("");
     const el = document.createElement("section");
     el.className = "window socialswin";
@@ -755,6 +762,17 @@
     if (termEl) termWin = registerTerminal(termEl, "terminal", termEl.dataset.wtitle || "alacritty ~ zsh", lay && (() => lay.term));
     if (whoEl) whoWin = registerTerminal(whoEl, "whoami", "alacritty ~ whoami", () => lay.who);
     if (termWin && whoWin && termWin.el.style.display !== "none") focusWin(termWin);
+    const untouched = () => !LS.get("win.terminal", null) && !LS.get("win.whoami", null);
+    if (lay && document.fonts && untouched()) {
+      document.fonts.ready.then(() => {
+        if (!untouched()) return;
+        termEl.style.height = "";
+        whoEl.style.height = "";
+        const fresh = homeLayout(termEl, whoEl);
+        place(whoEl, null, () => fresh.who);
+        place(termEl, null, () => fresh.term);
+      });
+    }
     if (HOME) {
       const layer = document.querySelector(".desktop-icons");
       if (layer) {
@@ -948,6 +966,7 @@
       else if (e.key === "Escape") { close(); }
     });
     overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
+    window.addEventListener("sidh-open-launcher", open);
     document.addEventListener("keydown", (e) => {
       if (e.code === "Space" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();

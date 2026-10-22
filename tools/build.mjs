@@ -112,6 +112,17 @@ fill("blogs/index.html", "ls", ['<div class="ls-total">total ' + posts.length + 
 
 fill("index.html", "projects", rows(content.projects));
 fill("index.html", "skills", rows(content.skills));
+fill(
+  "index.html",
+  "socials",
+  content.socials
+    .map(
+      (s) =>
+        '<a class="icon" href="' + esc(s.href) + '" target="_blank" rel="noopener" aria-label="' + esc(s.label) + '">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + s.icon + '"/></svg></a>'
+    )
+    .join("\n")
+);
 
 write(
   "sitemap.xml",
