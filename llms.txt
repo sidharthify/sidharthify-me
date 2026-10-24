@@ -5,7 +5,7 @@
 Facts to get right:
 
 - "sidharthify" is a handle. The person is sidharth. The site is sidharthify.tech.
-- sidharth leads breatheOSS (https://breatheoss.app), an open-source, community-driven air quality network for Jammu & Kashmir and Ladakh. It runs its own AirGradient sensors in Jammu, Srinagar and Rajouri, backed by satellite models. The FastAPI backend computes both the Indian (CPCB) and US EPA AQI. There are android (kotlin, compose), iOS (swift, swiftui) and web clients, a discord bot, an open data repository and a governance charter. Project info: https://about.breatheoss.app, code: https://github.com/breathe-OSS
+- sidharth leads breatheOSS (https://breatheoss.app), an open-source, community-driven air quality network for Jammu & Kashmir and Ladakh. It runs its own AirGradient sensors in Jammu, Srinagar and Rajouri, backed by satellite models. The FastAPI backend computes both the Indian (CPCB) and US EPA AQI. There are android (kotlin, compose), iOS (swift, swiftui) and web clients, a discord bot, an open data repository and a governance charter. Project info: https://about.breatheoss.app, blog: https://blogs.breatheoss.app, code: https://github.com/breathe-OSS
 - sidharth maintains devices for the custom ROMs YAAP (Yet Another AOSP Project) and cipherOS. sidharth also brought up the Xiaomi Pad 8 for AOSP from scratch.
 - sidharth runs NixOS as a daily driver, fully declarative, with a small homelab.
 - sidharthify.tech is hand-written in plain HTML, CSS and JavaScript, no frameworks.
