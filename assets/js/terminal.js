@@ -15,6 +15,10 @@
     window.dispatchEvent(new CustomEvent("sidh-open-music"));
   }
 
+  function openDiary() {
+    window.dispatchEvent(new CustomEvent("sidh-open-diary"));
+  }
+
   const SITE = window.SITE;
   const BLOGS = {};
   SITE.posts.forEach((p) => (BLOGS[p.slug] = "blogs/" + p.dir + "/"));
@@ -102,6 +106,8 @@
       addFile(HOMEP + "/blog/" + s + "/README.md", null, { special: "readme" });
     });
     addDir(HOMEP + "/music", { music: 1 });
+    addDir(HOMEP + "/diary", { diary: 1 });
+    (SITE.diary || []).forEach(([file, , text]) => addFile(HOMEP + "/diary/" + file, text));
     addDir(HOMEP + "/projects", { run: "projects" });
     addDir(HOMEP + "/skills", { run: "skills" });
     addFile(HOMEP + "/socials", null, { run: "socials" });
@@ -433,7 +439,7 @@
           const cn = FS[cp];
           const frag = document.createDocumentFragment();
           const label = name + (cn.d ? "/" : "") + (cn.ln ? " -> " + cn.ln : "");
-          if (cn.go || cn.run || cn.music) {
+          if (cn.go || cn.run || cn.music || cn.diary) {
             const a = document.createElement("a");
             a.href = "#";
             a.textContent = label;
@@ -441,6 +447,7 @@
             a.addEventListener("click", (e) => {
               e.preventDefault();
               if (cn.music) { print("opening ~/music ...", "ok"); openMusic(); }
+              else if (cn.diary) { print("opening ~/diary ...", "ok"); openDiary(); }
               else if (cn.go) goRoute(cn.go);
               else run(cn.run);
             });
@@ -460,12 +467,14 @@
         if (plain === "projects") return HANDLERS.projects();
         if (plain === "skills") return HANDLERS.skills();
         if (plain === "music") { print("opening ~/music ...", "ok"); return openMusic(); }
+        if (plain === "diary") { print("opening ~/diary ...", "ok"); return openDiary(); }
         const p = canon(t);
         const n = node(p);
         if (!n) return print("cd: no such directory: " + t, "err");
         if (n.deny) return print("cd: permission denied: " + abbr(p), "err");
         if (!n.d) return print("cd: not a directory: " + abbr(p), "err");
         if (n.music) { print("opening ~/music ...", "ok"); return openMusic(); }
+        if (n.diary) { print("opening ~/diary ...", "ok"); return openDiary(); }
         if (n.go && p !== PAGE) {
           print("cd " + abbr(p), "ok");
           return goRoute(n.go);
@@ -634,6 +643,9 @@
         if (!n && BLOGS[arg.replace(/\/$/, "")]) { p = HOMEP + "/blog/" + arg.replace(/\/$/, ""); n = node(p); }
         if (n && n.go) return goRoute(n.go);
         if (n && n.music) { print("opening ~/music ...", "ok"); return openMusic(); }
+        if (n && n.diary) { print("opening ~/diary ...", "ok"); return openDiary(); }
+        const base = arg.split("/").pop();
+        if (n && !n.d && window.sidhOpen && window.sidhOpen(base)) { print("opening " + base + " ...", "ok"); return; }
         print("open: cannot open '" + arg + "': No such file", "err");
       },
       "xdg-open"(arg) {

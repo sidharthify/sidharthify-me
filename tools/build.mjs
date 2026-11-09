@@ -12,10 +12,12 @@ const write = (p, s) => writeFileSync(join(ROOT, p), s);
 
 const content = JSON.parse(read("content.json"));
 const posts = [...content.posts].sort((a, b) => b.date.localeCompare(a.date));
+const diary = [...(content.diary || [])].sort((a, b) => b.date.localeCompare(a.date));
 
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const postUrl = (p) => SITE + "/blogs/" + p.dir + "/";
+const diaryUrl = (x) => SITE + "/diary/" + x.file;
 
 function fill(file, name, body) {
   const src = read(file);
@@ -140,6 +142,17 @@ fill("index.html", "projects", rows(content.projects));
 fill("index.html", "skills", rows(content.skills));
 fill(
   "index.html",
+  "diary",
+  diary
+    .map(
+      (x) =>
+        '<li class="row"><span class="dot" aria-hidden="true"></span><div><a class="row-title" href="diary/' + esc(x.file) + '" data-diary="' + esc(x.file) + '">' +
+        esc(x.file) + '</a><div class="row-sub">' + esc(x.date) + " · " + esc(x.summary) + "</div></div></li>"
+    )
+    .join("\n")
+);
+fill(
+  "index.html",
   "socials",
   content.socials
     .map(
@@ -159,6 +172,7 @@ write(
     "  <url><loc>" + SITE + "/about/</loc></url>",
     "  <url><loc>" + SITE + "/blogs/</loc><lastmod>" + posts[0].date + "</lastmod></url>",
     ...posts.map((p) => "  <url><loc>" + postUrl(p) + "</loc><lastmod>" + p.date + "</lastmod></url>"),
+    ...diary.map((x) => "  <url><loc>" + diaryUrl(x) + "</loc><lastmod>" + x.date + "</lastmod></url>"),
     "</urlset>",
     "",
   ].join("\n")
@@ -166,7 +180,19 @@ write(
 
 const llms = read("llms.txt");
 const section = ["## Blog posts", "", ...posts.map((p) => "- [" + p.title + "](" + postUrl(p) + ") (" + p.date + "): " + (p.summary || p.desc)), "", ""].join("\n");
-write("llms.txt", llms.replace(/## Blog posts\n[\s\S]*?(?=## )/, section));
+const diarySection = [
+  "## Diary",
+  "",
+  "Informal opinion pieces, written as plain text files. Each link is the raw .txt, so it can be read as is.",
+  "",
+  ...diary.map((x) => "- [" + x.title + "](" + diaryUrl(x) + ") (" + x.date + "): " + x.summary),
+  "",
+  "",
+].join("\n");
+let llmsOut = llms.replace(/## Blog posts\n[\s\S]*?(?=## )/, section);
+if (/## Diary\n/.test(llmsOut)) llmsOut = llmsOut.replace(/## Diary\n[\s\S]*?(?=## )/, diarySection);
+else llmsOut = llmsOut.replace(/## Elsewhere/, diarySection + "## Elsewhere");
+write("llms.txt", llmsOut);
 
 write(
   "assets/js/content.js",
@@ -176,6 +202,7 @@ write(
       projects: content.projects.map((x) => [x.title, x.desc]),
       skills: content.skills.map((x) => [x.title, x.desc]),
       socials: content.socials.map((x) => [x.label, x.href, x.icon]),
+      diary: diary.map((x) => [x.file, x.date, read("diary/" + x.file)]),
     }) +
     ";\n"
 );

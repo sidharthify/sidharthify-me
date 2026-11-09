@@ -82,6 +82,7 @@
   };
 
   const SOCIALS = window.SITE.socials;
+  const DIARY = (window.SITE.diary || []).map(([file, date, text]) => ({ file, date, text }));
 
   const DOC_SVG =
     '<svg viewBox="0 0 48 48" aria-hidden="true">' +
@@ -96,6 +97,12 @@
     '<svg viewBox="0 0 48 48" aria-hidden="true">' +
     '<path d="M5 11h13l4 4h21a2 2 0 0 1 2 2v22a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V13a2 2 0 0 1 2-2z" fill="#f9e2af" stroke="#6c7086"></path>' +
     '<path d="M3 19h42v20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V19z" fill="#f0d68a"></path>' +
+    "</svg>";
+
+  const DIARY_SVG =
+    '<svg viewBox="0 0 48 48" aria-hidden="true">' +
+    '<path d="M5 11h13l4 4h21a2 2 0 0 1 2 2v22a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V13a2 2 0 0 1 2-2z" fill="#cba6f7" stroke="#6c7086"></path>' +
+    '<path d="M3 19h42v20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V19z" fill="#b48ef0"></path>' +
     "</svg>";
 
   const PLAYLIST = TRACKS.map((t) => Object.assign({}, t, { src: ROOT + t.src, art: ROOT + t.art }));
@@ -589,6 +596,9 @@
     const n = name.replace(/\/$/, "");
     if (n === "music") { openMusicFolder(); return true; }
     if (n === "socials") { openSocials(); return true; }
+    if (n === "diary") { openDiary(); return true; }
+    const de = DIARY.find((d) => d.file === n);
+    if (de) { openKate(de); return true; }
     if (DOCS[n]) { openDoc(n); return true; }
     const ph = PHOTOS.find((p) => p.file === name);
     if (ph) { openViewer(ph); return true; }
@@ -741,6 +751,140 @@
     return el;
   }
 
+  function fmtDate(d) {
+    const [y, m, dd] = d.split("-").map(Number);
+    return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][m - 1] + " " + dd + ", " + y;
+  }
+
+  function fmtSize(t) {
+    const b = new TextEncoder().encode(t).length;
+    return b < 1024 ? b + " B" : (b / 1024).toFixed(1) + " KiB";
+  }
+
+  function diaryRows(container) {
+    const ev = isMobile() ? "click" : "dblclick";
+    DIARY.forEach((d) => {
+      const b = document.createElement("button");
+      b.className = "dy-row";
+      b.innerHTML =
+        '<span class="dy-ico">' + DOC_SVG + "</span>" +
+        '<span class="dy-name">' + esc(d.file) + "</span>" +
+        '<time class="dy-date" datetime="' + d.date + '">' + fmtDate(d.date) + "</time>" +
+        '<span class="dy-size">' + fmtSize(d.text) + "</span>";
+      b.addEventListener(ev, () => openKate(d));
+      container.appendChild(b);
+    });
+  }
+
+  function openDiary() {
+    ensureSurf();
+    if (!surf) return;
+    if (wins.diary) { restore(wins.diary); return; }
+    const el = document.createElement("section");
+    el.className = "window filemanager diarywin";
+    el.innerHTML =
+      '<div class="win-bar"><span class="win-dots"><i class="dot-red"></i><i class="dot-yellow"></i><i class="dot-green"></i></span>' +
+      '<span class="term-title"><b>Dolphin</b> — /home/sidharthify/diary</span><span></span></div>' +
+      '<div class="term-body fm-body"><div class="fm-toolbar"><span class="fm-path">home / sidharthify / diary</span>' +
+      '<span class="fm-count">' + DIARY.length + " items · double-click to open</span></div>" +
+      '<div class="dy-head"><span></span><span>name</span><span>modified</span><span>size</span></div>' +
+      '<div class="dy-list"></div></div>';
+    surf.appendChild(el);
+    diaryRows(el.querySelector(".dy-list"));
+    const w = { id: "diary", el, kind: "folder", title: "Dolphin — ~/diary", min: false, max: false };
+    w.geomKey = "win.diary";
+    place(el, LS.get("win.diary", null), () => ({ x: surf.clientWidth / 2 - 310, y: 30 }));
+    wireControls(w);
+    draggable(w);
+    addTaskItem(w);
+    wins.diary = w;
+    focusWin(w);
+  }
+
+  function diaryIcon(layer) {
+    const el = document.createElement("div");
+    el.className = "dz-icon dz-app";
+    el.innerHTML = '<div class="dz-appicon">' + DIARY_SVG + '</div><span class="dz-label">diary</span>';
+    layer.appendChild(el);
+    place(el, LS.get("icon.diary", null), () => ({ x: 0.83 * surf.clientWidth, y: 0.78 * surf.clientHeight }));
+    iconDrag(el, (x, y) => LS.set("icon.diary", { x, y }));
+    el.addEventListener("dblclick", openDiary);
+    return el;
+  }
+
+  const KATE_MENU = ["File", "Edit", "View", "Selection", "Go", "Tools", "Settings", "Help"];
+
+  function openKate(d) {
+    const id = "kate:" + d.file;
+    if (wins[id]) { restore(wins[id]); return; }
+    const mobile = isMobile();
+    if (!mobile) {
+      ensureSurf();
+      if (!surf) return;
+    }
+    const lines = d.text.replace(/\n$/, "").split("\n");
+    const isHead = (l) => /^#{1,6}\s/.test(l);
+    const md = (l) => esc(l)
+      .replace(/\*\*([^*]+)\*\*/g, '<b class="km-b">**$1**</b>')
+      .replace(/(^|[^*])\*([^*\s][^*]*)\*(?!\*)/g, '$1<i class="km-i">*$2*</i>');
+    const mode = lines.some(isHead) ? "Markdown" : "Normal";
+    const el = document.createElement("section");
+    el.className = "window kate" + (mobile ? " kate-sheet" : "");
+    el.innerHTML =
+      '<div class="win-bar"><span class="win-dots"><i class="dot-red"></i><i class="dot-yellow"></i><i class="dot-green"></i></span>' +
+      '<span class="term-title"><b>' + esc(d.file) + "</b> — Kate</span><span></span></div>" +
+      '<div class="kate-menu" aria-hidden="true">' + KATE_MENU.map((m) => "<span>" + m + "</span>").join("") + "</div>" +
+      '<div class="kate-tabs"><span class="kate-tab">' + DOC_SVG + esc(d.file) + "</span></div>" +
+      '<div class="kate-doc">' +
+      lines.map((l, i) => '<div class="kl' + (isHead(l) ? " kh" : "") + '" data-n="' + (i + 1) + '"><span class="kn" aria-hidden="true">' + (i + 1) + '</span><span class="kt">' + (md(l) || " ") + "</span></div>").join("") +
+      "</div>" +
+      '<div class="kate-status"><span class="ks-pos">Line 1, Column 1</span><span class="ks-sp"></span>' +
+      "<span>" + lines.length + " lines</span><span>" + fmtDate(d.date) + "</span><span>read-only</span><span>UTF-8</span><span>" + mode + "</span></div>";
+    const doc = el.querySelector(".kate-doc");
+    const pos = el.querySelector(".ks-pos");
+    doc.addEventListener("click", (e) => {
+      const kl = e.target.closest(".kl");
+      if (!kl) return;
+      doc.querySelectorAll(".kl.cur").forEach((x) => x.classList.remove("cur"));
+      kl.classList.add("cur");
+      let col = 1;
+      const sel = window.getSelection();
+      if (sel && sel.anchorNode && kl.contains(sel.anchorNode)) col = sel.anchorOffset + 1;
+      pos.textContent = "Line " + kl.dataset.n + ", Column " + col;
+    });
+    const w = { id, el, kind: "doc", title: "kate — " + d.file, min: false, max: false };
+    wins[id] = w;
+    if (mobile) {
+      document.body.appendChild(el);
+      document.documentElement.classList.add("kate-open");
+      el.querySelector(".dot-red").addEventListener("click", () => {
+        el.remove();
+        delete wins[id];
+        document.documentElement.classList.remove("kate-open");
+      });
+      return;
+    }
+    surf.appendChild(el);
+    const n = Object.values(wins).filter((x) => x.id.indexOf("kate:") === 0).length - 1;
+    w.geomKey = "win." + id;
+    place(el, LS.get(w.geomKey, null), () => ({ x: surf.clientWidth / 2 - 330 + n * 30, y: 40 + n * 30 }));
+    wireControls(w);
+    draggable(w);
+    addTaskItem(w);
+    focusWin(w);
+  }
+
+  function initDiaryLinks() {
+    document.querySelectorAll("a[data-diary]").forEach((a) => {
+      const d = DIARY.find((x) => x.file === a.dataset.diary);
+      if (!d) return;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        openKate(d);
+      });
+    });
+  }
+
   function initMusicMobile() {
     if (!(HOME && isMobile())) return;
     const main = document.querySelector("main");
@@ -779,6 +923,7 @@
         terminalIcon(layer);
         musicFolderIcon(layer);
         socialsIcon(layer);
+        diaryIcon(layer);
         docIcon(layer, "projects.md", 0.9, 0.48);
         docIcon(layer, "skills.md", 0.9, 0.63);
         PHOTOS.forEach((p) => makeIcon(layer, p));
@@ -894,6 +1039,7 @@
         ...(whoWin ? [["open whoami", () => restore(whoWin)]] : []),
         ["open music", () => openMusicFolder()],
         ["open socials", () => openSocials()],
+        ["open diary", () => openDiary()],
         ["sep"],
         ["tidy up icons", tidyIcons],
         ["reset layout", resetLayout],
@@ -936,7 +1082,9 @@
         { label: "terminal", sub: "app", act: () => termWin && restore(termWin) },
         { label: "music", sub: "folder", act: () => openMusicFolder() },
         { label: "socials", sub: "folder", act: () => openSocials() },
+        { label: "diary", sub: "folder", act: () => openDiary() },
       ])
+      .concat(DIARY.map((d) => ({ label: d.file, sub: "diary · " + fmtDate(d.date), act: () => openKate(d) })))
       .concat(whoWin ? [{ label: "whoami", sub: "app", act: () => restore(whoWin) }] : [])
       .concat(Object.keys(DOCS).map((n) => ({ label: n, sub: "document", act: () => openDoc(n) })))
       .concat(PHOTOS.map((p) => ({ label: p.file, sub: "image", act: () => openViewer(p) })))
@@ -976,6 +1124,7 @@
   }
 
   window.addEventListener("sidh-open-music", openMusicFolder);
+  window.addEventListener("sidh-open-diary", openDiary);
   window.addEventListener("beforeunload", () => { if (wins.player) savePlayer(wins.player); });
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -987,6 +1136,7 @@
       initLauncher();
     }
     initMusicMobile();
+    initDiaryLinks();
     restorePlayer();
   });
 })();

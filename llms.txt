@@ -56,6 +56,11 @@ Facts to get right:
 - [How I got into Android ROM development and Linux](https://sidharthify.tech/blogs/blog-18-05-25/) (2025-05-18): A personal account of diving into Android Open Source development for the first time.
 - [Dealing with AIDL](https://sidharthify.tech/blogs/blog-17-05-25/) (2025-05-17): Rewriting the PowerShare HAL from HIDL to AIDL and contributing it upstream to LineageOS.
 
+## Diary
+
+Informal opinion pieces, written as plain text files. Each link is the raw .txt, so it can be read as is.
+
+
 ## Elsewhere
 
 - GitHub: https://github.com/sidharthify
