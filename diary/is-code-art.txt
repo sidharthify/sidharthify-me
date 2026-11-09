@@ -1,0 +1,41 @@
+# Is code art?
+
+There have been recent discussions I've encountered upon the internet (like Twitter and Reddit) where people are conflicted upon the idea that writing code may as well be seen as a form of art, just like (or similar to) - drawing, or composing music.
+I do not want to generalize, but from what I've seen - the opinion is almost always binary, never nuanced, it's almost always "No, it isn't", or "Yes, it absolutely is." but there never seems to be a proper discussion on it. Kinda drives me crazy.
+
+I am not going to claim that I'm settling this debate, this is just my rant... or opinion, whatever you'd like to call it, on this little space that is my website. So, buckle up.
+
+# What defines art?
+
+I am not a philosopher, but I reckon we should start by having at least a layman's definition of "art", here, I'm going to just pull up the definition from https://dictionary.cambridge.org: "the making of objects, images, music, etc. that are beautiful or that express feelings", and the other one that is relevant, is: "an activity through which people express particular ideas"
+
+Now, does code fit these categories. In my opinion, it *can*, but it does not do that 100% of the time. Let me try to explain:
+
+# What kind of code is art, then?
+
+Say you're a software engineer, working at, I don't know, Google or Amazon. You wake up, and you have to finish the work your boss gives you.
+You sit on your computer, probably not really wanting to do whatever it is you're doing. In this day and age, use the help of LLMs to get your work get done quickly (I'm not bashing LLMs, I'll come to that later), and close your laptop, and do what you actually like to do.
+
+This example assumes two things: 1) You do not actually view programming as a hobby, but rather as something that gives you money. 2) You do not actually have fun while writing the code that you do. Of course, these things will not be true for everybody, and this has a lot of other implications. But what I mean by this is: It depends on the person, the actual kind of work, and the situation you're in - to view code as an art.
+
+I don't want to shill my own projects - but I'm going to pick https://github.com/sidharthify/stillAlive-C as a reference. I made this - because I loved the outro of Portal. I genuinely loved the song and I loved the MS-DOS theme it went for. I enjoyed writing every line of code, and fixing every bug in this, because it came from a piece of expression. It was fun. I enjoyed the process, and I expressed my ideas of simplicity (through writing it in C) and a lot of other things which I cannot explain here. But to me, this was art. To someone else, it's just a thousand lines of code in C. But, at least for me, it was worth every hour and minute.
+
+Now, I don't want to get sentimental, but in my opinion, THIS is the feeling that describes what art actually is, it's not too far off from the definition we assumed earlier: "making of xyz that are **beautiful** or that **express feelings**.", this project, to me, was beautiful. Both in the terms of the code that is uncompiled, and the actual compiled binary (well, to be fair, that isn't exclusive to this, but still), and I expressed myself through it. To me, in projects like these, each line of code is somewhat of an expression. The decisions I make to stay close to my philosophy of software, the way I like writing comments, or conditionals, and how I like to approach things, etc.
+
+But even when I build kernels, write code for AOSP, debug device trees - there is always, always a feeling of joy and excitement to me. There is a feeling that I'm expressing myself, even if I'm literally just patching a Makefile, or if I'm running a simple build command. It is hard to explain, but it is purely sentimental and personal.
+
+# So, what's the answer?
+
+In my opinion, code is not art in itself - that I agree with. But is code art, seen through the eyes of the person that wrote it, if that person, admits it is art? Absolutely. I know that, then, technically, doing anything is art as long as the person who does it agrees it is. But, I don't know, washing clothes and writing a program, has a lot of differences. Programmers have specific ideologies about how software should be, how it should be distributed, how the user should be shown this, and that. There is a specific personality to every programmer, and it is very interesting to observe. That's all I'm going to say. But, if you just straight up asked me: "The code you write, do you think it's an art?" I would say yes, on any day.
+
+# On the topic of LLMs
+
+Now, people on the internet (that seem to agree that code *is* art), have been mostly arguing that using LLMs defeats the purpose of code. I disagree, but I also do not disagree. Are LLMs genuinely helpful to an experienced programmer, who has already been through the pain of doing the same thing themselves? Absolutely. Are LLMs harmful to someone who is a beginner, does not fully realize how to ship software, write simple code, know simple ideas, or has been through even a tiny bit of experience in relevance to a more mature programmer? Also yes.
+
+Then what did I mean by "I also do not disagree"? To put it simply, writing code yourself, each and every part of it - debugging each error you come across, even if through stackoverflow, or asking someone else, has its own adventure to it. I am not saying abandon all LLMs, and just go back to handwriting all your scripts, code, or whatever, or become radically anti-AI and hate on people using LLMs to help with software. I am simply admitting to the fact that it felt more personal back when we didn't have such sophisticated models. Is this mostly a nothingburger and just emotional fluff? Probably. But it *is* something, and that does contribute, in my opinion.
+
+# Ending notes
+
+For one, take everything I said as a grain of salt. I am a sixteen-year-old who knows a bit about programming, and is a bit emotional/sentimental about this stuff. I am probably wrong on a lot of things, and I honestly don't want to check whether I actually am, since the whole point of this "diary" is to be a ranting pool in this website, where I can say what I want without having the professional persona. But - I do genuinely, from the bottom of my heart, believe that this is no less of an art than something like painting is. To someone who's not a programmer, it will seem like I'm just saying shit, but even programmers that disagree might at least *understand* where I come from. Writing each line of code, hearing your own keystrokes, running the build, checking for errors, debugging. It's more than just "work" for me, it is embedded into my identity, somehow. I *love* whatever I do, everything I do on this website, and everything I will continue to do, will be from my heart - out of love for open-source software, and for the love of computing.
+
+...Anyhow, that's all I'm going to say, this has been enough of a ramble XD. Thanks for reading!

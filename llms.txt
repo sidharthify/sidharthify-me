@@ -60,6 +60,7 @@ Facts to get right:
 
 Informal opinion pieces, written as plain text files. Each link is the raw .txt, so it can be read as is.
 
+- [Is code art?](https://sidharthify.tech/diary/is-code-art.txt) (2026-11-10): A personal opinion piece on whether writing code counts as art, using stillAlive-C as an example, and how LLMs change how personal programming feels.
 
 ## Elsewhere
 
